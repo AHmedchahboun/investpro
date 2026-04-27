@@ -1,0 +1,15 @@
+# Netlify Redirects — SPA routing
+# All HTML pages served directly
+/dashboard      /dashboard.html   200
+/login          /index.html       200
+/forgot         /forgot-password.html  200
+/admin          /admin.html       200
+/privacy        /privacy.html     200
+/terms          /terms.html       200
+/risk           /risk.html        200
+
+# API proxy to backend (replace YOUR_BACKEND_URL with your Render/Railway URL)
+/api/*          https://YOUR_BACKEND_URL/api/:splat  200
+
+# Fallback — serve index.html for anything else
+/*              /index.html       200

@@ -1,0 +1,39 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install *)",
+      "Bash(node --check server.js)",
+      "Bash(node --check config/vipConfig.js)",
+      "Bash(node --check config/seed.js)",
+      "Bash(node --check models/User.js)",
+      "Bash(node --check models/Wallet.js)",
+      "Bash(node -e \"console.log\\(require\\('crypto'\\).randomBytes\\(32\\).toString\\('hex'\\)\\)\")",
+      "Bash(node config/seed.js)",
+      "Bash(nslookup -type=SRV _mongodb._tcp.cluster0.aribeca.mongodb.net)",
+      "Bash(node --dns-result-order=ipv4first config/seed.js)",
+      "Bash(nslookup -type=TXT _mongodb._tcp.cluster0.aribeca.mongodb.net)",
+      "Bash(node server.js)",
+      "Bash(curl -s http://localhost:5000/api/auth/me)",
+      "mcp__Claude_in_Chrome__tabs_context_mcp",
+      "Bash(pkill -f \"node server.js\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:5000/)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:5000/index.html)",
+      "Bash(node -e \"const path=require\\('path'\\); console.log\\(path.join\\(__dirname,'../frontend'\\)\\);\")",
+      "Bash(taskkill /F /IM node.exe)",
+      "Bash(netstat -ano)",
+      "Bash(taskkill /F /PID 9868)",
+      "PowerShell(Stop-Process -Id 9868 -Force -ErrorAction SilentlyContinue)",
+      "Bash(curl -s -o /dev/null -w \"HTTP: %{http_code}\" http://localhost:5000/)",
+      "Bash(node --check jobs/rewards.js)",
+      "Bash(node --check routes/auth.js)",
+      "Bash(node --check routes/vip.js)",
+      "Bash(PowerShell -Command \"Stop-Process -Id \\(Get-NetTCPConnection -LocalPort 5000 -ErrorAction SilentlyContinue\\).OwningProcess -Force -ErrorAction SilentlyContinue\")",
+      "Bash(curl -s http://localhost:5000/api/vip)",
+      "Bash(python -m json.tool)",
+      "Bash(curl -s http://localhost:5000/api/auth/login -X POST -H \"Content-Type: application/json\" -d '{\"email\":\"admin@investpro.com\",\"password\":\"Admin@123456!\"}')",
+      "Bash(mongod --version)",
+      "Bash(mongosh --version)",
+      "Bash(sc query *)"
+    ]
+  }
+}

@@ -1,0 +1,438 @@
+/* ============================================================
+   InvestPro — Referral System  (Professional Growth Network)
+   ============================================================ */
+
+/* ── Hero ────────────────────────────────────────────────── */
+.ref-hero {
+  text-align: center;
+  padding: 28px 20px 16px;
+}
+.ref-hero-icon {
+  font-size: 2.8rem;
+  margin-bottom: 10px;
+  filter: drop-shadow(0 0 16px rgba(6,182,212,.4));
+}
+.ref-hero-title {
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: -.3px;
+  margin-bottom: 6px;
+}
+.ref-hero-sub {
+  font-size: .8rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* ── Motivational Strip ──────────────────────────────────── */
+.ref-motive-strip {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 0 20px 12px;
+  scrollbar-width: none;
+}
+.ref-motive-strip::-webkit-scrollbar { display: none; }
+.ref-motive-item {
+  flex-shrink: 0;
+  background: linear-gradient(135deg, rgba(6,182,212,.12), rgba(99,102,241,.08));
+  border: 1px solid rgba(6,182,212,.2);
+  border-radius: 20px;
+  padding: 7px 14px;
+  font-size: .75rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+/* ── Referral Link Card ──────────────────────────────────── */
+.ref-link-card {
+  margin: 0 16px 16px;
+  background: linear-gradient(135deg, #071a2e, #0a2540);
+  border: 1px solid rgba(6,182,212,.25);
+  border-radius: 20px;
+  padding: 20px;
+}
+.ref-link-label {
+  font-size: .78rem;
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.ref-link-label i { color: var(--secondary); }
+.ref-link-box {
+  background: rgba(0,0,0,.3);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin-bottom: 12px;
+  overflow: hidden;
+}
+.ref-link-value {
+  font-family: monospace;
+  font-size: .75rem;
+  color: #38bdf8;
+  word-break: break-all;
+  line-height: 1.5;
+}
+.ref-link-actions {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.ref-btn-copy,
+.ref-btn-share {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 11px;
+  border-radius: 12px;
+  font-size: .82rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all .2s;
+}
+.ref-btn-copy {
+  background: linear-gradient(135deg, #0ea5e9, #06b6d4);
+  color: #fff;
+}
+.ref-btn-copy.ref-copied {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+}
+.ref-btn-share {
+  background: rgba(255,255,255,.07);
+  border: 1px solid rgba(255,255,255,.12);
+  color: var(--text-primary);
+}
+.ref-btn-copy:active,
+.ref-btn-share:active { transform: scale(.97); }
+.ref-code-row {
+  text-align: center;
+  font-size: .78rem;
+  color: var(--text-secondary);
+}
+
+/* ── Commission Levels Grid ──────────────────────────────── */
+.ref-levels-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  padding: 0 16px 16px;
+}
+.ref-level-card {
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 16px;
+  padding: 14px 10px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  transition: transform .2s;
+}
+.ref-level-card:active { transform: scale(.97); }
+.ref-level-card::before {
+  content: '';
+  position: absolute;
+  top: -20px; left: 50%;
+  transform: translateX(-50%);
+  width: 60px; height: 60px;
+  border-radius: 50%;
+  opacity: .12;
+  filter: blur(20px);
+}
+.ref-l1 { border-color: rgba(34,197,94,.25); }
+.ref-l1::before { background: #22c55e; }
+.ref-l2 { border-color: rgba(6,182,212,.25); }
+.ref-l2::before { background: #06b6d4; }
+.ref-l3 { border-color: rgba(99,102,241,.25); }
+.ref-l3::before { background: #6366f1; }
+
+.ref-level-badge {
+  position: absolute;
+  top: 8px; left: 8px;
+  font-size: .6rem;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: rgba(255,255,255,.1);
+  color: var(--text-secondary);
+}
+.ref-level-icon { font-size: 1.4rem; margin-bottom: 4px; }
+.ref-level-pct {
+  font-size: 1.3rem;
+  font-weight: 900;
+  margin-bottom: 2px;
+}
+.ref-l1 .ref-level-pct { color: #22c55e; }
+.ref-l2 .ref-level-pct { color: #06b6d4; }
+.ref-l3 .ref-level-pct { color: #818cf8; }
+.ref-level-name {
+  font-size: .72rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.ref-level-desc {
+  font-size: .65rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  margin-bottom: 8px;
+}
+.ref-level-count {
+  font-size: .72rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  background: rgba(255,255,255,.06);
+  border-radius: 8px;
+  padding: 4px 6px;
+}
+.ref-level-count span {
+  color: var(--text-primary);
+  font-size: .85rem;
+}
+
+/* ── Live Dot ────────────────────────────────────────────── */
+.ref-live-dot {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: .72rem;
+  color: #22c55e;
+}
+.ref-live-dot span {
+  display: inline-block;
+  width: 7px; height: 7px;
+  background: #22c55e;
+  border-radius: 50%;
+  animation: ref-pulse 2s infinite;
+}
+@keyframes ref-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: .4; transform: scale(.7); }
+}
+
+/* ── Earnings Dashboard ──────────────────────────────────── */
+.ref-earnings-grid {
+  margin: 0 16px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.ref-earn-total {
+  background: linear-gradient(135deg, #071a2e, #0d2137);
+  border: 1px solid rgba(34,197,94,.2);
+  border-radius: 16px;
+  padding: 18px 20px;
+  text-align: center;
+}
+.ref-earn-total-label {
+  font-size: .78rem;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+.ref-earn-total-val {
+  font-size: 2rem;
+  font-weight: 900;
+  color: #22c55e;
+  letter-spacing: -.5px;
+}
+.ref-earn-total-sub {
+  font-size: .68rem;
+  color: var(--text-secondary);
+  margin-top: 4px;
+  opacity: .7;
+}
+.ref-earn-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.ref-earn-box {
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 12px;
+  padding: 12px 8px;
+  text-align: center;
+}
+.ref-earn-l1 { border-color: rgba(34,197,94,.2); }
+.ref-earn-l2 { border-color: rgba(6,182,212,.2); }
+.ref-earn-l3 { border-color: rgba(99,102,241,.2); }
+.ref-earn-lbl {
+  font-size: .65rem;
+  color: var(--text-secondary);
+  margin-bottom: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.ref-earn-pct {
+  font-size: .6rem;
+  background: rgba(255,255,255,.08);
+  border-radius: 4px;
+  padding: 1px 4px;
+  color: var(--text-secondary);
+}
+.ref-earn-val {
+  font-size: .9rem;
+  font-weight: 800;
+}
+.ref-earn-l1 .ref-earn-val { color: #22c55e; }
+.ref-earn-l2 .ref-earn-val { color: #06b6d4; }
+.ref-earn-l3 .ref-earn-val { color: #818cf8; }
+
+/* ── Network Stats Bar ───────────────────────────────────── */
+.ref-network-stats {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  margin: 0 16px 16px;
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 16px;
+  padding: 16px;
+}
+.ref-net-stat { text-align: center; flex: 1; }
+.ref-net-stat-val {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--secondary);
+  margin-bottom: 3px;
+}
+.ref-net-stat-lbl {
+  font-size: .68rem;
+  color: var(--text-secondary);
+}
+.ref-net-divider {
+  width: 1px;
+  height: 36px;
+  background: rgba(255,255,255,.1);
+}
+
+/* ── Goals System ────────────────────────────────────────── */
+.ref-goals-wrap {
+  padding: 0 16px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.ref-goal-skeleton {
+  height: 72px;
+  border-radius: 14px;
+  background: rgba(255,255,255,.05);
+  animation: skeleton-pulse 1.5s infinite;
+}
+@keyframes skeleton-pulse {
+  0%, 100% { opacity: .5; }
+  50%       { opacity: 1; }
+}
+.ref-goal-card {
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 14px;
+  padding: 14px 16px;
+  transition: border-color .3s;
+}
+.ref-goal-reached {
+  border-color: rgba(34,197,94,.35);
+  background: rgba(34,197,94,.05);
+}
+.ref-goal-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.ref-goal-icon { font-size: 1.3rem; flex-shrink: 0; }
+.ref-goal-info { flex: 1; }
+.ref-goal-title {
+  font-size: .82rem;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+.ref-goal-progress-label {
+  font-size: .7rem;
+  color: var(--text-secondary);
+}
+.ref-goal-done-badge {
+  font-size: .65rem;
+  font-weight: 700;
+  background: rgba(34,197,94,.15);
+  color: #22c55e;
+  border: 1px solid rgba(34,197,94,.3);
+  border-radius: 8px;
+  padding: 3px 8px;
+  flex-shrink: 0;
+}
+.ref-goal-bar {
+  height: 6px;
+  background: rgba(255,255,255,.08);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.ref-goal-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #0ea5e9, #06b6d4);
+  border-radius: 3px;
+  transition: width .8s cubic-bezier(.4,0,.2,1);
+}
+.ref-goal-fill-done {
+  background: linear-gradient(90deg, #22c55e, #16a34a);
+}
+
+/* ── Transparency Note ───────────────────────────────────── */
+.ref-transparency-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 0 16px 16px;
+  background: rgba(99,102,241,.08);
+  border: 1px solid rgba(99,102,241,.2);
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-size: .75rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+.ref-transparency-note i {
+  color: #818cf8;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+/* ── How It Works ────────────────────────────────────────── */
+.ref-how-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 0 16px 32px;
+}
+.ref-how-step {
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 14px;
+  padding: 14px;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+.ref-how-num {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0ea5e9, #06b6d4);
+  color: #fff;
+  font-size: .75rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.ref-how-text {
+  font-size: .75rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}

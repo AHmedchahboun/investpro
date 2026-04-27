@@ -1,0 +1,1967 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>InvestPro — لوحة التحكم</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/dashboard-v2.css">
+  <link rel="stylesheet" href="css/vip-pro.css">
+  <link rel="stylesheet" href="css/referral.css">
+  <link rel="stylesheet" href="css/how-it-works.css">
+  <link rel="stylesheet" href="css/welcome-modal.css">
+</head>
+<body>
+
+<!-- Top Bar -->
+<div class="top-bar">
+  <div class="user-profile">
+    <div class="avatar" id="sb-avatar">?</div>
+    <div>
+      <div class="font-bold text-sm" id="sb-name">جاري التحميل...</div>
+      <div class="vip-badge" id="sb-vip-label">VIP —</div>
+    </div>
+  </div>
+  <div class="flex gap-2">
+    <button class="btn-icon" style="width: 40px; height: 40px; font-size: 1rem; border-radius: 50%;" onclick="auth.logout()">
+      <i class="fas fa-sign-out-alt text-danger"></i>
+    </button>
+  </div>
+</div>
+
+<!-- Main Content Area -->
+<div class="main-content">
+
+  <!-- ==================== DASHBOARD (HOME) ==================== -->
+  <div id="pg-dash" class="page-content active fade-in">
+    
+    <!-- Balance Card -->
+    <div class="balance-card">
+      <div class="balance-live-dot">متصل مباشرة</div>
+      <div class="balance-label">الرصيد المتاح (USDT)</div>
+      <div class="balance-amount" id="d-balance">$0.00</div>
+      <div class="flex justify-between mt-4" style="border-top:1px solid rgba(255,255,255,0.12);padding-top:14px;">
+        <div>
+          <div class="text-xs" style="opacity:0.75">إجمالي الأرباح</div>
+          <div class="font-bold" id="d-earned">$0.00</div>
+        </div>
+        <div style="text-align:left;">
+          <div class="text-xs" style="opacity:0.75">إجمالي الإيداع</div>
+          <div class="font-bold" id="d-deposited">$0.00</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+      <div class="action-btn deposit" data-go="pg-wal">
+        <div class="icon"><i class="fas fa-arrow-down"></i></div>
+        <span>إيداع</span>
+      </div>
+      <div class="action-btn withdraw" data-go="pg-wal" data-action="withdraw">
+        <div class="icon"><i class="fas fa-arrow-up"></i></div>
+        <span>سحب</span>
+      </div>
+      <div class="action-btn vip" data-go="pg-vip">
+        <div class="icon"><i class="fas fa-crown"></i></div>
+        <span>ترقية VIP</span>
+      </div>
+    </div>
+
+    <!-- Mini Stats -->
+    <div class="section-title">
+      إحصائيات المنصة
+    </div>
+    <div class="stats-grid mb-6">
+      <div class="stat-box">
+        <div class="text-xs text-secondary mb-1">المستثمرين</div>
+        <div class="text-lg font-bold text-primary" id="plat-users">0</div>
+      </div>
+      <div class="stat-box">
+        <div class="text-xs text-secondary mb-1">إجمالي السحوبات</div>
+        <div class="text-lg font-bold text-success" id="plat-withdrawals">$0.00</div>
+      </div>
+    </div>
+
+    <!-- Recent Transactions -->
+    <div class="section-title">
+      <span>آخر العمليات</span>
+      <span class="section-link" data-go="pg-hist">عرض الكل</span>
+    </div>
+    <div class="tx-list" id="dash-tx-body">
+      <!-- Skeletons -->
+      <div class="tx-item skeleton"></div>
+      <div class="tx-item skeleton"></div>
+      <div class="tx-item skeleton"></div>
+    </div>
+    
+    <!-- Trust Indicators -->
+    <div class="trust-badges">
+      <div class="trust-item">
+        <i class="fas fa-shield-alt"></i>
+        <span>معاملات آمنة</span>
+      </div>
+      <div class="trust-item">
+        <i class="fas fa-bolt"></i>
+        <span>نظام آلي 24/7</span>
+      </div>
+      <div class="trust-item">
+        <i class="fas fa-link"></i>
+        <span>شبكة موثقة</span>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ==================== WALLET ==================== -->
+  <div id="pg-wal" class="page-content fade-in">
+
+    <!-- Tabs -->
+    <div class="wallet-tabs">
+      <div class="wallet-tab active" id="tab-deposit" onclick="switchWalletTab('deposit')">
+        <i class="fas fa-arrow-down" style="margin-left:6px"></i> إيداع
+      </div>
+      <div class="wallet-tab" id="tab-withdraw" onclick="switchWalletTab('withdraw')">
+        <i class="fas fa-arrow-up" style="margin-left:6px"></i> سحب
+      </div>
+    </div>
+
+    <!-- ══ DEPOSIT SECTION ══ -->
+    <div id="sec-deposit">
+
+      <!-- Step Progress Bar -->
+      <div class="dep-steps-bar">
+        <div class="dep-step-node active" id="dep-step-1">
+          <div class="dep-step-circle">1</div>
+          <div class="dep-step-label">الشبكة</div>
+        </div>
+        <div class="dep-step-line" id="dep-line-1"></div>
+        <div class="dep-step-node" id="dep-step-2">
+          <div class="dep-step-circle">2</div>
+          <div class="dep-step-label">الإرسال</div>
+        </div>
+        <div class="dep-step-line" id="dep-line-2"></div>
+        <div class="dep-step-node" id="dep-step-3">
+          <div class="dep-step-circle">3</div>
+          <div class="dep-step-label">تأكيد</div>
+        </div>
+      </div>
+
+      <!-- STEP 1 — Network -->
+      <div id="dep-s1">
+        <div class="card mb-4">
+          <div class="form-label mb-3" style="font-size:.95rem;font-weight:700;">
+            <i class="fas fa-network-wired" style="color:var(--secondary)"></i>&nbsp; اختر شبكة الإرسال
+          </div>
+          <div class="dep-net-grid">
+            <div class="dep-net-card selected" id="net-TRC20" onclick="selectNetwork('TRC20')">
+              <div class="dep-net-icon" style="background:linear-gradient(135deg,#e63232,#ff6b6b);">₮</div>
+              <div class="dep-net-name">TRC20</div>
+              <div class="dep-net-sub">Tron</div>
+              <div class="dep-net-badge">رسوم منخفضة</div>
+            </div>
+            <div class="dep-net-card" id="net-BEP20" onclick="selectNetwork('BEP20')">
+              <div class="dep-net-icon" style="background:linear-gradient(135deg,#f0b90b,#f5d442);">⬡</div>
+              <div class="dep-net-name">BEP20</div>
+              <div class="dep-net-sub">BSC</div>
+            </div>
+            <div class="dep-net-card" id="net-POLYGON" onclick="selectNetwork('POLYGON')">
+              <div class="dep-net-icon" style="background:linear-gradient(135deg,#8247e5,#a970ff);">⬟</div>
+              <div class="dep-net-name">Polygon</div>
+              <div class="dep-net-sub">MATIC</div>
+            </div>
+          </div>
+
+          <!-- Networks Info -->
+          <div class="net-info-grid">
+            <div class="net-info-row">
+              <div class="net-info-dot" style="background:#e63232"></div>
+              <div>
+                <div class="net-info-name">TRC20 — Tron Network</div>
+                <div class="net-info-desc">الأسرع والأرخص — موصى به للمبتدئين</div>
+              </div>
+              <div class="net-info-fee" style="background:rgba(34,197,94,.1);color:var(--success)">رسوم منخفضة</div>
+            </div>
+            <div class="net-info-row">
+              <div class="net-info-dot" style="background:#f0b90b"></div>
+              <div>
+                <div class="net-info-name">BEP20 — BSC Network</div>
+                <div class="net-info-desc">شبكة Binance Smart Chain</div>
+              </div>
+              <div class="net-info-fee" style="background:rgba(245,158,11,.1);color:var(--warning)">متوسطة</div>
+            </div>
+            <div class="net-info-row">
+              <div class="net-info-dot" style="background:#8247e5"></div>
+              <div>
+                <div class="net-info-name">Polygon — MATIC</div>
+                <div class="net-info-desc">شبكة Polygon سريعة وآمنة</div>
+              </div>
+              <div class="net-info-fee" style="background:rgba(130,71,229,.1);color:#a970ff">منخفضة</div>
+            </div>
+          </div>
+
+          <button class="btn btn-primary" onclick="goDepStep2()">
+            التالي — عرض عنوان الإيداع <i class="fas fa-arrow-left"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- STEP 2 — Address -->
+      <div id="dep-s2" style="display:none;">
+        <!-- Danger Warning -->
+        <div class="dep-danger-box">
+          <div class="dep-danger-title">
+            <i class="fas fa-exclamation-triangle"></i> تحذير — اقرأ قبل الإرسال
+          </div>
+          <ul class="dep-danger-list">
+            <li>أرسل <strong>USDT فقط</strong> — أي عملة أخرى ستُفقد نهائياً</li>
+            <li>استخدم شبكة <strong id="dep-warn-net">TRC20</strong> فقط — الشبكة الخاطئة = خسارة دائمة</li>
+            <li>الحد الأدنى: <strong>$<span id="dep-min-label">10</span></strong> — الرصيد يُضاف بعد موافقة الإدارة</li>
+          </ul>
+        </div>
+
+        <!-- Address Card -->
+        <div class="dep-addr-card mb-4">
+          <div class="dep-addr-net-row">
+            <div class="dep-addr-net-pill">
+              <div class="dep-addr-net-dot" id="dep-addr-dot" style="background:#e63232"></div>
+              <span id="dep-addr-net-label">TRC20</span>
+            </div>
+            <span class="text-xs text-secondary">عنوان الإيداع</span>
+          </div>
+          <div class="dep-addr-label">انسخ العنوان وأرسل إليه المبلغ بالضبط</div>
+          <div class="dep-addr-value" id="dep-address">جاري التحميل...</div>
+          <button class="dep-copy-btn" id="dep-copy-btn" onclick="copyDepositAddress()">
+            <i class="fas fa-copy" id="dep-copy-icon"></i>
+            <span id="dep-copy-label">نسخ العنوان</span>
+          </button>
+          <div class="dep-addr-hint" id="dep-network-hint"></div>
+        </div>
+
+        <button class="btn btn-primary mb-2" onclick="goDepStep3()">
+          أرسلت المبلغ — أدخل رقم العملية <i class="fas fa-arrow-left"></i>
+        </button>
+        <button class="btn btn-secondary" onclick="goDepStep1()">
+          <i class="fas fa-arrow-right"></i> تغيير الشبكة
+        </button>
+      </div>
+
+      <!-- STEP 3 — Confirm TXID -->
+      <div id="dep-s3" style="display:none;">
+        <div class="card mb-6">
+          <div class="dep-recap-box">
+            <i class="fas fa-info-circle"></i>
+            <span>شبكة: <strong id="dep-recap-net">TRC20</strong> &nbsp;|&nbsp; العنوان: <span id="dep-recap-addr" style="font-family:monospace;font-size:.72rem;"></span></span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">المبلغ الذي أرسلته (USDT)</label>
+            <input type="number" class="form-input" id="dep-amount" placeholder="مثال: 50" min="10" step="any">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">
+              رقم العملية (TXID)
+              <span class="text-xs text-secondary" id="dep-txhash-hint" style="font-weight:400;display:block;margin-top:2px;"></span>
+            </label>
+            <div class="txid-input-wrap">
+              <textarea class="form-input" id="dep-txhash" rows="2"
+                placeholder="الصق رمز العملية كاملاً هنا"
+                oninput="validateTxid(this)"
+                style="font-family:monospace;font-size:.78rem;resize:none;min-height:56px;padding-top:12px;padding-left:36px;"></textarea>
+              <span class="txid-status" id="txid-status-icon"></span>
+            </div>
+            <div class="txid-example" id="txid-example"></div>
+          </div>
+
+          <button class="btn btn-primary mt-2" id="dep-btn" onclick="submitDeposit()">
+            <i class="fas fa-paper-plane"></i> إرسال طلب الإيداع
+          </button>
+          <button class="btn btn-secondary mt-2" onclick="goDepStep2()">
+            <i class="fas fa-arrow-right"></i> رجوع
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ WITHDRAW SECTION ══ -->
+    <div id="sec-withdraw" style="display:none;">
+      <!-- Balance Display -->
+      <div class="wd-balance-display">
+        <div class="wd-balance-label">رصيدك القابل للسحب</div>
+        <div class="wd-balance-val" id="w-balance">$0.00</div>
+      </div>
+
+      <div class="card mb-4">
+        <div class="info-box danger mb-4">
+          <i class="fas fa-exclamation-triangle"></i>
+          <div>رسوم السحب <strong id="wd-fee-pct">10</strong>% — سحب واحد معلق في نفس الوقت</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">شبكة الاستلام</label>
+          <select class="form-input" id="wd-network">
+            <option value="TRC20">USDT — TRC20 (Tron)</option>
+            <option value="BEP20">USDT — BEP20 (BSC)</option>
+            <option value="POLYGON">USDT — Polygon (MATIC)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">
+            المبلغ (USDT)
+            <span class="text-xs text-secondary" style="font-weight:400"> — الحد الأدنى $<span id="wd-min-label">10</span></span>
+          </label>
+          <input type="number" class="form-input" id="wd-amount" placeholder="0.00" oninput="calcFee()">
+        </div>
+
+        <!-- Fee Breakdown -->
+        <div class="fee-box" id="wd-fee-box" style="display:none;">
+          <div class="fee-row">
+            <span class="text-secondary">الرسوم (<span id="wd-fee-pct2">10</span>%):</span>
+            <span style="color:var(--danger)" id="wd-fee-val">$0.00</span>
+          </div>
+          <div class="fee-row">
+            <span class="text-primary font-bold">ستستلم:</span>
+            <span style="color:var(--success);font-size:1.1rem" id="wd-net-val">$0.00</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">عنوان محفظتك للاستلام</label>
+          <input type="text" class="form-input" id="wd-address"
+            placeholder="الصق عنوان المحفظة هنا"
+            style="font-family:monospace;font-size:.8rem;">
+        </div>
+
+        <button class="btn btn-danger mt-2" id="wd-btn" onclick="submitWithdraw()">
+          <i class="fas fa-paper-plane"></i> تقديم طلب السحب
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ==================== VIP PAGE ==================== -->
+  <div id="pg-vip" class="page-content fade-in">
+
+    <div class="vip-page-header">
+      <div class="vip-page-title">خطط الاستثمار <span style="color:var(--secondary)">VIP</span></div>
+      <div class="vip-page-sub">اختر خطتك وابدأ تحقيق عوائد يومية ثابتة</div>
+    </div>
+
+    <div class="vip-current-wrap">
+      <div id="vip-current-status">
+        <div class="skeleton" style="height:110px;border-radius:20px;"></div>
+      </div>
+    </div>
+
+    <div class="vip-trust-strip">
+      <div class="vip-trust-item"><i class="fas fa-bolt"></i> تفعيل فوري بعد الإيداع</div>
+      <div class="vip-trust-item"><i class="fas fa-shield-alt"></i> مدفوعات Blockchain آمنة</div>
+      <div class="vip-trust-item"><i class="fas fa-clock"></i> مراقبة 24/7</div>
+      <div class="vip-trust-item"><i class="fas fa-check-circle"></i> بدون رسوم خفية</div>
+    </div>
+
+    <div class="vip-stats-note">
+      يتم تحديث عدد المشتركين بشكل لحظي بناءً على النشاط داخل المنصة
+    </div>
+
+    <div class="vip-deposit-intent" id="vip-intent-banner" style="display:none;margin-top:16px;">
+      <div class="vip-deposit-intent-icon"><i class="fas fa-crown"></i></div>
+      <div class="vip-deposit-intent-text">
+        <div class="vip-deposit-intent-title">بصدد شراء: <span id="vip-intent-name">—</span></div>
+        <div class="vip-deposit-intent-sub">أودع المبلغ المطلوب وسيتم التفعيل تلقائياً</div>
+      </div>
+      <button class="vip-deposit-intent-close" onclick="clearVipIntent()"><i class="fas fa-times"></i></button>
+    </div>
+
+    <div class="vip-section-head">
+      <span class="vip-section-title">الخطط المتاحة</span>
+      <span class="vip-section-hint">← مرر للمزيد</span>
+    </div>
+    <div class="vip-cards-scroll" id="vip-plans-container">
+      <div class="vip-pro-card skeleton" style="min-height:320px;"></div>
+      <div class="vip-pro-card skeleton" style="min-height:320px;"></div>
+      <div class="vip-pro-card skeleton" style="min-height:320px;"></div>
+    </div>
+
+  </div>
+
+  <!-- VIP Detail Modal -->
+  <div class="vip-detail-overlay" id="vip-detail-modal">
+    <div class="vip-detail-sheet">
+      <div class="vip-detail-handle"></div>
+      <div class="vip-detail-hero">
+        <div class="vip-detail-icon" id="vdm-icon"></div>
+        <div>
+          <div class="vip-detail-title" id="vdm-name">—</div>
+          <div class="vip-detail-desc" id="vdm-desc">—</div>
+        </div>
+      </div>
+      <div class="vip-pending-banner" id="vdm-pending" style="display:none;">
+        <i class="fas fa-info-circle"></i>
+        <span id="vdm-pending-text">—</span>
+      </div>
+      <div class="vip-detail-stats-grid">
+        <div class="vip-detail-stat">
+          <div class="vip-detail-stat-val" id="vdm-price">—</div>
+          <div class="vip-detail-stat-lbl">السعر</div>
+        </div>
+        <div class="vip-detail-stat">
+          <div class="vip-detail-stat-val" id="vdm-daily" style="color:var(--success)">—</div>
+          <div class="vip-detail-stat-lbl">ربح يومي</div>
+        </div>
+        <div class="vip-detail-stat">
+          <div class="vip-detail-stat-val" id="vdm-monthly">—</div>
+          <div class="vip-detail-stat-lbl">عائد شهري</div>
+        </div>
+        <div class="vip-detail-stat">
+          <div class="vip-detail-stat-val" id="vdm-total" style="color:var(--warning)">—</div>
+          <div class="vip-detail-stat-lbl">إجمالي العائد</div>
+        </div>
+      </div>
+      <div class="vip-detail-features">
+        <div class="vip-detail-feature-row">
+          <span class="vip-detail-feature-lbl">مدة الاشتراك</span>
+          <span class="vip-detail-feature-val" id="vdm-duration">—</span>
+        </div>
+        <div class="vip-detail-feature-row">
+          <span class="vip-detail-feature-lbl">مستوى المخاطرة</span>
+          <span class="vip-detail-feature-val" id="vdm-risk">—</span>
+        </div>
+        <div class="vip-detail-feature-row">
+          <span class="vip-detail-feature-lbl">صافي الربح</span>
+          <span class="vip-detail-feature-val" id="vdm-net" style="color:var(--success)">—</span>
+        </div>
+        <div class="vip-detail-feature-row">
+          <span class="vip-detail-feature-lbl">التفعيل</span>
+          <span class="vip-detail-feature-val" style="color:var(--success)">فوري بعد الإيداع</span>
+        </div>
+      </div>
+      <div class="vip-detail-actions">
+        <button class="vip-detail-buy-btn" id="vdm-buy-btn" onclick="handleVipAction()">—</button>
+        <button class="vip-detail-cancel" onclick="closeVipDetail()">إغلاق</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ==================== HISTORY PAGE ==================== -->
+  <div id="pg-hist" class="page-content fade-in">
+    <div class="section-title">سجل العمليات</div>
+    <div class="card mb-6">
+      <div class="flex gap-2 mb-4">
+        <select class="form-input" id="hist-type" onchange="loadHistory()" style="height: 40px; font-size: 0.85rem;">
+          <option value="">كل الأنواع</option>
+          <option value="deposit">إيداع</option>
+          <option value="withdraw">سحب</option>
+          <option value="daily_profit">أرباح يومية</option>
+        </select>
+        <select class="form-input" id="hist-status" onchange="loadHistory()" style="height: 40px; font-size: 0.85rem;">
+          <option value="">كل الحالات</option>
+          <option value="pending">معلق</option>
+          <option value="approved">معتمد</option>
+          <option value="rejected">مرفوض</option>
+        </select>
+      </div>
+
+      <div class="tx-list" id="hist-body">
+        <div class="tx-item skeleton"></div>
+        <div class="tx-item skeleton"></div>
+        <div class="tx-item skeleton"></div>
+      </div>
+      <div id="hist-pag" class="mt-4 flex justify-center gap-2"></div>
+    </div>
+  </div>
+
+
+  <!-- ==================== PROFILE / SETTINGS PAGE ==================== -->
+  <div id="pg-set" class="page-content fade-in">
+    
+    <!-- Account Info Card -->
+    <div class="card mb-6">
+      <div class="flex items-center gap-4 mb-6">
+        <div class="avatar" id="prof-avatar" style="width: 60px; height: 60px; font-size: 1.5rem;">?</div>
+        <div>
+          <div class="font-bold text-lg" id="prof-name">...</div>
+          <div class="text-secondary text-sm" id="prof-email">...</div>
+        </div>
+      </div>
+      <div class="form-group mb-0">
+        <label class="form-label">رابط الإحالة الخاص بك (للدعوات)</label>
+        <div class="input-with-button">
+          <input type="text" class="form-input" id="set-refcode" readonly>
+          <button class="btn btn-secondary" onclick="copyText(document.getElementById('set-refcode').value)">
+            <i class="fas fa-copy"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Referrals Stats -->
+    <div class="section-title">إحصائيات الإحالة</div>
+    <div class="stats-grid mb-6">
+      <div class="stat-box">
+        <div class="text-xs text-secondary mb-1">المستوى 1 (8%)</div>
+        <div class="text-lg font-bold text-primary" id="ref-l1-count">0</div>
+      </div>
+      <div class="stat-box">
+        <div class="text-xs text-secondary mb-1">أرباح الإحالة</div>
+        <div class="text-lg font-bold text-success" id="ref-total-comm">$0.00</div>
+      </div>
+    </div>
+
+    <!-- Security Card -->
+    <div class="section-title">الأمان والتشفير</div>
+    <div class="card mb-6">
+      <div class="form-group">
+        <label class="form-label">كلمة المرور الحالية</label>
+        <input type="password" class="form-input" id="set-cur-pwd" placeholder="••••••••">
+      </div>
+      <div class="form-group">
+        <label class="form-label">كلمة المرور الجديدة</label>
+        <input type="password" class="form-input" id="set-new-pwd" placeholder="••••••••">
+      </div>
+      <button class="btn btn-secondary mt-2" id="pwd-btn" onclick="changePassword()">
+        تحديث كلمة المرور
+      </button>
+      <div class="text-danger text-sm mt-2" id="pwd-err" style="display:none;"></div>
+    </div>
+  </div>
+  <!-- ==================== REFERRAL PAGE ==================== -->
+  <div id="pg-ref" class="page-content fade-in">
+
+    <!-- Hero Header -->
+    <div class="ref-hero">
+      <div class="ref-hero-icon">🌐</div>
+      <div class="ref-hero-title">شبكة الإحالة</div>
+      <div class="ref-hero-sub">ابنِ شبكتك واكسب عمولات متدرجة على 3 مستويات</div>
+    </div>
+
+    <!-- Motivational Banner -->
+    <div class="ref-motive-strip">
+      <div class="ref-motive-item">💡 كل إحالة = مصدر دخل دائم</div>
+      <div class="ref-motive-item">📈 شبكة قوية = أرباح بلا مجهود</div>
+      <div class="ref-motive-item">🚀 كلما توسعت، زادت أرباحك</div>
+    </div>
+
+    <!-- Referral Link Card -->
+    <div class="ref-link-card">
+      <div class="ref-link-label">
+        <i class="fas fa-link"></i> رابط الإحالة الخاص بك
+      </div>
+      <div class="ref-link-box">
+        <div class="ref-link-value" id="ref-link-display">جاري التحميل...</div>
+      </div>
+      <div class="ref-link-actions">
+        <button class="ref-btn-copy" id="ref-copy-btn" onclick="copyRefLink()">
+          <i class="fas fa-copy" id="ref-copy-icon"></i>
+          <span id="ref-copy-label">نسخ الرابط</span>
+        </button>
+        <button class="ref-btn-share" onclick="shareRefLink()">
+          <i class="fas fa-share-alt"></i>
+          <span>مشاركة</span>
+        </button>
+      </div>
+      <div class="ref-code-row">
+        كود الإحالة: <strong id="ref-code-display" style="color:var(--secondary);letter-spacing:2px">—</strong>
+      </div>
+    </div>
+
+    <!-- Commission Levels -->
+    <div class="section-title" style="padding:0 20px;margin-top:20px">
+      <span>مستويات العمولة</span>
+    </div>
+    <div class="ref-levels-grid">
+      <div class="ref-level-card ref-l1">
+        <div class="ref-level-badge">L1</div>
+        <div class="ref-level-icon">👥</div>
+        <div class="ref-level-pct" id="ref-l1-rate">15%</div>
+        <div class="ref-level-name">إحالة مباشرة</div>
+        <div class="ref-level-desc">عمولة على كل إيداع من أشخاص دعوتهم مباشرة</div>
+        <div class="ref-level-count"><span id="ref-l1-cnt">0</span> عضو</div>
+      </div>
+      <div class="ref-level-card ref-l2">
+        <div class="ref-level-badge">L2</div>
+        <div class="ref-level-icon">🔗</div>
+        <div class="ref-level-pct" id="ref-l2-rate">8%</div>
+        <div class="ref-level-name">شبكة L1</div>
+        <div class="ref-level-desc">عمولة على إحالات أعضاء L1 الخاصين بك</div>
+        <div class="ref-level-count"><span id="ref-l2-cnt">0</span> عضو</div>
+      </div>
+      <div class="ref-level-card ref-l3">
+        <div class="ref-level-badge">L3</div>
+        <div class="ref-level-icon">🌐</div>
+        <div class="ref-level-pct" id="ref-l3-rate">4%</div>
+        <div class="ref-level-name">شبكة L2</div>
+        <div class="ref-level-desc">دخل طويل المدى من توسع شبكتك غير المباشرة</div>
+        <div class="ref-level-count"><span id="ref-l3-cnt">0</span> عضو</div>
+      </div>
+    </div>
+
+    <!-- Earnings Dashboard -->
+    <div class="section-title" style="padding:0 20px;margin-top:4px">
+      <span>لوحة الأرباح</span>
+      <span class="ref-live-dot"><span></span> مباشر</span>
+    </div>
+    <div class="ref-earnings-grid">
+      <div class="ref-earn-total">
+        <div class="ref-earn-total-label">إجمالي أرباح الإحالة</div>
+        <div class="ref-earn-total-val" id="ref-total-earn">$0.00</div>
+        <div class="ref-earn-total-sub">يتم التحديث فور أي نشاط جديد</div>
+      </div>
+      <div class="ref-earn-row">
+        <div class="ref-earn-box ref-earn-l1">
+          <div class="ref-earn-lbl">أرباح L1 <span class="ref-earn-pct">15%</span></div>
+          <div class="ref-earn-val" id="ref-earn-l1">$0.00</div>
+        </div>
+        <div class="ref-earn-box ref-earn-l2">
+          <div class="ref-earn-lbl">أرباح L2 <span class="ref-earn-pct">8%</span></div>
+          <div class="ref-earn-val" id="ref-earn-l2">$0.00</div>
+        </div>
+        <div class="ref-earn-box ref-earn-l3">
+          <div class="ref-earn-lbl">أرباح L3 <span class="ref-earn-pct">4%</span></div>
+          <div class="ref-earn-val" id="ref-earn-l3">$0.00</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Network Stats -->
+    <div class="ref-network-stats">
+      <div class="ref-net-stat">
+        <div class="ref-net-stat-val" id="ref-total-team">0</div>
+        <div class="ref-net-stat-lbl">إجمالي الشبكة</div>
+      </div>
+      <div class="ref-net-divider"></div>
+      <div class="ref-net-stat">
+        <div class="ref-net-stat-val" id="ref-growth-ind">—</div>
+        <div class="ref-net-stat-lbl">نمو الشبكة</div>
+      </div>
+      <div class="ref-net-divider"></div>
+      <div class="ref-net-stat">
+        <div class="ref-net-stat-val" id="ref-rank-ind">—</div>
+        <div class="ref-net-stat-lbl">تصنيفك</div>
+      </div>
+    </div>
+
+    <!-- Goals System -->
+    <div class="section-title" style="padding:0 20px;margin-top:8px">
+      <span>🎯 أهداف الإحالة</span>
+    </div>
+    <div class="ref-goals-wrap" id="ref-goals-container">
+      <!-- Rendered by JS -->
+      <div class="ref-goal-skeleton"></div>
+      <div class="ref-goal-skeleton"></div>
+      <div class="ref-goal-skeleton"></div>
+    </div>
+
+    <!-- Transparency Note -->
+    <div class="ref-transparency-note">
+      <i class="fas fa-shield-alt"></i>
+      <span>يتم حساب أرباح الإحالة تلقائياً وتسجيلها في النظام بشكل آمن وشفاف دون تدخل يدوي</span>
+    </div>
+
+    <!-- How It Works -->
+    <div class="section-title" style="padding:0 20px;margin-top:8px">
+      <span>كيف يعمل النظام؟</span>
+    </div>
+    <div class="ref-how-grid">
+      <div class="ref-how-step">
+        <div class="ref-how-num">1</div>
+        <div class="ref-how-text">انسخ رابط الإحالة وشاركه مع أصدقائك</div>
+      </div>
+      <div class="ref-how-step">
+        <div class="ref-how-num">2</div>
+        <div class="ref-how-text">يسجّل صديقك ويودع عبر رابطك</div>
+      </div>
+      <div class="ref-how-step">
+        <div class="ref-how-num">3</div>
+        <div class="ref-how-text">تحصل على 15% من إيداعه فوراً</div>
+      </div>
+      <div class="ref-how-step">
+        <div class="ref-how-num">4</div>
+        <div class="ref-how-text">شبكتك تنمو وأرباحك تتضاعف تلقائياً</div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- Bottom Navigation -->
+<nav class="bottom-nav">
+  <div class="nav-item active" data-nav="pg-dash" data-go="pg-dash">
+    <i class="fas fa-home nav-icon"></i>
+    <span class="nav-label">الرئيسية</span>
+  </div>
+  <div class="nav-item" data-nav="pg-wal" data-go="pg-wal">
+    <i class="fas fa-wallet nav-icon"></i>
+    <span class="nav-label">المحفظة</span>
+  </div>
+  <div class="nav-item" data-nav="pg-vip" data-go="pg-vip">
+    <i class="fas fa-crown nav-icon"></i>
+    <span class="nav-label">VIP</span>
+  </div>
+  <div class="nav-item" data-nav="pg-hist" data-go="pg-hist">
+    <i class="fas fa-history nav-icon"></i>
+    <span class="nav-label">العمليات</span>
+  </div>
+  <div class="nav-item" data-nav="pg-set" data-go="pg-set">
+    <i class="fas fa-user nav-icon"></i>
+    <span class="nav-label">حسابي</span>
+  </div>
+  <div class="nav-item" data-nav="pg-ref" data-go="pg-ref">
+    <i class="fas fa-users nav-icon"></i>
+    <span class="nav-label">الإحالة</span>
+  </div>
+</nav>
+
+<!-- VIP Purchase Modal -->
+<div class="vip-modal-overlay" id="vip-modal">
+  <div class="vip-modal-box">
+    <div class="vip-modal-handle"></div>
+    <div class="vip-modal-header">
+      <div class="vip-modal-icon" id="vm-icon"></div>
+      <div>
+        <div class="font-bold text-xl" id="vm-name">—</div>
+        <div class="text-secondary text-sm" id="vm-desc">—</div>
+      </div>
+    </div>
+    <div class="vip-modal-stats">
+      <div class="vip-modal-stat">
+        <div class="vip-modal-stat-val" id="vm-price">—</div>
+        <div class="vip-modal-stat-lbl">السعر</div>
+      </div>
+      <div class="vip-modal-stat">
+        <div class="vip-modal-stat-val" id="vm-daily">—</div>
+        <div class="vip-modal-stat-lbl">ربح يومي</div>
+      </div>
+      <div class="vip-modal-stat">
+        <div class="vip-modal-stat-val" id="vm-monthly">—</div>
+        <div class="vip-modal-stat-lbl">العائد الشهري</div>
+      </div>
+      <div class="vip-modal-stat">
+        <div class="vip-modal-stat-val" id="vm-total">—</div>
+        <div class="vip-modal-stat-lbl">إجمالي العائد</div>
+      </div>
+    </div>
+    <div class="vip-modal-actions">
+      <button class="btn btn-primary" id="vm-buy-btn" onclick="confirmVipPurchase()">
+        <i class="fas fa-crown"></i> تفعيل الباقة الآن
+      </button>
+      <button class="btn btn-secondary" onclick="closeVipModal()">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<!-- Scripts -->
+<script src="js/config.js"></script>
+<script src="js/api.js"></script>
+<script>
+/* ════════════════════════════════════════════════════════════
+   Global state
+   ════════════════════════════════════════════════════════════ */
+let _walletRules = { minDeposit: 10, maxDeposit: 50000, minWithdraw: 10, maxWithdraw: 10000, withdrawFee: 10 };
+let _platformWallets = {};
+let _vipLevels = [];
+let _userVipStatus = {};
+
+/* ════════════════════════════════════════════════════════════
+   Navigation Logic
+   ════════════════════════════════════════════════════════════ */
+function go(pageId) {
+  // Hide all pages
+  document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
+  // Show target
+  const pg = document.getElementById(pageId);
+  if (pg) pg.classList.add('active');
+
+  // Update Bottom Nav UI
+  document.querySelectorAll('.nav-item').forEach(el => {
+    if (el.dataset.nav === pageId) el.classList.add('active');
+    else el.classList.remove('active');
+  });
+
+  // Stop subscriber counters when leaving VIP page
+  if (pageId !== 'pg-vip') _stopSubsCounters();
+
+  // Load specific page data
+  if (pageId === 'pg-vip')  loadVip();
+  if (pageId === 'pg-hist') loadHistory();
+  if (pageId === 'pg-set')  loadReferral();
+  if (pageId === 'pg-ref')  loadReferralPage();
+  
+  // Scroll to top
+  window.scrollTo(0,0);
+}
+
+function switchWalletTab(tab) {
+  document.getElementById('tab-deposit').classList.remove('active');
+  document.getElementById('tab-withdraw').classList.remove('active');
+  document.getElementById('sec-deposit').style.display = 'none';
+  document.getElementById('sec-withdraw').style.display = 'none';
+  
+  if (tab === 'deposit') {
+    document.getElementById('tab-deposit').classList.add('active');
+    document.getElementById('sec-deposit').style.display = 'block';
+  } else {
+    document.getElementById('tab-withdraw').classList.add('active');
+    document.getElementById('sec-withdraw').style.display = 'block';
+  }
+}
+
+/* ════════════════════════════════════════════════════════════
+   Startup & Navigation Listener
+   ════════════════════════════════════════════════════════════ */
+window.addEventListener('DOMContentLoaded', async () => {
+  if (!auth.check()) return;
+
+  // Check welcome modal FIRST — blocks dashboard until accepted
+  checkWelcomeModal();
+
+  // Global Navigation Listener (Professional Fix for ReferenceError)
+  document.addEventListener('click', (e) => {    const btn = e.target.closest('[data-go]');
+    if (!btn) return;
+    
+    const pageId = btn.getAttribute('data-go');
+    if (typeof go === 'function') {
+      go(pageId);
+      if (btn.getAttribute('data-action') === 'withdraw') {
+        const wTab = document.getElementById('tab-withdraw');
+        if (wTab) wTab.click();
+      }
+    } else {
+      console.error('Navigation function "go" is not defined or failed to load.');
+    }
+  });
+
+  // Apply cached user data instantly to avoid blank state
+  const cachedUser = store.get('user');
+  if (cachedUser) {
+    document.getElementById('sb-avatar').textContent = (cachedUser.name || '?')[0].toUpperCase();
+    document.getElementById('sb-name').textContent   = cachedUser.name || 'مستخدم';
+    const vipNames = { '-1':'غير نشط', '0':'تدريب', '1':'برونزي', '2':'فضي', '3':'ذهبي', '4':'ماسي' };
+    document.getElementById('sb-vip-label').textContent = vipNames[String(cachedUser.vipLevel)] || 'VIP';
+  }
+
+  // Fire all requests independently — one failure won't block others
+  loadUserData();
+  loadWalletInfo();
+  loadSystemStats();
+  loadDashTx();
+});
+
+/* ════════════════════════════════════════════════════════════
+   Data Loading UI Helpers
+   ════════════════════════════════════════════════════════════ */
+// fmt is defined in api.js — override date for dashboard tx display format
+const _txDate = (iso) => new Date(iso).toLocaleDateString('ar-EG', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+// Map transaction types to styles
+const txStyles = {
+  deposit: { icon: '<i class="fas fa-arrow-down"></i>', class: 'deposit', sign: '+', color: 'success', label: 'إيداع' },
+  withdraw: { icon: '<i class="fas fa-arrow-up"></i>', class: 'withdraw', sign: '-', color: 'danger', label: 'سحب' },
+  daily_profit: { icon: '<i class="fas fa-chart-line"></i>', class: 'profit', sign: '+', color: 'success', label: 'أرباح' },
+  vip_purchase: { icon: '<i class="fas fa-crown"></i>', class: 'profit', sign: '-', color: 'danger', label: 'تفعيل VIP' },
+  referral_l1: { icon: '<i class="fas fa-users"></i>', class: 'profit', sign: '+', color: 'success', label: 'عمولة إحالة' },
+  default: { icon: '<i class="fas fa-exchange-alt"></i>', class: 'profit', sign: '', color: 'primary', label: 'عملية' }
+};
+
+const statusStyles = {
+  pending: { label: 'معلق', class: 'badge-pending' },
+  approved: { label: 'مكتمل', class: 'badge-success' },
+  completed: { label: 'مكتمل', class: 'badge-success' },
+  rejected: { label: 'مرفوض', class: 'badge-failed' },
+  failed: { label: 'فشل', class: 'badge-failed' }
+};
+
+/* ════════════════════════════════════════════════════════════
+   User Data
+   ════════════════════════════════════════════════════════════ */
+async function loadUserData() {
+  try {
+    const { user, wallet } = await http.get('/auth/me');
+    applyUserToUI(user, wallet);
+    store.set('user', user);
+  } catch (e) {
+    console.error('loadUserData error:', e);
+    if (e.message && (e.message.includes('غير مصرح') || e.message.includes('رمز') || e.message.includes('غير صالح'))) {
+      auth.logout();
+      return;
+    }
+    // Fallback: use cached data so UI doesn't stay stuck
+    const cached = store.get('user');
+    if (cached) applyUserToUI(cached, null);
+    else {
+      // Last resort: clear loading state
+      const nameEl = document.getElementById('sb-name');
+      if (nameEl) nameEl.textContent = 'تعذر التحميل';
+    }
+    toast('تعذر تحديث البيانات — يتم عرض آخر نسخة محفوظة', 'w');
+  }
+}
+
+function applyUserToUI(user, wallet) {
+  const w = wallet || {};
+  const balance     = (w.balance       || 0).toFixed(2);
+  const deposited   = (w.totalDeposited || 0).toFixed(2);
+  const earned      = (w.totalEarned   || 0).toFixed(2);
+
+  const vipNames = { '-1':'غير نشط', '0':'تدريب', '1':'برونزي', '2':'فضي', '3':'ذهبي', '4':'ماسي' };
+  const vipName  = vipNames[String(user.vipLevel)] || `VIP ${user.vipLevel}`;
+
+  // Top Bar
+  document.getElementById('sb-avatar').textContent = (user.name || '?')[0].toUpperCase();
+  document.getElementById('sb-name').textContent   = user.name;
+  document.getElementById('sb-vip-label').textContent = vipName;
+
+  // Profile Page
+  document.getElementById('prof-avatar').textContent = (user.name || '?')[0].toUpperCase();
+  document.getElementById('prof-name').textContent = user.name;
+  document.getElementById('prof-email').textContent = user.email;
+
+  // Dashboard cards
+  document.getElementById('d-balance').textContent   = fmt.usd(balance);
+  document.getElementById('d-deposited').textContent = fmt.usd(deposited);
+  document.getElementById('d-earned').textContent    = fmt.usd(earned);
+
+  // Wallet
+  document.getElementById('w-balance').textContent   = fmt.usd(balance);
+
+  // Referral link
+  const refLink = `${window.location.origin}/?ref=${user.referralCode}`;
+  document.getElementById('set-refcode').value = refLink;
+}
+
+/* ════════════════════════════════════════════════════════════
+   System Stats
+   ════════════════════════════════════════════════════════════ */
+async function loadSystemStats() {
+  try {
+    const s = await http.get('/system/stats');
+    document.getElementById('plat-users').textContent       = `+${(s.totalUsers || 0).toLocaleString()}`;
+    document.getElementById('plat-withdrawals').textContent = fmt.usd(s.totalWithdrawals || 0);
+  } catch (e) {
+    console.error('loadSystemStats error:', e);
+    document.getElementById('plat-users').textContent       = '—';
+    document.getElementById('plat-withdrawals').textContent = '—';
+  }
+}
+
+/* ════════════════════════════════════════════════════════════
+   Wallet Logic
+   ════════════════════════════════════════════════════════════ */
+async function loadWalletInfo() {
+  try {
+    const data = await http.get('/wallet');
+    _walletRules     = data.rules           || _walletRules;
+    _platformWallets = data.platformWallets || {};
+
+    document.getElementById('dep-min-label').textContent = _walletRules.minDeposit;
+    document.getElementById('wd-min-label').textContent  = _walletRules.minWithdraw;
+    document.getElementById('wd-fee-pct').textContent    = _walletRules.withdrawFee;
+
+    updateDepositAddress();
+  } catch (e) {
+    console.error('loadWalletInfo error:', e);
+    // Clear stuck "جاري التحميل..." from deposit address
+    const addrEl = document.getElementById('dep-address');
+    if (addrEl && addrEl.textContent === 'جاري التحميل...') {
+      addrEl.textContent = 'تعذر تحميل العنوان — أعد المحاولة';
+    }
+  }
+}
+
+/* ── Deposit: network config ─────────────────────────────────────────────── */
+const _networkMeta = {
+  TRC20:   { label:'TRC20 (Tron)',        gradient:'linear-gradient(135deg,#e63232,#ff6b6b)', hint:'صيغة TXID: 64 حرف هيكساديسيمال (بدون 0x)' },
+  BEP20:   { label:'BEP20 (BSC)',         gradient:'linear-gradient(135deg,#f0b90b,#f5d442)', hint:'صيغة TXID: تبدأ بـ 0x + 64 حرف هيكساديسيمال' },
+  POLYGON: { label:'Polygon (MATIC)',     gradient:'linear-gradient(135deg,#8247e5,#a970ff)', hint:'صيغة TXID: تبدأ بـ 0x + 64 حرف هيكساديسيمال' },
+};
+let _selectedNetwork = 'TRC20';
+
+function selectNetwork(net) {
+  _selectedNetwork = net;
+  ['TRC20','BEP20','POLYGON'].forEach(n => {
+    document.getElementById('net-' + n).classList.toggle('selected', n === net);
+  });
+}
+
+function goDepStep1() {
+  document.getElementById('dep-s1').style.display = 'block';
+  document.getElementById('dep-s2').style.display = 'none';
+  document.getElementById('dep-s3').style.display = 'none';
+  _setDepStep(1);
+}
+
+function goDepStep2() {
+  const net  = _selectedNetwork;
+  const addr = _platformWallets[net] || '—';
+  const meta = _networkMeta[net] || {};
+
+  document.getElementById('dep-address').textContent    = addr;
+  document.getElementById('dep-addr-net-label').textContent = meta.label || net;
+  document.getElementById('dep-warn-net').textContent   = meta.label || net;
+  document.getElementById('dep-addr-dot').style.background = meta.gradient || '';
+  document.getElementById('dep-network-hint').textContent  = '⚠ ' + (meta.hint || '');
+  document.getElementById('dep-copy-label').textContent    = 'نسخ';
+
+  document.getElementById('dep-s1').style.display = 'none';
+  document.getElementById('dep-s2').style.display = 'block';
+  document.getElementById('dep-s3').style.display = 'none';
+  _setDepStep(2);
+}
+
+function goDepStep3() {
+  const net  = _selectedNetwork;
+  const addr = _platformWallets[net] || '—';
+  const meta = _networkMeta[net] || {};
+
+  document.getElementById('dep-recap-net').textContent  = meta.label || net;
+  document.getElementById('dep-recap-addr').textContent = addr.length > 20 ? addr.slice(0,10) + '…' + addr.slice(-8) : addr;
+  document.getElementById('dep-txhash-hint').textContent = meta.hint || '';
+
+  // Show TXID example
+  const exEl = document.getElementById('txid-example');
+  if (exEl) exEl.textContent = (_txidPatterns[net] || {}).example || '';
+
+  // Reset TXID field validation
+  const txEl = document.getElementById('dep-txhash');
+  if (txEl) { txEl.value = ''; txEl.className = txEl.className.replace(/ ?(valid|invalid)-input/g,''); }
+  const icon = document.getElementById('txid-status-icon');
+  if (icon) icon.textContent = '';
+
+  document.getElementById('dep-s1').style.display = 'none';
+  document.getElementById('dep-s2').style.display = 'none';
+  document.getElementById('dep-s3').style.display = 'block';
+  _setDepStep(3);
+}
+
+function _setDepStep(n) {
+  [1,2,3].forEach(i => {
+    const node = document.getElementById('dep-step-' + i);
+    node.classList.toggle('active', i === n);
+    node.classList.toggle('done',   i < n);
+  });
+  [1,2].forEach(i => {
+    const line = document.getElementById('dep-line-' + i);
+    if (!line) return;
+    line.classList.toggle('done',   i < n);
+    line.classList.toggle('active', i === n - 1);
+  });
+}
+
+function copyDepositAddress() {
+  const addr = document.getElementById('dep-address').textContent.trim();
+  if (!addr || addr === '—' || addr.includes('تعذر')) return toast('العنوان غير متاح', 'w');
+  navigator.clipboard.writeText(addr).then(() => {
+    const btn = document.getElementById('dep-copy-btn');
+    const lbl = document.getElementById('dep-copy-label');
+    const ico = document.getElementById('dep-copy-icon');
+    lbl.textContent = 'تم النسخ ✓';
+    if (ico) ico.className = 'fas fa-check';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      lbl.textContent = 'نسخ العنوان';
+      if (ico) ico.className = 'fas fa-copy';
+      btn.classList.remove('copied');
+    }, 2500);
+  }).catch(() => toast('فشل النسخ — انسخ العنوان يدوياً', 'w'));
+}
+
+/* ── TXID real-time validation ───────────────────────────── */
+const _txidPatterns = {
+  TRC20:   { re: /^[a-fA-F0-9]{64}$/, example: 'مثال: a1b2c3d4...e5f6 (64 حرف بدون 0x)' },
+  BEP20:   { re: /^0x[a-fA-F0-9]{64}$/, example: 'مثال: 0xa1b2c3d4...e5f6 (66 حرف تبدأ بـ 0x)' },
+  POLYGON: { re: /^0x[a-fA-F0-9]{64}$/, example: 'مثال: 0xa1b2c3d4...e5f6 (66 حرف تبدأ بـ 0x)' },
+};
+function validateTxid(el) {
+  const val = el.value.trim();
+  const pat = _txidPatterns[_selectedNetwork];
+  const icon = document.getElementById('txid-status-icon');
+  if (!val) { el.className = el.className.replace(/ ?(valid|invalid)-input/g,''); if(icon) icon.textContent=''; return; }
+  const ok = pat && pat.re.test(val);
+  el.classList.toggle('valid-input', ok);
+  el.classList.toggle('invalid-input', !ok);
+  if (icon) { icon.textContent = ok ? '✓' : '✕'; icon.className = 'txid-status ' + (ok ? 'valid' : 'invalid'); }
+}
+
+/* legacy no-op kept so loadWalletInfo() call doesn't break */
+function updateDepositAddress() {}
+
+/* removed dead code block */
+
+async function submitDeposit() {
+  const btn    = document.getElementById('dep-btn');
+  const amount = parseFloat(document.getElementById('dep-amount').value);
+  const txHash = document.getElementById('dep-txhash').value.trim();
+  const paymentMethod = _selectedNetwork; // use selected network state
+
+  if (isNaN(amount) || amount < _walletRules.minDeposit) return toast(`الحد الأدنى للإيداع $${_walletRules.minDeposit}`, 'w');
+  if (!txHash) return toast('رقم العملية مطلوب', 'w');
+
+  btnLoad(btn, true);
+  try {
+    await http.post('/wallet/deposit', { amount, paymentMethod, txHash });
+    toast('تم إرسال طلب الإيداع بنجاح. قيد المراجعة.', 's');
+    document.getElementById('dep-amount').value  = '';
+    document.getElementById('dep-txhash').value = '';
+    go('pg-hist'); // redirect to history to see it pending
+  } catch (e) {
+    toast(e.message, 'e');
+  }
+  btnLoad(btn, false);
+}
+
+function calcFee() {
+  const amt = parseFloat(document.getElementById('wd-amount').value);
+  const box = document.getElementById('wd-fee-box');
+  if (isNaN(amt) || amt <= 0) { box.style.display = 'none'; return; }
+  box.style.display = 'block';
+  const fee = +(amt * _walletRules.withdrawFee / 100).toFixed(2);
+  document.getElementById('wd-fee-val').textContent = fmt.usd(fee);
+  document.getElementById('wd-net-val').textContent = fmt.usd(amt - fee);
+  const p2 = document.getElementById('wd-fee-pct2');
+  if (p2) p2.textContent = _walletRules.withdrawFee;
+}
+
+async function submitWithdraw() {
+  const btn       = document.getElementById('wd-btn');
+  const amount    = parseFloat(document.getElementById('wd-amount').value);
+  const toAddress = document.getElementById('wd-address').value.trim();
+  const paymentMethod = document.getElementById('wd-network').value;
+
+  if (isNaN(amount) || amount < _walletRules.minWithdraw) return toast(`الحد الأدنى للسحب $${_walletRules.minWithdraw}`, 'w');
+  if (!toAddress) return toast('أدخل عنوان محفظة صحيح', 'w');
+
+  btnLoad(btn, true);
+  try {
+    await http.post('/wallet/withdraw', { amount, paymentMethod, toAddress });
+    toast('تم استلام طلب السحب بنجاح.', 's');
+    document.getElementById('wd-amount').value  = '';
+    document.getElementById('wd-address').value = '';
+    document.getElementById('wd-fee-box').style.display = 'none';
+    await loadUserData();
+    go('pg-hist');
+  } catch (e) {
+    toast(e.message, 'e');
+  }
+  btnLoad(btn, false);
+}
+
+/* ════════════════════════════════════════════════════════════
+   Transactions (Dash & Hist)
+   ════════════════════════════════════════════════════════════ */
+function buildTxHTML(tx) {
+  const s = txStyles[tx.type] || txStyles.default;
+  const st = statusStyles[tx.status] || { label: tx.status, class: '' };
+  
+  return `
+    <div class="tx-item">
+      <div class="tx-info">
+        <div class="tx-icon ${s.class}">${s.icon}</div>
+        <div class="tx-details">
+          <div class="tx-title">${s.label}</div>
+          <div class="tx-date">${fmt.date(tx.createdAt)}</div>
+        </div>
+      </div>
+      <div class="flex flex-col items-end gap-2">
+        <div class="tx-amount ${s.sign === '+' ? 'positive' : 'negative'}">
+          ${s.sign}${fmt.usd(tx.amount)}
+        </div>
+        <div class="badge ${st.class}">${st.label}</div>
+      </div>
+    </div>
+  `;
+}
+
+async function loadDashTx() {
+  const body = document.getElementById('dash-tx-body');
+  try {
+    const { transactions } = await http.get('/wallet/transactions?limit=3');
+    if (!transactions.length) {
+      body.innerHTML = '<div class="text-center text-secondary text-sm py-4">لا توجد عمليات بعد</div>';
+      return;
+    }
+    body.innerHTML = transactions.map(buildTxHTML).join('');
+  } catch (e) {
+    console.error('loadDashTx error:', e);
+    body.innerHTML = '<div class="text-center text-secondary text-sm py-4">خطأ في التحميل</div>';
+  }
+}
+
+async function loadHistory(page = 1) {
+  const body   = document.getElementById('hist-body');
+  const type   = document.getElementById('hist-type').value;
+  const status = document.getElementById('hist-status').value;
+  
+  body.innerHTML = '<div class="tx-item skeleton"></div><div class="tx-item skeleton"></div>';
+  
+  try {
+    let url = `/wallet/transactions?page=${page}&limit=15`;
+    if (type)   url += `&type=${type}`;
+    if (status) url += `&status=${status}`;
+    const { transactions, pagination } = await http.get(url);
+    if (!transactions.length) {
+      body.innerHTML = '<div class="text-center text-secondary py-4">لا توجد عمليات</div>';
+      renderPag('hist-pag', null, loadHistory); return;
+    }
+    body.innerHTML = transactions.map(buildTxHTML).join('');
+    renderPag('hist-pag', pagination, loadHistory);
+  } catch (e) { toast(e.message, 'e'); }
+}
+
+function renderPag(containerId, pag, fn) {
+  const el = document.getElementById(containerId);
+  if (!pag || pag.pages <= 1) { if (el) el.innerHTML = ''; return; }
+  el.innerHTML = `
+    <button class="btn btn-secondary" style="width: auto;" onclick="${fn.name}(${pag.page - 1})" ${pag.page <= 1 ? 'disabled' : ''}><i class="fas fa-chevron-right"></i></button>
+    <span class="text-sm text-secondary" style="line-height: 48px; padding: 0 10px;">${pag.page} / ${pag.pages}</span>
+    <button class="btn btn-secondary" style="width: auto;" onclick="${fn.name}(${pag.page + 1})" ${pag.page >= pag.pages ? 'disabled' : ''}><i class="fas fa-chevron-left"></i></button>
+  `;
+}
+
+/* ════════════════════════════════════════════════════════════
+   VIP logic
+   ════════════════════════════════════════════════════════════ */
+async function loadVip() {
+  try {
+    const { levels, userStatus } = await http.get('/vip');
+    _userVipStatus = userStatus;
+    renderVipStatus(userStatus);
+    renderVipPlans(levels, userStatus);
+  } catch (e) {
+    console.error('loadVip error:', e);
+    document.getElementById('vip-current-status').innerHTML =
+      '<div class="text-center text-secondary py-4"><i class="fas fa-exclamation-circle"></i> تعذر تحميل بيانات VIP — <button class="btn btn-secondary" style="width:auto;padding:4px 12px;font-size:.8rem" onclick="loadVip()">إعادة المحاولة</button></div>';
+    document.getElementById('vip-plans-container').innerHTML =
+      '<div class="text-center text-secondary py-4">' + (e.message || 'خطأ في التحميل') + '</div>';
+  }
+}
+
+function renderVipStatus(s) {
+  const el = document.getElementById('vip-current-status');
+  const vipIcons = { '-1':'😴', '0':'📚', '1':'🥉', '2':'🥈', '3':'🥇', '4':'💎' };
+  const vipColors = { '-1':'#64748b', '0':'#06b6d4', '1':'#d97706', '2':'#94a3b8', '3':'#f59e0b', '4':'#38bdf8' };
+  const vipNames = { '-1':'غير نشط', '0':'التدريب', '1':'البرونزي', '2':'الفضي', '3':'الذهبي', '4':'الماسي' };
+  const lvl = s.currentLevel;
+
+  if (lvl === -1) {
+    el.innerHTML = `
+      <div class="card" style="text-align:center;padding:28px 20px;">
+        <div style="font-size:2.5rem;margin-bottom:12px">🚀</div>
+        <div class="font-bold text-lg mb-2">ابدأ رحلتك الاستثمارية</div>
+        <div class="text-secondary text-sm mb-20px" style="margin-bottom:20px">جرّب المنصة مجاناً لمدة 5 أيام واكسب $0.10 يومياً</div>
+        <button class="btn btn-primary" onclick="startTraining()">
+          <i class="fas fa-play"></i> ابدأ التدريب المجاني
+        </button>
+      </div>`;
+    return;
+  }
+
+  const color = vipColors[String(lvl)] || '#06b6d4';
+  const icon  = vipIcons[String(lvl)] || '👑';
+  const name  = vipNames[String(lvl)] || `VIP ${lvl}`;
+  const active = s.isActive;
+  const totalDays = lvl === 0 ? 5 : 30;
+  const pct = totalDays > 0 ? Math.max(0, Math.min(100, ((totalDays - s.daysLeft) / totalDays) * 100)) : 100;
+
+  el.innerHTML = `
+    <div class="vip-status-card">
+      <div class="vip-status-icon" style="background:${color}22;color:${color};font-size:1.6rem">${icon}</div>
+      <div class="vip-status-info">
+        <div class="vip-status-name" style="color:${color}">${name}</div>
+        <div class="vip-status-days">
+          ${active
+            ? `متبقي <strong style="color:${color}">${s.daysLeft}</strong> يوم`
+            : '<span style="color:var(--danger)">انتهت الصلاحية</span>'}
+        </div>
+        <div class="vip-progress-bar">
+          <div class="vip-progress-fill" style="width:${pct}%;background:linear-gradient(90deg,${color},${color}88)"></div>
+        </div>
+      </div>
+      <div class="badge ${active ? 'badge-success' : 'badge-failed'}">${active ? 'نشط' : 'منتهي'}</div>
+    </div>`;
+}
+
+/* ── VIP Modal ───────────────────────────────────────────── */
+let _vipModalData = null;
+let _vipModalStatus = null;
+const _vipLevelsCache = new Map();
+
+function openVipModal(level) {
+  const v = _vipLevelsCache.get(level);
+  const status = _userVipStatus;
+  if (!v) return;
+  _vipModalData = v;
+
+  const icons  = { 0:'📚', 1:'🥉', 2:'🥈', 3:'🥇', 4:'💎' };
+  const colors = { 0:'#06b6d4', 1:'#cd7f32', 2:'#94a3b8', 3:'#f59e0b', 4:'#38bdf8' };
+  const color  = colors[v.level] || '#06b6d4';
+
+  // Check if there's a vip-detail-modal (new design) or vip-modal (old)
+  const newModal = document.getElementById('vip-detail-modal');
+  if (newModal) { _openVipDetailModal(v, status, color, icons); return; }
+
+  // Fallback: old modal
+  document.getElementById('vm-icon').style.background = color + '22';
+  document.getElementById('vm-icon').style.color = color;
+  document.getElementById('vm-icon').textContent = icons[v.level] || '👑';
+  document.getElementById('vm-name').textContent = v.name;
+  document.getElementById('vm-desc').textContent = v.marketing || v.description;
+  document.getElementById('vm-price').textContent = v.isTraining ? 'مجاني' : fmt.usd(v.price);
+  document.getElementById('vm-daily').textContent = fmt.usd(v.dailyTotal);
+  document.getElementById('vm-monthly').textContent = v.isTraining ? '—' : v.monthlyPct + '%';
+  document.getElementById('vm-total').textContent = v.isTraining ? fmt.usd(0.50) : fmt.usd(v.totalReturn || 0);
+
+  const buyBtn = document.getElementById('vm-buy-btn');
+  const canBuy = !v.isTraining && !isCurrent;
+
+  if (isCurrent) {
+    buyBtn.innerHTML = '✓ باقتك الحالية'; buyBtn.disabled = true; buyBtn.className = 'btn btn-secondary';
+  } else if (v.isTraining && status.currentLevel === -1) {
+    buyBtn.innerHTML = '<i class="fas fa-play"></i> ابدأ التدريب المجاني'; buyBtn.disabled = false; buyBtn.className = 'btn btn-primary';
+  } else if (canBuy) {
+    buyBtn.innerHTML = `<i class="fas fa-bolt"></i> ابدأ الاستثمار — ${fmt.usd(v.price)}`; buyBtn.disabled = false; buyBtn.className = 'btn btn-primary';
+  } else {
+    buyBtn.innerHTML = '<i class="fas fa-arrow-up"></i> ترقية للأعلى فقط'; buyBtn.disabled = true; buyBtn.className = 'btn btn-secondary';
+  }
+  document.getElementById('vip-modal').classList.add('show');
+}
+
+function _openVipDetailModal(v, status, color, icons) {
+  const el = id => document.getElementById(id);
+  const isCurrent = v.level === status.currentLevel;
+  const canBuy    = !v.isTraining && !isCurrent;
+
+  el('vdm-icon').style.background = color + '22';
+  el('vdm-icon').style.color = color;
+  el('vdm-icon').textContent = icons[v.level] || '👑';
+  el('vdm-name').textContent = v.name + (v.tier ? ` — ${v.tier}` : '');
+  el('vdm-desc').textContent = v.marketing || v.description;
+  el('vdm-price').textContent = v.isTraining ? 'مجاني' : fmt.usd(v.price);
+  el('vdm-price').style.color = color;
+  el('vdm-daily').textContent = fmt.usd(v.dailyTotal);
+  el('vdm-monthly').textContent = v.isTraining ? '—' : v.monthlyPct + '%';
+  el('vdm-total').textContent = v.isTraining ? fmt.usd(0.50) : fmt.usd(v.totalReturn || 0);
+  el('vdm-duration').textContent = v.isTraining ? '5 أيام' : '30 يوم';
+  el('vdm-net').textContent = v.isTraining ? fmt.usd(0.50) : fmt.usd(v.netProfit || 0);
+
+  // Risk badge
+  const riskEl = el('vdm-risk');
+  if (riskEl) {
+    const rc = { 'منعدم':'#22c55e','منخفض':'#22c55e','متوسط':'#f59e0b','مرتفع':'#ef4444' };
+    riskEl.textContent = v.risk || '—';
+    riskEl.style.color = rc[v.risk] || '#94a3b8';
+  }
+
+  // Pending banner
+  const pending = el('vdm-pending');
+  if (pending) {
+    if (v.badge && !isCurrent) {
+      pending.style.display = 'flex';
+      el('vdm-pending-text').textContent = v.badge + ' — ' + (v.description || '');
+    } else { pending.style.display = 'none'; }
+  }
+
+  // Buy button
+  const buyBtn = el('vdm-buy-btn');
+  if (buyBtn) {
+    buyBtn.style.background = `linear-gradient(135deg,${color},${color}bb)`;
+    if (isCurrent) {
+      buyBtn.innerHTML = '✓ باقتك الحالية'; buyBtn.disabled = true; buyBtn.style.opacity = '.5';
+    } else if (v.isTraining && status.currentLevel === -1) {
+      buyBtn.innerHTML = '<i class="fas fa-play"></i> ابدأ التدريب المجاني'; buyBtn.disabled = false; buyBtn.style.opacity = '1';
+    } else if (canBuy) {
+      buyBtn.innerHTML = `<i class="fas fa-bolt"></i> ابدأ الاستثمار الآن — ${fmt.usd(v.price)}`; buyBtn.disabled = false; buyBtn.style.opacity = '1';
+    } else {
+      buyBtn.innerHTML = '<i class="fas fa-arrow-up"></i> ترقية للأعلى فقط'; buyBtn.disabled = true; buyBtn.style.opacity = '.5';
+    }
+  }
+
+  document.getElementById('vip-detail-modal').classList.add('show');
+}
+
+function closeVipModal() {
+  document.getElementById('vip-modal')?.classList.remove('show');
+  document.getElementById('vip-detail-modal')?.classList.remove('show');
+  _vipModalData = null;
+}
+function closeVipDetail() { closeVipModal(); }
+
+async function handleVipAction() {
+  if (!_vipModalData) return;
+  const v = _vipModalData;
+  if (v.isTraining) { closeVipModal(); await startTraining(); return; }
+  closeVipModal();
+  await activateVip(v.level, v.name, v.price);
+}
+
+async function confirmVipPurchase() { await handleVipAction(); }
+
+// Close modals on overlay click
+document.getElementById('vip-modal')?.addEventListener('click', function(e) { if (e.target === this) closeVipModal(); });
+document.getElementById('vip-detail-modal')?.addEventListener('click', function(e) { if (e.target === this) closeVipModal(); });
+
+function renderVipPlans(levels, status) {
+  const el = document.getElementById('vip-plans-container');
+  const icons     = { 0:'📚', 1:'🥉', 2:'🥈', 3:'🥇', 4:'💎' };
+  const colors    = { 0:'#06b6d4', 1:'#cd7f32', 2:'#94a3b8', 3:'#f59e0b', 4:'#38bdf8' };
+  const riskColor = { 'منعدم':'#22c55e', 'منخفض':'#22c55e', 'متوسط':'#f59e0b', 'مرتفع':'#ef4444' };
+
+  // Cache all levels first
+  levels.forEach(v => _vipLevelsCache.set(v.level, v));
+
+  el.innerHTML = levels.map(v => {
+    const isCurrent = v.level === status.currentLevel;
+    const color     = colors[v.level] || '#06b6d4';
+    const icon      = icons[v.level]  || '👑';
+    const canBuy    = !v.isTraining && !isCurrent;
+    const rc        = riskColor[v.risk] || '#94a3b8';
+
+    // Badge priority: current > api badge > nothing
+    let badgeHtml = '';
+    if (isCurrent)    badgeHtml = `<div class="vip-pro-badge badge-current">باقتك الحالية ✓</div>`;
+    else if (v.badge) badgeHtml = `<div class="vip-pro-badge badge-recommended">${v.badge}</div>`;
+
+    // Subscribers block (only for paid plans)
+    let subsHtml = '';
+    if (v.subscribers && !v.isTraining) {
+      const subsId = `vip-subs-${v.level}`;
+      subsHtml = `
+        <div class="vip-subscribers-row">
+          <span class="vip-subs-icon">👥</span>
+          <span class="vip-subs-label">المشتركون:</span>
+          <span class="vip-subs-count" id="${subsId}" data-target="${v.subscribers.base}" data-min="${v.subscribers.min}" data-max="${v.subscribers.max}">0</span>
+          <span class="vip-subs-trend">📈 نمو مستمر</span>
+        </div>`;
+    }
+
+    // CTA button
+    let ctaHtml = '';
+    if (isCurrent) {
+      ctaHtml = `<button class="vip-pro-btn-primary" style="background:#1e3a5f;cursor:default" disabled>✓ باقتك الحالية</button>`;
+    } else if (v.isTraining && status.currentLevel === -1) {
+      ctaHtml = `<button class="vip-pro-btn-primary" style="background:linear-gradient(135deg,#0ea5e9,#06b6d4)" onclick="event.stopPropagation();startTraining()">
+        <i class="fas fa-play"></i> ابدأ مجاناً
+      </button>`;
+    } else if (canBuy) {
+      ctaHtml = `<button class="vip-pro-btn-primary" style="background:linear-gradient(135deg,${color},${color}cc)" onclick="event.stopPropagation();openVipModal(${v.level})">
+        <i class="fas fa-bolt"></i> ابدأ الاستثمار الآن
+      </button>`;
+    }
+
+    return `
+      <div class="vip-pro-card ${isCurrent ? 'is-current' : ''} ${v.badge && !isCurrent ? 'is-recommended' : ''} ${v.isTraining ? 'is-training' : ''}"
+           style="--c:${color}" onclick="openVipModal(${v.level})">
+        ${badgeHtml}
+        <div class="vip-pro-header ${badgeHtml ? 'has-badge' : ''}">
+          <div class="vip-pro-icon" style="background:${color}18;color:${color}">${icon}</div>
+          <div>
+            <div class="vip-pro-name">${v.name}</div>
+            <div class="vip-pro-tagline">${v.tier || ''}</div>
+          </div>
+        </div>
+
+        <div class="vip-pro-price-block">
+          <div class="vip-pro-price" style="color:${color}">${v.isTraining ? 'مجاني' : fmt.usd(v.price)}</div>
+          <div class="vip-pro-price-sub">${v.isTraining ? 'تجربة مجانية 5 أيام' : 'لمدة 30 يوم'}</div>
+        </div>
+
+        ${subsHtml}
+
+        <div class="vip-pro-stats">
+          <div class="vip-pro-stat">
+            <div class="vip-pro-stat-val" style="color:#22c55e">${fmt.usd(v.dailyTotal)}</div>
+            <div class="vip-pro-stat-lbl">ربح يومي</div>
+          </div>
+          <div class="vip-pro-stat">
+            <div class="vip-pro-stat-val" style="color:${color}">${v.isTraining ? '—' : v.monthlyPct + '%'}</div>
+            <div class="vip-pro-stat-lbl">عائد شهري</div>
+          </div>
+          <div class="vip-pro-stat">
+            <div class="vip-pro-stat-val" style="color:#f59e0b">${v.isTraining ? fmt.usd(0.50) : fmt.usd(v.netProfit)}</div>
+            <div class="vip-pro-stat-lbl">صافي الربح</div>
+          </div>
+          <div class="vip-pro-stat">
+            <div class="vip-pro-stat-val" style="color:${rc};font-size:.75rem">${v.risk || '—'}</div>
+            <div class="vip-pro-stat-lbl">المخاطرة</div>
+          </div>
+        </div>
+
+        <div class="vip-pro-cta">
+          ${ctaHtml}
+          <button class="vip-pro-btn-secondary" onclick="event.stopPropagation();openVipModal(${v.level})">
+            عرض التفاصيل الكاملة
+          </button>
+        </div>
+      </div>`;
+  }).join('');
+
+  // Start animated counters after DOM is updated
+  requestAnimationFrame(() => _startSubsCounters());
+}
+
+/* ════════════════════════════════════════════════════════════
+   Subscribers Animated Counter System
+   ════════════════════════════════════════════════════════════ */
+const _subsIntervals = {};
+
+function _animateCounter(el, from, to, duration) {
+  const start = performance.now();
+  // Ease-out cubic
+  const ease = t => 1 - Math.pow(1 - t, 3);
+  function step(now) {
+    const elapsed = now - start;
+    const progress = Math.min(elapsed / duration, 1);
+    el.textContent = Math.round(from + (to - from) * ease(progress));
+    if (progress < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+function _startSubsCounters() {
+  document.querySelectorAll('.vip-subs-count').forEach(el => {
+    const level  = el.id.replace('vip-subs-', '');
+    const target = parseInt(el.dataset.target) || 0;
+    const min    = parseInt(el.dataset.min)    || target - 20;
+    const max    = parseInt(el.dataset.max)    || target + 20;
+
+    // Duration scales with number size: ~1.5s for small, ~2.5s for large
+    const duration = 1500 + Math.min(target / 2, 1000);
+    _animateCounter(el, 0, target, duration);
+
+    // Clear any existing interval for this level
+    if (_subsIntervals[level]) clearInterval(_subsIntervals[level]);
+
+    // Live micro-updates every 6–10 seconds
+    _subsIntervals[level] = setInterval(() => {
+      const current = parseInt(el.textContent) || target;
+      const delta   = Math.floor(Math.random() * 5) - 2; // -2 to +2
+      const next    = Math.max(min, Math.min(max, current + delta));
+      _animateCounter(el, current, next, 600);
+    }, 6000 + Math.random() * 4000);
+  });
+}
+
+// Stop intervals when leaving VIP page to avoid memory leaks
+function _stopSubsCounters() {
+  Object.values(_subsIntervals).forEach(id => clearInterval(id));
+  Object.keys(_subsIntervals).forEach(k => delete _subsIntervals[k]);
+}
+
+async function startTraining() {
+  try {
+    await http.post('/vip/start-training');
+    toast('🎉 تم تفعيل التدريب المجاني!', 's');
+    await loadUserData();
+    loadVip();
+  } catch (e) { toast(e.message, 'e'); }
+}
+
+async function activateVip(level, name, price) {
+  // Show inline confirmation modal instead of browser confirm()
+  const confirmed = await _vipConfirm(name, price);
+  if (!confirmed) return;
+
+  const btn = document.getElementById('vdm-buy-btn') || document.getElementById('vm-buy-btn');
+  btnLoad(btn, true);
+  try {
+    const result = await http.post('/vip/activate', { level });
+    toast(`🎉 تم تفعيل ${name} بنجاح! ربحك اليومي يبدأ غداً.`, 's', 4500);
+    // Update balance immediately from server response
+    if (result.balance !== undefined) {
+      document.getElementById('d-balance').textContent = fmt.usd(result.balance);
+      document.getElementById('w-balance').textContent = fmt.usd(result.balance);
+    }
+    await loadUserData();
+    // Navigate to VIP page to show the active plan
+    setTimeout(() => go('pg-vip'), 600);
+  } catch (e) {
+    const msg = e.message || '';
+    if (msg.includes('رصيد') || msg.includes('كافٍ') || msg.includes('كافي')) {
+      _showInsufficientBalance(name, price, msg);
+    } else {
+      toast(msg || 'حدث خطأ — حاول مجدداً', 'e');
+    }
+  } finally {
+    btnLoad(btn, false);
+  }
+}
+
+/* ── VIP Confirm Dialog (replaces browser confirm()) ────── */
+function _vipConfirm(name, price) {
+  return new Promise(resolve => {
+    const overlay = document.createElement('div');
+    overlay.className = 'vip-confirm-overlay';
+    overlay.innerHTML = `
+      <div class="vip-confirm-box">
+        <div class="vip-confirm-icon">👑</div>
+        <div class="vip-confirm-title">تأكيد الشراء</div>
+        <div class="vip-confirm-msg">سيتم خصم <strong style="color:#f59e0b">${fmt.usd(price)}</strong> من رصيدك لتفعيل خطة <strong>${name}</strong></div>
+        <div class="vip-confirm-actions">
+          <button class="vip-confirm-ok"><i class="fas fa-bolt"></i> تأكيد وتفعيل</button>
+          <button class="vip-confirm-cancel">إلغاء</button>
+        </div>
+      </div>`;
+    document.body.appendChild(overlay);
+    requestAnimationFrame(() => overlay.classList.add('vip-confirm-show'));
+
+    const cleanup = (val) => {
+      overlay.classList.remove('vip-confirm-show');
+      setTimeout(() => overlay.remove(), 300);
+      resolve(val);
+    };
+    overlay.querySelector('.vip-confirm-ok').onclick     = () => cleanup(true);
+    overlay.querySelector('.vip-confirm-cancel').onclick = () => cleanup(false);
+    overlay.addEventListener('click', e => { if (e.target === overlay) cleanup(false); });
+  });
+}
+
+/* ── Insufficient Balance — actionable error ─────────────── */
+function _showInsufficientBalance(name, price, serverMsg) {
+  const overlay = document.createElement('div');
+  overlay.className = 'vip-confirm-overlay';
+  overlay.innerHTML = `
+    <div class="vip-confirm-box vip-confirm-error">
+      <div class="vip-confirm-icon">💳</div>
+      <div class="vip-confirm-title" style="color:#ef4444">رصيد غير كافٍ</div>
+      <div class="vip-confirm-msg">${serverMsg || 'رصيدك الحالي لا يكفي لتفعيل خطة ' + name}</div>
+      <div class="vip-confirm-actions">
+        <button class="vip-confirm-ok" style="background:linear-gradient(135deg,#22c55e,#16a34a)">
+          <i class="fas fa-arrow-down"></i> إيداع الآن
+        </button>
+        <button class="vip-confirm-cancel">لاحقاً</button>
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+  requestAnimationFrame(() => overlay.classList.add('vip-confirm-show'));
+
+  const cleanup = (goDeposit) => {
+    overlay.classList.remove('vip-confirm-show');
+    setTimeout(() => overlay.remove(), 300);
+    if (goDeposit) { go('pg-wal'); switchWalletTab('deposit'); }
+  };
+  overlay.querySelector('.vip-confirm-ok').onclick     = () => cleanup(true);
+  overlay.querySelector('.vip-confirm-cancel').onclick = () => cleanup(false);
+  overlay.addEventListener('click', e => { if (e.target === overlay) cleanup(false); });
+}
+
+/* ════════════════════════════════════════════════════════════
+   Referral Page
+   ════════════════════════════════════════════════════════════ */
+let _refData = null;
+
+async function loadReferralPage() {
+  try {
+    const d = await http.get('/auth/referral-stats');
+    _refData = d;
+
+    // Link & code
+    const refLink = `${window.location.origin}/?ref=${d.referralCode}`;
+    document.getElementById('ref-link-display').textContent = refLink;
+    document.getElementById('ref-code-display').textContent = d.referralCode;
+
+    // Rates
+    document.getElementById('ref-l1-rate').textContent = (d.l1Rate || 15) + '%';
+    document.getElementById('ref-l2-rate').textContent = (d.l2Rate || 8)  + '%';
+    document.getElementById('ref-l3-rate').textContent = (d.l3Rate || 4)  + '%';
+
+    // Member counts
+    document.getElementById('ref-l1-cnt').textContent = d.directCount || 0;
+    document.getElementById('ref-l2-cnt').textContent = d.l2Count     || 0;
+    document.getElementById('ref-l3-cnt').textContent = d.l3Count     || 0;
+
+    // Earnings
+    document.getElementById('ref-total-earn').textContent = fmt.usd(d.totalCommissions || 0);
+    document.getElementById('ref-earn-l1').textContent    = fmt.usd(d.commissionsL1    || 0);
+    document.getElementById('ref-earn-l2').textContent    = fmt.usd(d.commissionsL2    || 0);
+    document.getElementById('ref-earn-l3').textContent    = fmt.usd(d.commissionsL3    || 0);
+
+    // Network stats
+    const total = d.totalTeam || 0;
+    document.getElementById('ref-total-team').textContent = total;
+    document.getElementById('ref-growth-ind').textContent =
+      total === 0 ? 'ابدأ الآن' : total < 5 ? '🌱 نامية' : total < 20 ? '📈 متنامية' : '🚀 قوية';
+    document.getElementById('ref-rank-ind').textContent =
+      total === 0 ? 'مبتدئ' : total < 10 ? '🥉 برونزي' : total < 50 ? '🥈 فضي' : '🥇 ذهبي';
+
+    // Goals
+    renderRefGoals(d.goals || [], d.directCount || 0);
+
+    // Also update settings page counters
+    const l1El = document.getElementById('ref-l1-count');
+    const tcEl = document.getElementById('ref-total-comm');
+    if (l1El) l1El.textContent = d.directCount || 0;
+    if (tcEl) tcEl.textContent = fmt.usd(d.totalCommissions || 0);
+
+  } catch (e) {
+    console.error('loadReferralPage error:', e);
+    const linkEl = document.getElementById('ref-link-display');
+    if (linkEl) linkEl.textContent = 'تعذر التحميل — أعد المحاولة';
+  }
+}
+
+function renderRefGoals(goals, directCount) {
+  const container = document.getElementById('ref-goals-container');
+  if (!goals.length) {
+    goals = [
+      { target: 10,  label: 'مكافأة $5',        reached: directCount >= 10  },
+      { target: 50,  label: 'مكافأة $25',       reached: directCount >= 50  },
+      { target: 100, label: 'ترقية VIP مجانية', reached: directCount >= 100 },
+    ];
+  }
+  container.innerHTML = goals.map(g => {
+    const pct     = Math.min(100, Math.round((directCount / g.target) * 100));
+    const reached = g.reached || directCount >= g.target;
+    return `
+      <div class="ref-goal-card ${reached ? 'ref-goal-reached' : ''}">
+        <div class="ref-goal-top">
+          <div class="ref-goal-icon">${reached ? '✅' : '🎯'}</div>
+          <div class="ref-goal-info">
+            <div class="ref-goal-title">${g.target} إحالة → ${g.label}</div>
+            <div class="ref-goal-progress-label">${directCount} / ${g.target} ${reached ? '— مكتمل!' : ''}</div>
+          </div>
+          ${reached ? '<div class="ref-goal-done-badge">مكتمل</div>' : ''}
+        </div>
+        <div class="ref-goal-bar">
+          <div class="ref-goal-fill ${reached ? 'ref-goal-fill-done' : ''}" style="width:${pct}%"></div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function copyRefLink() {
+  const link = document.getElementById('ref-link-display').textContent.trim();
+  if (!link || link.includes('تعذر')) return toast('الرابط غير متاح', 'w');
+  navigator.clipboard.writeText(link).then(() => {
+    const btn = document.getElementById('ref-copy-btn');
+    const lbl = document.getElementById('ref-copy-label');
+    const ico = document.getElementById('ref-copy-icon');
+    lbl.textContent = 'تم النسخ ✓';
+    ico.className   = 'fas fa-check';
+    btn.classList.add('ref-copied');
+    setTimeout(() => {
+      lbl.textContent = 'نسخ الرابط';
+      ico.className   = 'fas fa-copy';
+      btn.classList.remove('ref-copied');
+    }, 2500);
+  }).catch(() => toast('فشل النسخ', 'w'));
+}
+
+function shareRefLink() {
+  const link = document.getElementById('ref-link-display').textContent.trim();
+  const text = `انضم إلى InvestPro واكسب أرباحاً يومية ثابتة! 🚀\n${link}`;
+  if (navigator.share) {
+    navigator.share({ title: 'InvestPro — دعوة للانضمام', text, url: link }).catch(() => {});
+  } else {
+    navigator.clipboard.writeText(text).then(() => toast('تم نسخ نص المشاركة', 's'));
+  }
+}
+
+/* ════════════════════════════════════════════════════════════
+   Profile / Settings (legacy — kept for settings page)
+   ════════════════════════════════════════════════════════════ */
+async function loadReferral() {
+  try {
+    const d = await http.get('/auth/referral-stats');
+    const l1El = document.getElementById('ref-l1-count');
+    const tcEl = document.getElementById('ref-total-comm');
+    if (l1El) l1El.textContent = d.directCount || 0;
+    if (tcEl) tcEl.textContent = fmt.usd(d.totalCommissions || 0);
+  } catch (e) {
+    console.error('loadReferral error:', e);
+    const l1El = document.getElementById('ref-l1-count');
+    const tcEl = document.getElementById('ref-total-comm');
+    if (l1El) l1El.textContent = '—';
+    if (tcEl) tcEl.textContent = '—';
+  }
+}
+
+async function changePassword() {
+  const btn     = document.getElementById('pwd-btn');
+  const errEl   = document.getElementById('pwd-err');
+  const curPwd  = document.getElementById('set-cur-pwd').value;
+  const newPwd  = document.getElementById('set-new-pwd').value;
+
+  errEl.style.display = 'none';
+  if (!curPwd || !newPwd) { errEl.textContent = 'أدخل كلمة المرور الحالية والجديدة'; errEl.style.display = 'block'; return; }
+  if (!val.password(newPwd)) { errEl.textContent = 'كلمة المرور الجديدة يجب أن تكون 8 أحرف على الأقل'; errEl.style.display = 'block'; return; }
+
+  btnLoad(btn, true);
+  try {
+    await http.post('/auth/change-password', { currentPassword: curPwd, newPassword: newPwd });
+    toast('تم التغيير بنجاح', 's');
+    document.getElementById('set-cur-pwd').value = '';
+    document.getElementById('set-new-pwd').value = '';
+  } catch (e) {
+    errEl.textContent  = e.message;
+    errEl.style.display = 'block';
+  }
+  btnLoad(btn, false);
+}
+
+// Ensure copy function works for UI
+window.copyText = function(text) {
+  navigator.clipboard.writeText(text).then(() => toast('تم النسخ', 's'));
+}
+
+/* ════════════════════════════════════════════════════════════
+   Welcome Modal — First Login
+   ════════════════════════════════════════════════════════════ */
+const WELCOME_KEY = 'investpro_terms_v1';
+
+function showWelcomeModal() {
+  const modal = document.getElementById('welcome-modal');
+  if (!modal) return;
+  // Animate in
+  requestAnimationFrame(() => {
+    modal.classList.add('wm-visible');
+  });
+  // Prevent body scroll
+  document.body.style.overflow = 'hidden';
+}
+
+function closeWelcomeModal() {
+  const modal = document.getElementById('welcome-modal');
+  if (!modal) return;
+  modal.classList.add('wm-closing');
+  setTimeout(() => {
+    modal.classList.remove('wm-visible', 'wm-closing');
+    document.body.style.overflow = '';
+  }, 380);
+}
+
+function acceptTerms() {
+  store.set(WELCOME_KEY, { accepted: true, at: new Date().toISOString() });
+  closeWelcomeModal();
+  // Show a warm welcome toast after modal closes
+  setTimeout(() => {
+    const user = store.get('user');
+    const name = user ? user.name.split(' ')[0] : 'بك';
+    toast(`🎉 أهلاً ${name}! رحلتك الاستثمارية تبدأ الآن`, 's', 4000);
+  }, 420);
+}
+
+function exitPlatform() {
+  auth.logout();
+}
+
+function checkWelcomeModal() {
+  const accepted = store.get(WELCOME_KEY);
+  if (!accepted || !accepted.accepted) {
+    showWelcomeModal();
+  }
+}
+</script>
+
+<!-- Welcome Modal -->
+<div id="welcome-modal" class="wm-overlay">
+
+  <div class="wm-sheet">
+    <div class="wm-handle"></div>
+
+    <!-- Header -->
+    <div class="wm-header">
+      <div class="wm-logo">
+        <div class="wm-logo-ring"></div>
+        <span class="wm-logo-icon">💎</span>
+      </div>
+      <div class="wm-welcome-text">
+        <div class="wm-greeting">👋 مرحباً بك في</div>
+        <div class="wm-brand">InvestPro</div>
+        <div class="wm-tagline">نظام الاستثمار الرقمي الذكي</div>
+      </div>
+    </div>
+
+    <!-- Scrollable Body -->
+    <div class="wm-body">
+
+      <!-- Quick How-To -->
+      <div class="wm-howto">
+        <div class="wm-howto-title"><i class="fas fa-lightbulb"></i> كيف تبدأ؟</div>
+        <div class="wm-howto-steps">
+          <div class="wm-howto-step">
+            <div class="wm-howto-num">1</div>
+            <span>اختر خطة الاستثمار المناسبة لك</span>
+          </div>
+          <div class="wm-howto-step">
+            <div class="wm-howto-num">2</div>
+            <span>قم بالإيداع عبر USDT</span>
+          </div>
+          <div class="wm-howto-step">
+            <div class="wm-howto-num">3</div>
+            <span>تبدأ الأرباح تلقائياً حسب خطتك</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Referral Teaser -->
+      <div class="wm-ref-teaser">
+        <div class="wm-ref-icon">👥</div>
+        <div>
+          <div class="wm-ref-title">نظام الإحالة — دخل سلبي</div>
+          <div class="wm-ref-desc">ادعُ أصدقاءك واكسب حتى <strong style="color:#22c55e">15%</strong> من إيداعاتهم تلقائياً على 3 مستويات</div>
+        </div>
+      </div>
+
+      <!-- Terms -->
+      <div class="wm-terms-box">
+        <div class="wm-terms-title">
+          <i class="fas fa-file-contract"></i> الشروط والأحكام
+        </div>
+        <ul class="wm-terms-list">
+          <li>
+            <span class="wm-term-icon wm-ok">⚖️</span>
+            <span>استخدام المنصة يعني موافقتك على جميع الشروط والأحكام</span>
+          </li>
+          <li>
+            <span class="wm-term-icon wm-ok">🔐</span>
+            <span>جميع العمليات تتم وفق نظام آمن ومراقب على مدار الساعة</span>
+          </li>
+          <li>
+            <span class="wm-term-icon wm-ok">💰</span>
+            <span>الأرباح تعتمد على الخطة المختارة ونشاط النظام الاستثماري</span>
+          </li>
+          <li>
+            <span class="wm-term-icon wm-warn">❌</span>
+            <span>يُمنع إنشاء حسابات مزيفة أو استخدام بيانات غير صحيحة</span>
+          </li>
+          <li>
+            <span class="wm-term-icon wm-warn">🚫</span>
+            <span>أي محاولة تلاعب أو احتيال تؤدي إلى إيقاف الحساب فوراً</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Warning Note -->
+      <div class="wm-warning-note">
+        <i class="fas fa-exclamation-triangle"></i>
+        <span>باستخدامك لهذه المنصة، أنت توافق على شروط الاستخدام وتفهم أن جميع العمليات الاستثمارية تتم ضمن نظام رقمي منظم.</span>
+      </div>
+
+    </div>
+
+    <!-- Actions -->
+    <div class="wm-actions">
+      <button class="wm-btn-accept" onclick="acceptTerms()">
+        <i class="fas fa-check-circle"></i>
+        أوافق وأدخل المنصة
+      </button>
+      <div class="wm-actions-row">
+        <button class="wm-btn-terms" onclick="go('pg-how');acceptTerms()">
+          <i class="fas fa-file-alt"></i> قراءة التفاصيل
+        </button>
+        <button class="wm-btn-exit" onclick="exitPlatform()">
+          <i class="fas fa-sign-out-alt"></i> خروج
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

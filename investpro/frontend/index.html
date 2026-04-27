@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>InvestPro — نظام استثمار رقمي شفاف</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- 1. Header -->
+<header class="lp-header">
+  <div class="font-bold text-lg"><span class="text-primary">💎</span> InvestPro</div>
+  <button class="btn btn-primary" style="width: auto; min-height: 36px; padding: 0 16px; font-size: 0.85rem;" onclick="openAuth('register')">ابدأ الآن</button>
+</header>
+
+<!-- 2. Hero Section -->
+<section class="lp-hero">
+  <h1 class="lp-hero-title fade-in">نظام استثمار رقمي شفاف وآلي</h1>
+  <p class="lp-hero-subtitle fade-in" style="animation-delay: 0.1s;">تابع أرباحك، الإيداعات، والمكافآت في لوحة تحكم واحدة بسيطة.</p>
+  <div class="lp-hero-buttons fade-in" style="animation-delay: 0.2s;">
+    <button class="btn btn-primary" onclick="openAuth('register')">ابدأ مجاناً</button>
+    <button class="btn btn-secondary" onclick="openAuth('login')">تسجيل الدخول</button>
+  </div>
+</section>
+
+<!-- 3. Live Stats -->
+<section class="lp-section">
+  <div class="grid-2x2">
+    <div class="card text-center fade-in">
+      <div class="text-xs text-secondary mb-1">المستخدمون</div>
+      <div class="text-xl font-bold text-primary" data-count="1200">+0</div>
+    </div>
+    <div class="card text-center fade-in">
+      <div class="text-xs text-secondary mb-1">الإيداعات</div>
+      <div class="text-xl font-bold text-success" data-prefix="$" data-count="9000">+0</div>
+    </div>
+    <div class="card text-center fade-in">
+      <div class="text-xs text-secondary mb-1">المكافآت</div>
+      <div class="text-xl font-bold text-warning" data-prefix="$" data-count="4700">+0</div>
+    </div>
+    <div class="card text-center fade-in">
+      <div class="text-xs text-secondary mb-1">النظام</div>
+      <div class="text-lg font-bold text-accent"><i class="fas fa-circle text-xs"></i> متصل 24/7</div>
+    </div>
+  </div>
+</section>
+
+<!-- 4. How it works -->
+<section class="lp-section">
+  <h2 class="lp-section-title">كيف يعمل؟</h2>
+  <div class="lp-timeline">
+    <div class="lp-timeline-item fade-in">
+      <div class="lp-timeline-icon"><i class="fas fa-wallet"></i></div>
+      <div class="lp-timeline-content">
+        <h3 class="font-bold mb-1">أودع USDT</h3>
+        <p class="text-sm text-secondary">قم بإيداع رصيدك بأمان عبر الشبكات المدعومة.</p>
+      </div>
+    </div>
+    <div class="lp-timeline-item fade-in">
+      <div class="lp-timeline-icon"><i class="fas fa-crown"></i></div>
+      <div class="lp-timeline-content">
+        <h3 class="font-bold mb-1">اختر باقة VIP</h3>
+        <p class="text-sm text-secondary">فعل الباقة التي تناسب تطلعاتك الاستثمارية.</p>
+      </div>
+    </div>
+    <div class="lp-timeline-item fade-in">
+      <div class="lp-timeline-icon"><i class="fas fa-chart-line"></i></div>
+      <div class="lp-timeline-content">
+        <h3 class="font-bold mb-1">استلم أرباحك يومياً</h3>
+        <p class="text-sm text-secondary">يتم توزيع الأرباح تلقائياً كل 24 ساعة.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 5. VIP Plans -->
+<section class="lp-section" style="padding-right:0; padding-left:0;">
+  <h2 class="lp-section-title">باقات VIP</h2>
+  <div class="vip-scroll-container px-5" style="padding-left: 20px;">
+    
+    <!-- Training -->
+    <div class="vip-card fade-in">
+      <div class="vip-card-icon text-secondary"><i class="fas fa-graduation-cap"></i></div>
+      <div class="font-bold text-lg mb-1">تدريب</div>
+      <div class="vip-card-price text-primary">مجاني</div>
+      <div class="vip-card-features">
+        <div class="vip-feature"><span>المدة</span><span>5 أيام</span></div>
+        <div class="vip-feature"><span>الربح اليومي</span><span class="text-success">$0.10</span></div>
+      </div>
+      <button class="btn btn-secondary mt-4" onclick="openAuth('register')">اختر</button>
+    </div>
+
+    <!-- Bronze -->
+    <div class="vip-card fade-in">
+      <div class="vip-card-icon" style="color: #d97706;"><i class="fas fa-medal"></i></div>
+      <div class="font-bold text-lg mb-1">برونزي</div>
+      <div class="vip-card-price text-primary">$10</div>
+      <div class="vip-card-features">
+        <div class="vip-feature"><span>المدة</span><span>30 يوم</span></div>
+        <div class="vip-feature"><span>الربح اليومي</span><span class="text-success">~$0.23</span></div>
+      </div>
+      <button class="btn btn-secondary mt-4" onclick="openAuth('register')">اختر</button>
+    </div>
+
+    <!-- Silver POPULAR -->
+    <div class="vip-card popular fade-in">
+      <div class="vip-card-icon text-primary"><i class="fas fa-crown"></i></div>
+      <div class="font-bold text-lg mb-1">فضي</div>
+      <div class="vip-card-price text-primary">$30</div>
+      <div class="vip-card-features">
+        <div class="vip-feature"><span>المدة</span><span>30 يوم</span></div>
+        <div class="vip-feature"><span>الربح اليومي</span><span class="text-success">~$0.70</span></div>
+      </div>
+      <button class="btn btn-primary mt-4" onclick="openAuth('register')">اختر</button>
+    </div>
+
+    <!-- Gold -->
+    <div class="vip-card fade-in">
+      <div class="vip-card-icon text-warning"><i class="fas fa-gem"></i></div>
+      <div class="font-bold text-lg mb-1">ذهبي</div>
+      <div class="vip-card-price text-primary">$100</div>
+      <div class="vip-card-features">
+        <div class="vip-feature"><span>المدة</span><span>30 يوم</span></div>
+        <div class="vip-feature"><span>الربح اليومي</span><span class="text-success">~$2.30</span></div>
+      </div>
+      <button class="btn btn-secondary mt-4" onclick="openAuth('register')">اختر</button>
+    </div>
+
+    <!-- Diamond -->
+    <div class="vip-card fade-in">
+      <div class="vip-card-icon" style="color: #38bdf8;"><i class="fas fa-diamond"></i></div>
+      <div class="font-bold text-lg mb-1">ماسي</div>
+      <div class="vip-card-price text-primary">$300</div>
+      <div class="vip-card-features">
+        <div class="vip-feature"><span>المدة</span><span>30 يوم</span></div>
+        <div class="vip-feature"><span>الربح اليومي</span><span class="text-success">~$7.50</span></div>
+      </div>
+      <button class="btn btn-secondary mt-4" onclick="openAuth('register')">اختر</button>
+    </div>
+
+  </div>
+</section>
+
+<!-- 6. Why us -->
+<section class="lp-section">
+  <h2 class="lp-section-title">لماذا نحن؟</h2>
+  <div class="grid-2x2">
+    <div class="card text-center fade-in">
+      <div class="text-primary text-2xl mb-2"><i class="fas fa-shield-alt"></i></div>
+      <div class="font-bold text-sm">أمان متقدم</div>
+    </div>
+    <div class="card text-center fade-in">
+      <div class="text-secondary text-2xl mb-2"><i class="fas fa-eye"></i></div>
+      <div class="font-bold text-sm">شفافية كاملة</div>
+    </div>
+    <div class="card text-center fade-in">
+      <div class="text-success text-2xl mb-2"><i class="fas fa-bolt"></i></div>
+      <div class="font-bold text-sm">سحب سريع</div>
+    </div>
+    <div class="card text-center fade-in">
+      <div class="text-warning text-2xl mb-2"><i class="fas fa-mobile-alt"></i></div>
+      <div class="font-bold text-sm">واجهة بسيطة</div>
+    </div>
+  </div>
+</section>
+
+<!-- 7. Trust Section -->
+<section class="lp-section">
+  <div class="lp-trust-grid">
+    <div class="lp-trust-item fade-in">
+      <div class="lp-trust-icon"><i class="fas fa-ban"></i></div>
+      <h3 class="font-bold mb-2">لا وعود مبالغ فيها</h3>
+      <p class="text-sm text-secondary">أرقامنا حقيقية ومبنية على أداء فعلي.</p>
+    </div>
+    <div class="lp-trust-item fade-in">
+      <div class="lp-trust-icon"><i class="fas fa-file-contract"></i></div>
+      <h3 class="font-bold mb-2">كل العمليات موثقة</h3>
+      <p class="text-sm text-secondary">سجل دقيق لجميع إيداعاتك وسحوباتك.</p>
+    </div>
+    <div class="lp-trust-item fade-in">
+      <div class="lp-trust-icon"><i class="fas fa-robot"></i></div>
+      <h3 class="font-bold mb-2">نظام آلي 100%</h3>
+      <p class="text-sm text-secondary">توزيع تلقائي للأرباح بدون تدخل بشري.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 8. Footer -->
+<footer class="lp-footer">
+  <div class="lp-footer-links">
+    <a href="terms.html">الشروط</a>
+    <a href="privacy.html">الخصوصية</a>
+    <a href="mailto:support@investpro.com">الدعم</a>
+  </div>
+  <div class="text-danger mb-2"><i class="fas fa-exclamation-triangle"></i> تنبيه: الاستثمار يحمل مخاطر.</div>
+  <div>© 2026 InvestPro. جميع الحقوق محفوظة.</div>
+</footer>
+
+<!-- Auth Modal -->
+<div class="auth-modal" id="auth-modal">
+  <div class="auth-box">
+    <div class="auth-close" onclick="closeAuth()"><i class="fas fa-times"></i></div>
+    
+    <div class="wallet-tabs mb-6">
+      <div class="wallet-tab active" id="tab-login" onclick="switchAuthTab('login')">تسجيل الدخول</div>
+      <div class="wallet-tab" id="tab-register" onclick="switchAuthTab('register')">حساب جديد</div>
+    </div>
+
+    <!-- Login Form -->
+    <div id="form-login" style="display: block;">
+      <div class="text-danger text-sm mb-4" id="login-err"></div>
+      <div class="form-group">
+        <label class="form-label">البريد الإلكتروني</label>
+        <input type="email" id="login-email" class="form-input" placeholder="email@example.com">
+      </div>
+      <div class="form-group">
+        <label class="form-label">كلمة المرور</label>
+        <input type="password" id="login-pass" class="form-input" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+      </div>
+      <button class="btn btn-primary" id="login-btn" onclick="doLogin()">دخول</button>
+      <div class="text-center mt-4">
+        <a href="forgot-password.html" class="text-secondary text-sm">نسيت كلمة المرور؟</a>
+      </div>
+    </div>
+
+    <!-- Register Form -->
+    <div id="form-register" style="display: none;">
+      <div class="text-danger text-sm mb-4" id="reg-err"></div>
+      <div class="form-group">
+        <label class="form-label">الاسم الكامل</label>
+        <input type="text" id="reg-name" class="form-input" placeholder="اسمك الكريم">
+      </div>
+      <div class="form-group">
+        <label class="form-label">البريد الإلكتروني</label>
+        <input type="email" id="reg-email" class="form-input" placeholder="email@example.com">
+      </div>
+      <div class="form-group">
+        <label class="form-label">كلمة المرور</label>
+        <input type="password" id="reg-pass" class="form-input" placeholder="••••••••" onkeydown="if(event.key==='Enter')doRegister()">
+      </div>
+      <div class="form-group">
+        <label class="form-label">كود الإحالة (اختياري)</label>
+        <input type="text" id="reg-ref" class="form-input" placeholder="XXXXXXXX" style="text-transform:uppercase">
+      </div>
+      <button class="btn btn-primary" id="reg-btn" onclick="doRegister()">إنشاء الحساب</button>
+    </div>
+
+  </div>
+</div>
+
+<div id="toast-container" style="position:fixed;bottom:20px;left:20px;z-index:3000"></div>
+
+<script src="js/config.js"></script>
+<script src="js/api.js"></script>
+<script>
+  // Redirect to dashboard if already logged in
+  auth.checkGuest();
+
+  // Modal Logic
+  function openAuth(tab) {
+    document.getElementById('auth-modal').classList.add('show');
+    switchAuthTab(tab);
+  }
+  function closeAuth() {
+    document.getElementById('auth-modal').classList.remove('show');
+  }
+  function switchAuthTab(tab) {
+    document.getElementById('tab-login').classList.remove('active');
+    document.getElementById('tab-register').classList.remove('active');
+    document.getElementById('form-login').style.display = 'none';
+    document.getElementById('form-register').style.display = 'none';
+    
+    document.getElementById('tab-' + tab).classList.add('active');
+    document.getElementById('form-' + tab).style.display = 'block';
+  }
+
+  // Auto-fill ref from URL
+  const _urlRef = new URLSearchParams(location.search).get('ref');
+  if (_urlRef) {
+    document.getElementById('reg-ref').value = _urlRef.toUpperCase();
+    openAuth('register');
+  }
+
+  // CountUp Logic (using pure JS requestAnimationFrame)
+  function startCountUp(el) {
+    const target = parseInt(el.dataset.count, 10);
+    const prefix = el.dataset.prefix || '';
+    const duration = 2000;
+    const start = performance.now();
+
+    function update(now) {
+      const progress = Math.min((now - start) / duration, 1);
+      const easeOut = 1 - Math.pow(1 - progress, 3);
+      const current = Math.floor(easeOut * target);
+      el.textContent = prefix + current.toLocaleString('en-US') + '+';
+      
+      if (progress < 1) {
+        requestAnimationFrame(update);
+      } else {
+        el.textContent = prefix + target.toLocaleString('en-US') + '+';
+        // Add light glow effect on completion
+        el.style.textShadow = '0 0 10px var(--primary-glow)';
+      }
+    }
+    requestAnimationFrame(update);
+  }
+
+  // Intersection Observer for fade-in & Counters
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = 1;
+        entry.target.style.transform = 'translateY(0)';
+        
+        if (entry.target.dataset.count && !entry.target.dataset.counted) {
+          startCountUp(entry.target);
+          entry.target.dataset.counted = 'true';
+        }
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-in, [data-count]').forEach(el => {
+    if (el.classList.contains('fade-in')) {
+      el.style.opacity = 0;
+      el.style.transform = 'translateY(20px)';
+      el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+    }
+    observer.observe(el);
+  });
+
+  // Auth Logic with Debounce
+  let _isRegistering = false;
+  let _regDebounceTimer = null;
+  
+  async function doRegister() {
+    if (_isRegistering) return;
+    if (_regDebounceTimer) clearTimeout(_regDebounceTimer);
+    
+    _regDebounceTimer = setTimeout(async () => {
+      _isRegistering = true;
+      const btn   = document.getElementById('reg-btn');
+      const errEl = document.getElementById('reg-err');
+      errEl.textContent = '';
+      btnLoad(btn, true);
+      
+      try {
+        const name  = document.getElementById('reg-name').value.trim();
+        const email = document.getElementById('reg-email').value.trim().toLowerCase();
+        const pass  = document.getElementById('reg-pass').value;
+        const ref   = document.getElementById('reg-ref').value.trim().toUpperCase() || undefined;
+
+        if (!name || !email || !pass) {
+          errEl.textContent = 'جميع الحقول مطلوبة';
+          btnLoad(btn, false); _isRegistering = false; return;
+        }
+        if (name.trim().length < 2) {
+          errEl.textContent = 'الاسم يجب أن يكون حرفين على الأقل';
+          btnLoad(btn, false); _isRegistering = false; return;
+        }
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+          errEl.textContent = 'البريد الإلكتروني غير صالح — مثال: name@example.com';
+          btnLoad(btn, false); _isRegistering = false; return;
+        }
+        if (!val.password(pass)) {
+          errEl.textContent = 'كلمة المرور يجب أن تكون 8 أحرف على الأقل';
+          btnLoad(btn, false); _isRegistering = false; return;
+        }
+
+        const data = await http.post('/auth/register', {
+          name, email, password: pass, referralCode: ref,
+        });
+        auth.login(data.user, data.token);
+        window.location.href = 'dashboard.html';
+      } catch (e) {
+        errEl.textContent = e.message;
+        btnLoad(btn, false);
+        _isRegistering = false;
+      }
+    }, 500);
+  }
+
+  let _isLoggingIn = false;
+  async function doLogin() {
+    if (_isLoggingIn) return;
+    _isLoggingIn = true;
+    const btn   = document.getElementById('login-btn');
+    const errEl = document.getElementById('login-err');
+    errEl.textContent = '';
+
+    const email = document.getElementById('login-email').value.trim().toLowerCase();
+    const pass  = document.getElementById('login-pass').value;
+
+    // ── Client-side validation ──────────────────────────────
+    if (!email) {
+      errEl.textContent = 'أدخل البريد الإلكتروني';
+      _isLoggingIn = false; return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      errEl.textContent = 'البريد الإلكتروني غير صالح — مثال: name@example.com';
+      _isLoggingIn = false; return;
+    }
+    if (!pass) {
+      errEl.textContent = 'أدخل كلمة المرور';
+      _isLoggingIn = false; return;
+    }
+    if (pass.length < 8) {
+      errEl.textContent = 'كلمة المرور يجب أن تكون 8 أحرف على الأقل';
+      _isLoggingIn = false; return;
+    }
+
+    btnLoad(btn, true);
+    try {
+      const data = await http.post('/auth/login', { email, password: pass });
+      auth.login(data.user, data.token);
+      window.location.href = data.user.isAdmin ? 'admin.html' : 'dashboard.html';
+    } catch (e) {
+      errEl.textContent = e.message || 'فشل تسجيل الدخول، تحقق من البيانات';
+      btnLoad(btn, false);
+      _isLoggingIn = false;
+    }
+  }
+
+</script>
+</body>
+</html>

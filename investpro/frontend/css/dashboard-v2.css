@@ -1,0 +1,473 @@
+/* ============================================================
+   InvestPro Dashboard v2 — Enhanced UI/UX
+   ============================================================ */
+
+/* ── Bottom Nav Redesign ─────────────────────────────────── */
+.bottom-nav {
+  background: rgba(13, 20, 35, 0.96);
+  border-top: 1px solid rgba(255,255,255,0.07);
+  border-radius: 0;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+.nav-item {
+  position: relative;
+  border-radius: 12px;
+  margin: 6px 4px;
+  padding: 6px 0;
+  transition: all 0.25s ease;
+}
+.nav-item.active {
+  color: #fff;
+}
+.nav-item.active::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 50%; transform: translateX(-50%);
+  width: 32px; height: 3px;
+  background: var(--primary-gradient);
+  border-radius: 0 0 4px 4px;
+}
+.nav-item.active .nav-icon {
+  background: linear-gradient(135deg,rgba(14,165,233,.2),rgba(6,182,212,.2));
+  border-radius: 10px;
+  padding: 6px;
+  transform: translateY(-3px);
+  color: var(--secondary);
+}
+.nav-icon {
+  font-size: 1.15rem;
+  transition: all 0.25s ease;
+  padding: 6px;
+}
+.nav-label { font-size: 0.6rem; font-weight: 600; letter-spacing: 0.3px; }
+
+/* ── VIP Modal ───────────────────────────────────────────── */
+.vip-modal-overlay {
+  position: fixed; inset: 0; z-index: 200;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(6px);
+  display: flex; align-items: flex-end; justify-content: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.vip-modal-overlay.show {
+  opacity: 1; pointer-events: all;
+}
+.vip-modal-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: 28px 28px 0 0;
+  padding: 28px 24px 40px;
+  width: 100%; max-width: 480px;
+  transform: translateY(100%);
+  transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+}
+.vip-modal-overlay.show .vip-modal-box {
+  transform: translateY(0);
+}
+.vip-modal-handle {
+  width: 40px; height: 4px;
+  background: var(--border-light);
+  border-radius: 2px;
+  margin: 0 auto 20px;
+}
+.vip-modal-header {
+  display: flex; align-items: center; gap: 16px; margin-bottom: 24px;
+}
+.vip-modal-icon {
+  width: 56px; height: 56px; border-radius: 16px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.6rem;
+}
+.vip-modal-stats {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px;
+}
+.vip-modal-stat {
+  background: var(--bg-card-elevated);
+  border-radius: 14px; padding: 14px;
+  text-align: center;
+}
+.vip-modal-stat-val {
+  font-size: 1.3rem; font-weight: 800; color: var(--secondary);
+}
+.vip-modal-stat-lbl {
+  font-size: 0.72rem; color: var(--text-secondary); margin-top: 4px;
+}
+.vip-modal-actions { display: flex; flex-direction: column; gap: 10px; }
+
+/* ── VIP Cards Redesign ──────────────────────────────────── */
+.vip-card {
+  min-width: 260px;
+  background: var(--bg-card);
+  border: 1.5px solid var(--border-light);
+  border-radius: 24px;
+  padding: 22px 20px;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.vip-card:active { transform: scale(0.97); }
+.vip-card.popular {
+  border-color: var(--warning);
+  box-shadow: 0 0 24px rgba(245,158,11,0.18);
+}
+.vip-card.current-plan {
+  border-color: var(--secondary);
+  box-shadow: 0 0 24px rgba(6,182,212,0.15);
+}
+.vip-card-badge {
+  position: absolute; top: 14px; left: 14px;
+  font-size: 0.65rem; font-weight: 700;
+  padding: 3px 10px; border-radius: 20px;
+}
+.vip-card-badge.popular-badge {
+  background: rgba(245,158,11,0.15); color: var(--warning);
+  border: 1px solid rgba(245,158,11,0.3);
+}
+.vip-card-badge.current-badge {
+  background: rgba(6,182,212,0.15); color: var(--secondary);
+  border: 1px solid rgba(6,182,212,0.3);
+}
+.vip-card-icon {
+  width: 52px; height: 52px; border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.6rem; margin-bottom: 14px;
+}
+.vip-card-name { font-size: 1.1rem; font-weight: 700; margin-bottom: 2px; }
+.vip-card-desc { font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 14px; }
+.vip-card-price { font-size: 1.8rem; font-weight: 800; margin-bottom: 14px; }
+.vip-card-features { display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px; }
+.vip-feature {
+  display: flex; justify-content: space-between;
+  font-size: 0.82rem; color: var(--text-secondary);
+  padding: 8px 10px;
+  background: var(--bg-card-elevated);
+  border-radius: 10px;
+}
+.vip-feature span:last-child { font-weight: 600; color: var(--text-primary); }
+.vip-card-tap-hint {
+  text-align: center; font-size: 0.7rem;
+  color: var(--text-tertiary); margin-top: 4px;
+}
+
+/* ── VIP Status Card Redesign ────────────────────────────── */
+.vip-status-card {
+  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+  border: 1px solid rgba(6,182,212,0.2);
+  border-radius: 20px; padding: 20px;
+  display: flex; align-items: center; gap: 16px;
+  margin-bottom: 8px;
+}
+.vip-status-icon {
+  width: 52px; height: 52px; border-radius: 14px;
+  background: rgba(6,182,212,0.15);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.5rem; flex-shrink: 0;
+}
+.vip-status-info { flex: 1; }
+.vip-status-name { font-size: 1.1rem; font-weight: 700; }
+.vip-status-days { font-size: 0.8rem; color: var(--text-secondary); margin-top: 4px; }
+.vip-progress-bar {
+  height: 4px; background: rgba(255,255,255,0.1);
+  border-radius: 2px; margin-top: 10px; overflow: hidden;
+}
+.vip-progress-fill {
+  height: 100%; border-radius: 2px;
+  background: var(--primary-gradient);
+  transition: width 0.6s ease;
+}
+
+/* ── Deposit Step Redesign ───────────────────────────────── */
+.dep-steps-bar {
+  display: flex; align-items: center;
+  margin-bottom: 24px; padding: 0 4px;
+}
+.dep-step-node {
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  flex: 1;
+}
+.dep-step-circle {
+  width: 32px; height: 32px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.8rem; font-weight: 700;
+  background: var(--bg-card-elevated);
+  color: var(--text-tertiary);
+  border: 2px solid var(--border-light);
+  transition: all 0.3s ease;
+  position: relative; z-index: 2;
+}
+.dep-step-label {
+  font-size: 0.65rem; color: var(--text-tertiary);
+  font-weight: 500; white-space: nowrap;
+}
+.dep-step-line {
+  flex: 1; height: 2px;
+  background: var(--border-light);
+  margin: 0 -2px; margin-bottom: 22px;
+  transition: background 0.3s ease;
+}
+.dep-step-node.active .dep-step-circle {
+  background: var(--primary-gradient);
+  color: #fff; border-color: transparent;
+  box-shadow: 0 0 12px var(--primary-glow);
+}
+.dep-step-node.active .dep-step-label { color: var(--secondary); font-weight: 600; }
+.dep-step-node.done .dep-step-circle {
+  background: var(--success); color: #fff; border-color: transparent;
+}
+.dep-step-node.done .dep-step-label { color: var(--success); }
+.dep-step-line.done { background: var(--success); }
+.dep-step-line.active { background: var(--secondary); }
+
+/* ── Network Cards Redesign ──────────────────────────────── */
+.dep-net-grid {
+  display: grid; grid-template-columns: repeat(3,1fr); gap: 10px;
+  margin-bottom: 20px;
+}
+.dep-net-card {
+  background: var(--bg-card-elevated);
+  border: 1.5px solid var(--border-light);
+  border-radius: 16px; padding: 14px 10px;
+  text-align: center; cursor: pointer;
+  transition: all 0.2s ease;
+}
+.dep-net-card:active { transform: scale(0.96); }
+.dep-net-card.selected {
+  border-color: var(--secondary);
+  background: rgba(6,182,212,0.08);
+  box-shadow: 0 0 16px rgba(6,182,212,0.15);
+}
+.dep-net-icon {
+  width: 40px; height: 40px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem; font-weight: 700; color: #fff;
+  margin: 0 auto 8px;
+}
+.dep-net-name { font-size: 0.82rem; font-weight: 700; }
+.dep-net-sub { font-size: 0.65rem; color: var(--text-tertiary); margin-top: 2px; }
+.dep-net-badge {
+  font-size: 0.6rem; font-weight: 600;
+  background: rgba(34,197,94,0.15); color: var(--success);
+  border-radius: 20px; padding: 2px 6px; margin-top: 6px;
+  display: inline-block;
+}
+
+/* ── Danger Warning Box ──────────────────────────────────── */
+.dep-danger-box {
+  background: rgba(239,68,68,0.08);
+  border: 1px solid rgba(239,68,68,0.25);
+  border-radius: 16px; padding: 16px;
+  margin-bottom: 16px;
+}
+.dep-danger-title {
+  font-size: 0.85rem; font-weight: 700;
+  color: var(--danger); margin-bottom: 10px;
+  display: flex; align-items: center; gap: 8px;
+}
+.dep-danger-list {
+  list-style: none; display: flex; flex-direction: column; gap: 8px;
+}
+.dep-danger-list li {
+  font-size: 0.78rem; color: var(--text-secondary);
+  display: flex; align-items: flex-start; gap: 8px;
+}
+.dep-danger-list li::before {
+  content: '⚠'; font-size: 0.7rem; margin-top: 1px; flex-shrink: 0;
+}
+
+/* ── Address Display Box ─────────────────────────────────── */
+.dep-addr-card {
+  background: var(--bg-card-elevated);
+  border: 1px solid var(--border-light);
+  border-radius: 18px; padding: 18px;
+  margin-bottom: 16px;
+}
+.dep-addr-net-row {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 14px;
+}
+.dep-addr-net-pill {
+  display: flex; align-items: center; gap: 8px;
+  background: rgba(6,182,212,0.1);
+  border: 1px solid rgba(6,182,212,0.2);
+  border-radius: 20px; padding: 4px 12px;
+  font-size: 0.78rem; font-weight: 600; color: var(--secondary);
+}
+.dep-addr-net-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+}
+.dep-addr-label {
+  font-size: 0.72rem; color: var(--text-tertiary); margin-bottom: 8px;
+}
+.dep-addr-value {
+  font-family: monospace; font-size: 0.78rem;
+  color: var(--text-primary); word-break: break-all;
+  line-height: 1.6; margin-bottom: 14px;
+  background: var(--bg-main); border-radius: 10px;
+  padding: 10px 12px;
+}
+.dep-copy-btn {
+  width: 100%; height: 44px;
+  background: var(--primary-gradient);
+  border: none; border-radius: 12px;
+  color: #fff; font-weight: 600; font-size: 0.9rem;
+  cursor: pointer; display: flex; align-items: center;
+  justify-content: center; gap: 8px;
+  transition: all 0.2s ease;
+}
+.dep-copy-btn:active { transform: scale(0.97); }
+.dep-copy-btn.copied {
+  background: linear-gradient(135deg, var(--success), #16a34a);
+}
+.dep-addr-hint {
+  font-size: 0.72rem; color: var(--text-tertiary);
+  margin-top: 10px; text-align: center;
+}
+
+/* ── TXID Validation ─────────────────────────────────────── */
+.txid-input-wrap { position: relative; }
+.txid-status {
+  position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+  font-size: 0.85rem; transition: all 0.2s;
+}
+.txid-status.valid { color: var(--success); }
+.txid-status.invalid { color: var(--danger); }
+.form-input.valid-input { border-color: var(--success); }
+.form-input.invalid-input { border-color: var(--danger); }
+.txid-example {
+  font-size: 0.7rem; color: var(--text-tertiary);
+  margin-top: 6px; font-family: monospace;
+  background: var(--bg-card-elevated);
+  padding: 6px 10px; border-radius: 8px;
+  word-break: break-all; line-height: 1.5;
+}
+
+/* ── Recap Banner ────────────────────────────────────────── */
+.dep-recap-box {
+  background: rgba(6,182,212,0.08);
+  border: 1px solid rgba(6,182,212,0.2);
+  border-radius: 12px; padding: 12px 14px;
+  font-size: 0.8rem; color: var(--text-secondary);
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 20px;
+}
+.dep-recap-box i { color: var(--secondary); flex-shrink: 0; }
+
+/* ── Withdraw Redesign ───────────────────────────────────── */
+.wd-balance-display {
+  background: var(--primary-gradient);
+  border-radius: 18px; padding: 20px;
+  margin-bottom: 20px; text-align: center;
+}
+.wd-balance-label { font-size: 0.8rem; opacity: 0.8; margin-bottom: 4px; }
+.wd-balance-val { font-size: 2rem; font-weight: 800; }
+.fee-box {
+  background: var(--bg-card-elevated);
+  border-radius: 14px; padding: 16px;
+  margin-bottom: 20px;
+  border: 1px dashed rgba(6,182,212,0.3);
+}
+.fee-row {
+  display: flex; justify-content: space-between;
+  font-size: 0.85rem; margin-bottom: 8px;
+}
+.fee-row:last-child {
+  margin-bottom: 0; padding-top: 10px;
+  border-top: 1px solid var(--border-light);
+  font-weight: 700; font-size: 1rem;
+}
+
+/* ── Wallet Tabs Redesign ────────────────────────────────── */
+.wallet-tabs {
+  display: flex; background: var(--bg-card);
+  border-radius: 16px; padding: 4px;
+  margin-bottom: 24px; gap: 4px;
+}
+.wallet-tab {
+  flex: 1; text-align: center; padding: 11px 0;
+  border-radius: 12px; font-size: 0.9rem; font-weight: 600;
+  color: var(--text-secondary); cursor: pointer;
+  transition: all 0.2s ease;
+}
+.wallet-tab.active {
+  background: var(--primary-gradient);
+  color: #fff;
+  box-shadow: 0 4px 12px var(--primary-glow);
+}
+
+/* ── Empty State ─────────────────────────────────────────── */
+.empty-state {
+  text-align: center; padding: 40px 20px;
+  display: flex; flex-direction: column;
+  align-items: center; gap: 12px;
+}
+.empty-state-icon {
+  width: 64px; height: 64px; border-radius: 20px;
+  background: var(--bg-card-elevated);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.8rem; margin-bottom: 4px;
+}
+.empty-state-title { font-weight: 700; font-size: 1rem; }
+.empty-state-sub { font-size: 0.82rem; color: var(--text-secondary); }
+
+/* ── Wallet Networks Info ────────────────────────────────── */
+.net-info-grid {
+  display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;
+}
+.net-info-row {
+  display: flex; align-items: center; gap: 12px;
+  background: var(--bg-card-elevated);
+  border-radius: 14px; padding: 12px 14px;
+}
+.net-info-dot {
+  width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+}
+.net-info-name { font-weight: 600; font-size: 0.85rem; }
+.net-info-desc { font-size: 0.72rem; color: var(--text-secondary); margin-top: 2px; }
+.net-info-fee {
+  margin-right: auto; font-size: 0.7rem; font-weight: 600;
+  padding: 2px 8px; border-radius: 20px;
+}
+
+/* ── Quick Action Buttons Redesign ──────────────────────── */
+.action-btn {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: 18px; padding: 18px 8px;
+  transition: all 0.2s ease;
+}
+.action-btn:active { transform: scale(0.94); border-color: var(--secondary); }
+.action-btn .icon {
+  width: 44px; height: 44px; border-radius: 14px;
+}
+
+/* ── Balance Card Pulse ──────────────────────────────────── */
+.balance-card { position: relative; }
+.balance-live-dot {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 0.7rem; opacity: 0.8; margin-bottom: 8px;
+}
+.balance-live-dot::before {
+  content: '';
+  width: 6px; height: 6px; border-radius: 50%;
+  background: #22c55e;
+  animation: pulse-dot 2s infinite;
+}
+@keyframes pulse-dot {
+  0%,100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.4); }
+}
+
+/* ── Skeleton Improvements ───────────────────────────────── */
+.tx-item.skeleton { height: 72px; border-radius: 16px; }
+.skeleton-card { height: 120px; border-radius: 20px; }
+
+/* ── Smooth page transitions ─────────────────────────────── */
+.page-content { animation: none; }
+.page-content.active { animation: pageIn 0.25s ease forwards; }
+@keyframes pageIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

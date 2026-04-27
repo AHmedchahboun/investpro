@@ -1,0 +1,959 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>InvestPro — لوحة الإدارة</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/admin.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+<div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+
+<!-- ═══════════════ SIDEBAR ═══════════════ -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <span>🛡</span>
+    <span>Admin Panel <span style="background:var(--red);color:#fff;border-radius:4px;padding:1px 6px;font-size:.68rem;font-weight:700">ADMIN</span></span>
+  </div>
+  <div class="user-card">
+    <div class="user-info">
+      <div class="user-avatar" id="sb-avatar">A</div>
+      <div>
+        <div class="user-name" id="sb-name">جاري التحميل...</div>
+        <div class="user-email">مشرف النظام</div>
+      </div>
+    </div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-item active" data-nav="pg-dash"  onclick="go('pg-dash')">
+      <span class="nav-icon">📊</span> لوحة التحكم
+    </div>
+    <div class="nav-item" data-nav="pg-dep" onclick="go('pg-dep')">
+      <span class="nav-icon">⬇</span> الإيداعات
+      <span class="nav-badge" id="dep-badge" style="display:none">0</span>
+    </div>
+    <div class="nav-item" data-nav="pg-wd" onclick="go('pg-wd')">
+      <span class="nav-icon">⬆</span> السحوبات
+      <span class="nav-badge" id="wd-badge" style="display:none">0</span>
+    </div>
+    <div class="nav-item" data-nav="pg-users" onclick="go('pg-users')">
+      <span class="nav-icon">👤</span> المستخدمون
+    </div>
+    <div class="nav-item" data-nav="pg-tx" onclick="go('pg-tx')">
+      <span class="nav-icon">📋</span> العمليات
+    </div>
+    <div class="nav-item" data-nav="pg-adj" onclick="go('pg-adj')">
+      <span class="nav-icon">⚖</span> تعديل الرصيد
+    </div>
+    <div class="nav-item" data-nav="pg-log" onclick="go('pg-log')">
+      <span class="nav-icon">🔍</span> سجل المشرف
+    </div>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="nav-item" onclick="auth.logout()">
+      <span class="nav-icon">🚪</span> تسجيل الخروج
+    </div>
+  </div>
+</aside>
+
+<!-- ═══════════════ MAIN ═══════════════ -->
+<div class="main">
+  <div class="topbar">
+    <button class="topbar-hamburger" onclick="openSidebar()">☰</button>
+    <span class="topbar-title" id="page-title">لوحة التحكم</span>
+    <span style="font-size:.8rem;color:var(--red);font-weight:700;margin-right:auto">🛡 مشرف</span>
+  </div>
+
+  <div class="content">
+
+    <!-- ══════════════════ DASHBOARD ══════════════════ -->
+    <div id="pg-dash" data-page style="display:block">
+
+      <!-- Stats Cards -->
+      <div class="stats-grid" id="admin-stats-grid">
+        <div class="stat-card skel" style="--stat-color:var(--teal);height:90px"></div>
+        <div class="stat-card skel" style="--stat-color:var(--blue);height:90px"></div>
+        <div class="stat-card skel" style="--stat-color:var(--green);height:90px"></div>
+        <div class="stat-card skel" style="--stat-color:var(--gold);height:90px"></div>
+        <div class="stat-card skel" style="--stat-color:var(--red);height:90px"></div>
+        <div class="stat-card skel" style="--stat-color:var(--orange);height:90px"></div>
+        <div class="stat-card skel" style="--stat-color:var(--purple);height:90px"></div>
+        <div class="stat-card skel" style="--stat-color:var(--teal2);height:90px"></div>
+      </div>
+
+      <!-- Pending Alerts + VIP Chart -->
+      <div style="display:grid;grid-template-columns:1fr 300px;gap:20px;margin-top:4px">
+        <div>
+          <div class="card">
+            <div class="card-head">⏳ تنبيهات معلقة</div>
+            <div class="card-body" id="pending-alerts">
+              <div style="color:var(--text3);text-align:center;padding:20px">جاري التحميل...</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head">⚡ إجراءات سريعة</div>
+            <div class="card-body" style="display:flex;gap:10px;flex-wrap:wrap">
+              <button class="btn btn-teal btn-md" onclick="go('pg-dep')">مراجعة الإيداعات</button>
+              <button class="btn btn-gold btn-md" onclick="go('pg-wd')">مراجعة السحوبات</button>
+              <button class="btn btn-ghost btn-md" onclick="runRewards()">▶ تشغيل المكافآت</button>
+              <button class="btn btn-ghost btn-md" onclick="go('pg-adj')">تعديل رصيد</button>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head">👑 توزيع VIP</div>
+          <div class="card-body">
+            <div class="chart-wrap"><canvas id="vip-chart"></canvas></div>
+            <div id="vip-chart-legend" style="margin-top:12px;font-size:.75rem"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════ DEPOSITS ══════════════════ -->
+    <div id="pg-dep" data-page style="display:none">
+      <div class="card">
+        <div class="card-head">
+          ⬇ الإيداعات
+          <div class="filters">
+            <select class="filter-select" id="dep-status-f" onchange="loadDeps()">
+              <option value="pending">معلق</option>
+              <option value="approved">معتمد</option>
+              <option value="rejected">مرفوض</option>
+              <option value="all">الكل</option>
+            </select>
+          </div>
+        </div>
+        <div class="card-body" style="padding:0" id="dep-list">
+          <div style="text-align:center;padding:30px;color:var(--text3)">جاري التحميل...</div>
+        </div>
+        <div id="dep-pag" style="padding:12px 16px"></div>
+      </div>
+    </div>
+
+    <!-- ══════════════════ WITHDRAWALS ══════════════════ -->
+    <div id="pg-wd" data-page style="display:none">
+      <div class="card">
+        <div class="card-head">
+          ⬆ السحوبات
+          <div class="filters">
+            <select class="filter-select" id="wd-status-f" onchange="loadWds()">
+              <option value="pending">معلق</option>
+              <option value="approved">معتمد</option>
+              <option value="rejected">مرفوض</option>
+              <option value="all">الكل</option>
+            </select>
+          </div>
+        </div>
+        <div class="card-body" style="padding:0" id="wd-list">
+          <div style="text-align:center;padding:30px;color:var(--text3)">جاري التحميل...</div>
+        </div>
+        <div id="wd-pag" style="padding:12px 16px"></div>
+      </div>
+    </div>
+
+    <!-- ══════════════════ USERS ══════════════════ -->
+    <div id="pg-users" data-page style="display:none">
+      <div class="card">
+        <div class="card-head">
+          👤 المستخدمون
+          <div class="filters">
+            <input type="text" id="user-search" class="filter-select"
+              placeholder="🔍 بحث بالاسم أو البريد..." oninput="debSearch()" style="width:210px">
+            <select class="filter-select" id="user-vip-f" onchange="loadUsers()">
+              <option value="">كل المستويات</option>
+              <option value="-1">غير نشط</option>
+              <option value="0">تدريب</option>
+              <option value="1">برونزي</option>
+              <option value="2">فضي</option>
+              <option value="3">ذهبي</option>
+              <option value="4">ماسي</option>
+            </select>
+            <select class="filter-select" id="user-frozen-f" onchange="loadUsers()">
+              <option value="">الكل</option>
+              <option value="false">نشط</option>
+              <option value="true">مجمد</option>
+            </select>
+          </div>
+        </div>
+        <div class="card-body" style="padding:0">
+          <div class="table-wrap">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>المستخدم</th>
+                  <th>VIP</th>
+                  <th>الرصيد</th>
+                  <th class="hide-mobile">إجمالي الإيداع</th>
+                  <th class="hide-mobile">التسجيل</th>
+                  <th>الحالة</th>
+                  <th>إجراءات</th>
+                </tr>
+              </thead>
+              <tbody id="users-body">
+                <tr><td colspan="7" style="text-align:center;padding:30px;color:var(--text3)">جاري التحميل...</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div id="users-pag" style="padding:12px 16px"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════ TRANSACTIONS ══════════════════ -->
+    <div id="pg-tx" data-page style="display:none">
+      <div class="card">
+        <div class="card-head">
+          📋 كل العمليات
+          <div class="filters">
+            <select class="filter-select" id="atx-type-f" onchange="loadAdminTx()">
+              <option value="">كل الأنواع</option>
+              <option value="deposit">إيداع</option>
+              <option value="withdraw">سحب</option>
+              <option value="daily_profit">ربح يومي</option>
+              <option value="daily_bonus">مكافأة يومية</option>
+              <option value="training_reward">مكافأة تدريب</option>
+              <option value="vip_purchase">شراء VIP</option>
+              <option value="referral_l1">عمولة L1</option>
+              <option value="referral_l2">عمولة L2</option>
+              <option value="admin_credit">إضافة إدارية</option>
+              <option value="admin_debit">خصم إداري</option>
+            </select>
+            <select class="filter-select" id="atx-status-f" onchange="loadAdminTx()">
+              <option value="">كل الحالات</option>
+              <option value="pending">معلق</option>
+              <option value="approved">معتمد</option>
+              <option value="rejected">مرفوض</option>
+            </select>
+          </div>
+        </div>
+        <div class="card-body" style="padding:0">
+          <div class="table-wrap">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>المستخدم</th>
+                  <th>النوع</th>
+                  <th>المبلغ</th>
+                  <th>الحالة</th>
+                  <th class="hide-mobile">التاريخ</th>
+                  <th class="hide-mobile">ملاحظة</th>
+                </tr>
+              </thead>
+              <tbody id="atx-body">
+                <tr><td colspan="6" style="text-align:center;padding:30px;color:var(--text3)">جاري التحميل...</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div id="atx-pag" style="padding:12px 16px"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════ ADJUST BALANCE ══════════════════ -->
+    <div id="pg-adj" data-page style="display:none">
+      <div style="display:grid;grid-template-columns:400px 1fr;gap:20px">
+        <div class="card">
+          <div class="card-head">⚖ تعديل رصيد مستخدم</div>
+          <div class="card-body">
+            <div class="err-box" style="margin-bottom:14px">⚠ هذه العملية حساسة وتُسجل في سجل المشرف</div>
+            <div class="form-group">
+              <label class="form-label">معرّف المستخدم (User ID)</label>
+              <input type="text" id="adj-uid" class="form-input" placeholder="MongoDB ObjectId">
+            </div>
+            <div class="form-group">
+              <label class="form-label">المبلغ (سالب للخصم)</label>
+              <input type="number" id="adj-amount" class="form-input" placeholder="مثال: 50 أو -20" step="0.01">
+            </div>
+            <div class="form-group">
+              <label class="form-label">السبب</label>
+              <input type="text" id="adj-reason" class="form-input" placeholder="سبب تعديل الرصيد">
+            </div>
+            <button class="btn btn-red btn-lg btn-fw" id="adj-btn" onclick="doAdjust()">تطبيق التعديل</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head">📝 آخر التعديلات الإدارية</div>
+          <div class="card-body" style="padding:0">
+            <div class="table-wrap">
+              <table class="table">
+                <thead>
+                  <tr><th>المستخدم</th><th>النوع</th><th>المبلغ</th><th>السبب</th><th>التاريخ</th></tr>
+                </thead>
+                <tbody id="adj-log-body">
+                  <tr><td colspan="5" style="text-align:center;padding:24px;color:var(--text3)">جاري التحميل...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════ AUDIT LOG ══════════════════ -->
+    <div id="pg-log" data-page style="display:none">
+      <div class="card">
+        <div class="card-head">
+          🔍 سجل الإجراءات الإدارية
+          <div class="filters">
+            <select class="filter-select" id="log-sev-f" onchange="loadLog()">
+              <option value="">كل المستويات</option>
+              <option value="info">معلومات</option>
+              <option value="warn">تحذير</option>
+              <option value="critical">حرج</option>
+            </select>
+          </div>
+        </div>
+        <div class="card-body" id="log-body">
+          <div style="text-align:center;padding:24px;color:var(--text3)">جاري التحميل...</div>
+        </div>
+        <div id="log-pag" style="padding:12px 16px"></div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<!-- ══════════════════ BOTTOM NAV (mobile) ══════════════════ -->
+<nav class="bottom-nav">
+  <div class="bn-item active" data-nav="pg-dash"  onclick="go('pg-dash')"><span class="bn-icon">📊</span>الرئيسية</div>
+  <div class="bn-item" data-nav="pg-dep"   onclick="go('pg-dep')"><span class="bn-icon">⬇</span>إيداع</div>
+  <div class="bn-item" data-nav="pg-wd"    onclick="go('pg-wd')"><span class="bn-icon">⬆</span>سحب</div>
+  <div class="bn-item" data-nav="pg-users" onclick="go('pg-users')"><span class="bn-icon">👤</span>مستخدمون</div>
+  <div class="bn-item" data-nav="pg-log"   onclick="go('pg-log')"><span class="bn-icon">🔍</span>سجل</div>
+</nav>
+
+<!-- ══════════════════ USER DETAIL MODAL ══════════════════ -->
+<div class="modal-overlay" id="user-modal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <span class="modal-title">تفاصيل المستخدم</span>
+      <button class="modal-close" onclick="closeUserModal()">✕</button>
+    </div>
+
+    <!-- Header -->
+    <div class="user-detail-header">
+      <div class="user-detail-avatar" id="um-avatar">?</div>
+      <div>
+        <div class="user-detail-name" id="um-name">—</div>
+        <div class="user-detail-email" id="um-email">—</div>
+        <div class="user-detail-id" id="um-id">—</div>
+      </div>
+      <div id="um-status-badge" style="margin-right:auto"></div>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="section-label">💰 المالية</div>
+    <div class="user-detail-grid">
+      <div class="user-detail-item">
+        <div class="user-detail-label">الرصيد الحالي</div>
+        <div class="user-detail-value" id="um-balance" style="color:var(--teal)">—</div>
+      </div>
+      <div class="user-detail-item">
+        <div class="user-detail-label">إجمالي الإيداع</div>
+        <div class="user-detail-value" id="um-deposited" style="color:var(--green)">—</div>
+      </div>
+      <div class="user-detail-item">
+        <div class="user-detail-label">إجمالي السحب</div>
+        <div class="user-detail-value" id="um-withdrawn" style="color:var(--red)">—</div>
+      </div>
+      <div class="user-detail-item">
+        <div class="user-detail-label">إجمالي الأرباح</div>
+        <div class="user-detail-value" id="um-earned" style="color:var(--gold)">—</div>
+      </div>
+    </div>
+
+    <div class="section-label">👑 عضوية VIP</div>
+    <div class="user-detail-grid">
+      <div class="user-detail-item">
+        <div class="user-detail-label">المستوى</div>
+        <div class="user-detail-value" id="um-vip">—</div>
+      </div>
+      <div class="user-detail-item">
+        <div class="user-detail-label">تاريخ الانتهاء</div>
+        <div class="user-detail-value" id="um-vip-exp">—</div>
+      </div>
+    </div>
+
+    <div class="section-label">📅 معلومات الحساب</div>
+    <div class="user-detail-grid">
+      <div class="user-detail-item">
+        <div class="user-detail-label">تاريخ التسجيل</div>
+        <div class="user-detail-value" id="um-created">—</div>
+      </div>
+      <div class="user-detail-item">
+        <div class="user-detail-label">كود الإحالة</div>
+        <div class="user-detail-value" id="um-ref" style="font-family:monospace;font-size:.82rem">—</div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-ghost btn-sm" onclick="closeUserModal()">إغلاق</button>
+      <button class="btn btn-ghost btn-sm" id="um-adj-btn" onclick="">تعديل الرصيد</button>
+      <button class="btn btn-sm" id="um-freeze-btn" onclick="">تجميد / رفع</button>
+      <button class="btn btn-red btn-sm" id="um-delete-btn" onclick="">🗑 حذف</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/api.js"></script>
+<script>
+/* ════════════════════════════════════════
+   Constants
+   ════════════════════════════════════════ */
+const PAGE_TITLES = {
+  'pg-dash':'لوحة التحكم','pg-dep':'الإيداعات','pg-wd':'السحوبات',
+  'pg-users':'المستخدمون','pg-tx':'العمليات','pg-adj':'تعديل الرصيد','pg-log':'سجل المشرف',
+};
+const VIP_NAMES  = { '-1':'غير نشط','0':'تدريب','1':'برونزي','2':'فضي','3':'ذهبي','4':'ماسي' };
+const VIP_COLORS = { '-1':'#334155','0':'#64748b','1':'#d97706','2':'#94a3b8','3':'#f59e0b','4':'#38bdf8' };
+
+let _vipChart = null, _searchTimer = null, _currentModalUser = null;
+const _usersCache = new Map(); // safe user data store — avoids inline JSON in HTML
+
+/* ════════════════════════════════════════
+   Init
+   ════════════════════════════════════════ */
+async function init() {
+  if (!auth.check()) return;
+  if (!auth.isAdmin()) { toast('غير مصرح', 'e'); auth.logout(); return; }
+  const u = auth.user();
+  document.getElementById('sb-avatar').textContent = (u?.name || 'A')[0].toUpperCase();
+  document.getElementById('sb-name').textContent   = u?.name || 'مشرف';
+  await loadDashboard();
+}
+
+/* ════════════════════════════════════════
+   Navigation
+   ════════════════════════════════════════ */
+function go(pageId) {
+  navGo(pageId, 'nav-', PAGE_TITLES);
+  document.querySelectorAll('.nav-item[data-nav], .bn-item[data-nav]').forEach(el =>
+    el.classList.toggle('active', el.dataset.nav === pageId)
+  );
+  if (window.innerWidth <= 768) closeSidebar();
+  if (pageId === 'pg-dep')   loadDeps();
+  if (pageId === 'pg-wd')    loadWds();
+  if (pageId === 'pg-users') loadUsers();
+  if (pageId === 'pg-tx')    loadAdminTx();
+  if (pageId === 'pg-adj')   loadAdjLog();
+  if (pageId === 'pg-log')   loadLog();
+}
+
+/* ════════════════════════════════════════
+   Dashboard
+   ════════════════════════════════════════ */
+async function loadDashboard() {
+  try {
+    const data = await http.get('/admin/dashboard');
+    const s = data.stats;
+    renderAdminStats(s);
+    renderPendingAlerts(s);
+    renderVipChart(s.vipDistribution);
+    updateBadges(s.pendingDeposits, s.pendingWithdraws);
+  } catch (e) { toast(e.message, 'e'); }
+}
+
+function renderAdminStats(s) {
+  const cards = [
+    { label:'إجمالي المستخدمين',   value: s.totalUsers,                  icon:'👤', color:'var(--teal)'   },
+    { label:'مستخدمون جدد اليوم',  value: s.newToday,                    icon:'🆕', color:'var(--blue)'   },
+    { label:'إجمالي الإيداعات',    value: fmt.usd(s.totalDeposits),      icon:'⬇',  color:'var(--green)'  },
+    { label:'إجمالي السحوبات',     value: fmt.usd(s.totalWithdraws),     icon:'⬆',  color:'var(--gold)'   },
+    { label:'إيداعات معلقة',       value: s.pendingDeposits,             icon:'⏳', color:'var(--red)'    },
+    { label:'سحوبات معلقة',        value: s.pendingWithdraws,            icon:'⏳', color:'var(--orange)' },
+    { label:'أعضاء VIP نشطون',     value: s.activeVips,                  icon:'👑', color:'var(--purple)' },
+    { label:'إجمالي المكافآت',     value: fmt.usd(s.totalRewardsPaid),   icon:'⭐', color:'var(--teal2)'  },
+  ];
+  document.getElementById('admin-stats-grid').innerHTML = cards.map(c => `
+    <div class="stat-card" style="--stat-color:${c.color}">
+      <div class="stat-label">${c.label}</div>
+      <div class="stat-value">${c.value}</div>
+      <span class="stat-icon">${c.icon}</span>
+    </div>`).join('');
+}
+
+function renderPendingAlerts(s) {
+  const el = document.getElementById('pending-alerts');
+  if (!s.pendingDeposits && !s.pendingWithdraws) {
+    el.innerHTML = '<div class="info-box">✅ لا توجد طلبات معلقة — كل شيء تمام!</div>'; return;
+  }
+  let html = '';
+  if (s.pendingDeposits)  html += `
+    <div class="pending-alert">
+      <div>
+        <div class="pending-alert-num">${s.pendingDeposits}</div>
+        <div class="pending-alert-text">إيداع معلق ينتظر المراجعة</div>
+      </div>
+      <button class="btn btn-green btn-sm" onclick="go('pg-dep')">مراجعة ←</button>
+    </div>`;
+  if (s.pendingWithdraws) html += `
+    <div class="pending-alert">
+      <div>
+        <div class="pending-alert-num">${s.pendingWithdraws}</div>
+        <div class="pending-alert-text">سحب معلق ينتظر المراجعة</div>
+      </div>
+      <button class="btn btn-gold btn-sm" onclick="go('pg-wd')">مراجعة ←</button>
+    </div>`;
+  el.innerHTML = html;
+}
+
+function renderVipChart(dist) {
+  if (!dist?.length) return;
+  const labels = dist.map(d => VIP_NAMES[String(d._id)] || `L${d._id}`);
+  const counts  = dist.map(d => d.count);
+  const colors  = dist.map(d => VIP_COLORS[String(d._id)] || '#999');
+  if (_vipChart) _vipChart.destroy();
+  const ctx = document.getElementById('vip-chart').getContext('2d');
+  _vipChart = new Chart(ctx, {
+    type: 'doughnut',
+    data: { labels, datasets: [{ data: counts, backgroundColor: colors, borderWidth: 0 }] },
+    options: {
+      plugins: { legend: { display: false } },
+      cutout: '65%',
+    },
+  });
+  document.getElementById('vip-chart-legend').innerHTML = dist.map((d, i) =>
+    `<div style="display:flex;align-items:center;gap:6px;margin-bottom:5px">
+      <span style="width:10px;height:10px;border-radius:50%;background:${colors[i]};flex-shrink:0"></span>
+      <span style="color:var(--text2)">${labels[i]}: </span>
+      <span style="font-weight:600">${counts[i]}</span>
+    </div>`).join('');
+}
+
+function updateBadges(deps, wds) {
+  const depB = document.getElementById('dep-badge');
+  const wdB  = document.getElementById('wd-badge');
+  depB.textContent = deps; depB.style.display = deps ? '' : 'none';
+  wdB.textContent  = wds;  wdB.style.display  = wds  ? '' : 'none';
+}
+
+async function runRewards() {
+  if (!confirm('تشغيل توزيع المكافآت اليومية الآن؟')) return;
+  try {
+    await http.post('/admin/run-rewards');
+    toast('تم بدء توزيع المكافآت في الخلفية', 's');
+  } catch (e) { toast(e.message, 'e'); }
+}
+
+/* ════════════════════════════════════════
+   Deposits
+   ════════════════════════════════════════ */
+async function loadDeps(page = 1) {
+  const status = document.getElementById('dep-status-f').value;
+  const el = document.getElementById('dep-list');
+  el.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text3)">جاري التحميل...</div>';
+  try {
+    const data = await http.get(`/admin/deposits?status=${status}&page=${page}&limit=15`);
+    if (!data.deposits.length) {
+      el.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text3)">لا توجد نتائج</div>'; return;
+    }
+    el.innerHTML = data.deposits.map(d => `
+      <div class="tx-item" style="padding:14px 20px" id="dep-${d._id}">
+        <div class="tx-icon" style="background:rgba(34,197,94,.12);color:var(--green)">⬇</div>
+        <div class="tx-info">
+          <div class="tx-name">
+            ${esc(d.user?.name || '—')}
+            <span style="color:var(--text3);font-size:.76rem;font-weight:400">${esc(d.user?.email || '')}</span>
+          </div>
+          <div class="tx-meta">${esc(d.paymentMethod)} • Hash: <span class="mono" style="color:var(--teal)">${esc(d.txHash || '—')}</span></div>
+          <div class="tx-meta" style="color:var(--text3)">${fmt.date(d.createdAt)}</div>
+          ${d.adminNote ? `<div class="tx-meta" style="color:var(--red)">⚠ ${esc(d.adminNote)}</div>` : ''}
+        </div>
+        <div style="text-align:left;min-width:90px">
+          <div class="tx-amount" style="color:var(--green)">${fmt.usd(d.amount)}</div>
+          <div style="margin-top:6px">${statusBadge[d.status]}</div>
+        </div>
+        ${d.status === 'pending' ? `
+        <div class="tx-actions">
+          <button class="btn btn-green btn-sm" onclick="approveDep('${d._id}','${esc(d.user?.name||'')}')">✓ قبول</button>
+          <button class="btn btn-red-o btn-sm" onclick="rejectDep('${d._id}','${esc(d.user?.name||'')}')">✕ رفض</button>
+        </div>` : ''}
+      </div>`).join('');
+    renderAdminPag('dep-pag', data.pagination, loadDeps);
+  } catch (e) { toast(e.message, 'e'); }
+}
+
+async function approveDep(id, name) {
+  if (!confirm(`اعتماد إيداع "${name}"؟`)) return;
+  try {
+    await http.post(`/admin/deposits/${id}/approve`);
+    toast('✅ تم اعتماد الإيداع', 's');
+    document.getElementById(`dep-${id}`)?.remove();
+    loadDashboard();
+  } catch (e) { toast(e.message, 'e'); }
+}
+
+async function rejectDep(id, name) {
+  const reason = prompt(`سبب رفض إيداع "${name}":`);
+  if (reason === null) return;
+  try {
+    await http.post(`/admin/deposits/${id}/reject`, { reason });
+    toast('تم رفض الإيداع', 'w');
+    document.getElementById(`dep-${id}`)?.remove();
+    loadDashboard();
+  } catch (e) { toast(e.message, 'e'); }
+}
+
+/* ════════════════════════════════════════
+   Withdrawals
+   ════════════════════════════════════════ */
+async function loadWds(page = 1) {
+  const status = document.getElementById('wd-status-f').value;
+  const el = document.getElementById('wd-list');
+  el.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text3)">جاري التحميل...</div>';
+  try {
+    const data = await http.get(`/admin/withdraws?status=${status}&page=${page}&limit=15`);
+    if (!data.withdraws.length) {
+      el.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text3)">لا توجد نتائج</div>'; return;
+    }
+    el.innerHTML = data.withdraws.map(w => `
+      <div class="tx-item" style="padding:14px 20px" id="wd-${w._id}">
+        <div class="tx-icon" style="background:rgba(239,68,68,.12);color:var(--red)">⬆</div>
+        <div class="tx-info">
+          <div class="tx-name">
+            ${esc(w.user?.name || '—')}
+            <span style="color:var(--text3);font-size:.76rem;font-weight:400">${esc(w.user?.email || '')}</span>
+          </div>
+          <div class="tx-meta">${esc(w.paymentMethod)} • إلى: <span class="mono" style="color:var(--teal)">${esc((w.toAddress||'—').substring(0,24))}...</span></div>
+          <div class="tx-meta">رسوم: ${fmt.usd(w.fee)} | صافي: <span style="color:var(--green);font-weight:600">${fmt.usd(w.netAmount)}</span> • ${fmt.date(w.createdAt)}</div>
+          ${w.adminNote ? `<div class="tx-meta" style="color:var(--red)">⚠ ${esc(w.adminNote)}</div>` : ''}
+        </div>
+        <div style="text-align:left;min-width:90px">
+          <div class="tx-amount" style="color:var(--red)">${fmt.usd(w.amount)}</div>
+          <div style="margin-top:6px">${statusBadge[w.status]}</div>
+        </div>
+        ${w.status === 'pending' ? `
+        <div class="tx-actions">
+          <button class="btn btn-green btn-sm" onclick="approveWd('${w._id}','${esc(w.user?.name||'')}',${w.netAmount})">✓ قبول</button>
+          <button class="btn btn-red-o btn-sm" onclick="rejectWd('${w._id}','${esc(w.user?.name||'')}')">✕ رفض</button>
+        </div>` : ''}
+      </div>`).join('');
+    renderAdminPag('wd-pag', data.pagination, loadWds);
+  } catch (e) { toast(e.message, 'e'); }
+}
+
+async function approveWd(id, name, net) {
+  const txHash = prompt(`اعتماد سحب "${name}" (صافي: ${fmt.usd(net)})\nأدخل رقم العملية / Hash (اختياري):`);
+  if (txHash === null) return;
+  try {
+    await http.post(`/admin/withdraws/${id}/approve`, { txHash: txHash || undefined });
+    toast('✅ تم اعتماد السحب', 's');
+    document.getElementById(`wd-${id}`)?.remove();
+    loadDashboard();
+  } catch (e) { toast(e.message, 'e'); }
+}
+
+async function rejectWd(id, name) {
+  const reason = prompt(`سبب رفض سحب "${name}":`);
+  if (reason === null) return;
+  try {
+    await http.post(`/admin/withdraws/${id}/reject`, { reason });
+    toast('تم رفض السحب وإعادة الرصيد', 'w');
+    document.getElementById(`wd-${id}`)?.remove();
+    loadDashboard();
+  } catch (e) { toast(e.message, 'e'); }
+}
+
+/* ════════════════════════════════════════
+   Users
+   ════════════════════════════════════════ */
+function debSearch() {
+  clearTimeout(_searchTimer);
+  _searchTimer = setTimeout(loadUsers, 400);
+}
+
+async function loadUsers(page = 1) {
+  const search   = document.getElementById('user-search').value.trim();
+  const vipLevel = document.getElementById('user-vip-f').value;
+  const isFrozen = document.getElementById('user-frozen-f').value;
+  const body = document.getElementById('users-body');
+  body.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--text3)">جاري التحميل...</td></tr>';
+  try {
+    let url = `/admin/users?page=${page}&limit=20`;
+    if (search)   url += `&search=${encodeURIComponent(search)}`;
+    if (vipLevel !== '') url += `&vipLevel=${vipLevel}`;
+    if (isFrozen !== '') url += `&isFrozen=${isFrozen}`;
+    const data = await http.get(url);
+    if (!data.users.length) {
+      body.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--text3)">لا توجد نتائج</td></tr>'; return;
+    }
+    // Cache user objects safely — avoids embedding JSON in HTML attributes
+    data.users.forEach(u => _usersCache.set(String(u._id), u));
+    body.innerHTML = data.users.map(u => `
+      <tr style="cursor:pointer" data-uid="${esc(u._id)}" onclick="openUserModal(this.dataset.uid)">
+        <td>
+          <div style="display:flex;align-items:center;gap:10px">
+            <div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--blue));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:.85rem;flex-shrink:0">
+              ${esc((u.name||'?')[0].toUpperCase())}
+            </div>
+            <div>
+              <div style="font-weight:600;font-size:.88rem">${esc(u.name)}</div>
+              <div style="font-size:.74rem;color:var(--text3)">${esc(u.email)}</div>
+            </div>
+          </div>
+        </td>
+        <td>
+          ${u.vipLevel >= 0
+            ? `<span class="badge badge-gold">${VIP_NAMES[u.vipLevel] || u.vipLevel}</span>`
+            : '<span class="badge badge-muted">غير نشط</span>'}
+        </td>
+        <td style="color:var(--teal);font-weight:700">
+          ${u.wallet ? fmt.usd(u.wallet.balance) : '—'}
+        </td>
+        <td class="hide-mobile" style="color:var(--green);font-size:.84rem">
+          ${u.wallet ? fmt.usd(u.wallet.totalDeposited) : '—'}
+        </td>
+        <td class="hide-mobile" style="color:var(--text3);font-size:.78rem">${fmt.date(u.createdAt)}</td>
+        <td>
+          ${u.isFrozen
+            ? '<span class="badge badge-red">🔒 مجمد</span>'
+            : '<span class="badge badge-green">✓ نشط</span>'}
+          ${u.isAdmin ? '<span class="badge badge-blue">مشرف</span>' : ''}
+        </td>
+        <td onclick="event.stopPropagation()">
+          <div style="display:flex;gap:5px;flex-wrap:wrap">
+            <button class="btn ${u.isFrozen ? 'btn-green' : 'btn-ghost'} btn-xs"
+              onclick="toggleFreeze('${u._id}',${u.isFrozen},'${esc(u.name)}')">
+              ${u.isFrozen ? '🔓 رفع' : '🔒 تجميد'}
+            </button>
+            <button class="btn btn-ghost btn-xs"
+              onclick="document.getElementById('adj-uid').value='${u._id}';go('pg-adj')">
+              ⚖ رصيد
+            </button>
+            <button class="btn btn-red-o btn-xs"
+              onclick="deleteUser('${u._id}','${esc(u.name)}')">
+              🗑
+            </button>
+          </div>
+        </td>
+      </tr>`).join('');
+    renderAdminPag('users-pag', data.pagination, loadUsers);
+  } catch (e) { toast(e.message, 'e'); }
+}
+
+async function toggleFreeze(id, isFrozen, name) {
+  const reason = isFrozen ? null : prompt(`سبب تجميد حساب "${name}":`);
+  if (!isFrozen && reason === null) return;
+  try {
+    const data = await http.post(`/admin/users/${id}/freeze`, { reason: reason || '' });
+    toast(data.message, 's');
+    loadUsers();
+    if (_currentModalUser?._id === id) closeUserModal();
+  } catch (e) { toast(e.message, 'e'); }
+}
+
+async function deleteUser(id, name) {
+  if (!confirm(`⚠ تحذير!\n\nسيتم حذف حساب "${name}" نهائياً مع جميع بياناته وعملياته.\n\nهذا الإجراء لا يمكن التراجع عنه. هل أنت متأكد؟`)) return;
+  const confirmName = prompt(`اكتب اسم المستخدم "${name}" للتأكيد:`);
+  if (confirmName !== name) { toast('الاسم غير متطابق — تم الإلغاء', 'w'); return; }
+  try {
+    await http.delete(`/admin/users/${id}`);
+    toast(`✅ تم حذف المستخدم "${name}" نهائياً`, 's');
+    loadUsers();
+    loadDashboard();
+    if (_currentModalUser?._id === id) closeUserModal();
+  } catch (e) { toast(e.message, 'e'); }
+}
+
+/* ════════════════════════════════════════
+   User Detail Modal
+   ════════════════════════════════════════ */
+function openUserModal(uid) {
+  const u = _usersCache.get(uid);
+  if (!u) { toast('تعذر تحميل بيانات المستخدم', 'e'); return; }
+  _currentModalUser = u;
+  const w = u.wallet || {};
+  const vName = VIP_NAMES[String(u.vipLevel)] || `VIP ${u.vipLevel}`;
+
+  document.getElementById('um-avatar').textContent = (u.name||'?')[0].toUpperCase();
+  document.getElementById('um-name').textContent   = u.name;
+  document.getElementById('um-email').textContent  = u.email;
+  document.getElementById('um-id').textContent     = u._id;
+
+  document.getElementById('um-status-badge').innerHTML = u.isFrozen
+    ? '<span class="badge badge-red">🔒 مجمد</span>'
+    : '<span class="badge badge-green">✓ نشط</span>';
+
+  document.getElementById('um-balance').textContent   = fmt.usd(w.balance   || 0);
+  document.getElementById('um-deposited').textContent = fmt.usd(w.totalDeposited || 0);
+  document.getElementById('um-withdrawn').textContent = fmt.usd(w.totalWithdrawn || 0);
+  document.getElementById('um-earned').textContent    = fmt.usd(w.totalEarned   || 0);
+
+  document.getElementById('um-vip').textContent = vName;
+  document.getElementById('um-vip-exp').textContent = u.vipExpiresAt ? fmt.date(u.vipExpiresAt) : '—';
+  document.getElementById('um-created').textContent = fmt.date(u.createdAt);
+  document.getElementById('um-ref').textContent     = u.referralCode || '—';
+
+  // Wire footer buttons
+  document.getElementById('um-adj-btn').onclick = () => {
+    document.getElementById('adj-uid').value = u._id;
+    closeUserModal(); go('pg-adj');
+  };
+  const freezeBtn = document.getElementById('um-freeze-btn');
+  freezeBtn.textContent = u.isFrozen ? '🔓 رفع التجميد' : '🔒 تجميد';
+  freezeBtn.className = `btn ${u.isFrozen ? 'btn-green' : 'btn-ghost'} btn-sm`;
+  freezeBtn.onclick = () => toggleFreeze(u._id, u.isFrozen, u.name);
+
+  document.getElementById('um-delete-btn').onclick = () => deleteUser(u._id, u.name);
+  if (u.isAdmin) document.getElementById('um-delete-btn').style.display = 'none';
+  else document.getElementById('um-delete-btn').style.display = '';
+
+  document.getElementById('user-modal').classList.add('show');
+}
+
+function closeUserModal() {
+  document.getElementById('user-modal').classList.remove('show');
+  _currentModalUser = null;
+}
+
+// Close modal on overlay click
+document.getElementById('user-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeUserModal();
+});
+
+/* ════════════════════════════════════════
+   All Transactions
+   ════════════════════════════════════════ */
+async function loadAdminTx(page = 1) {
+  const type   = document.getElementById('atx-type-f').value;
+  const status = document.getElementById('atx-status-f').value;
+  const body   = document.getElementById('atx-body');
+  body.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:30px;color:var(--text3)">جاري التحميل...</td></tr>';
+  try {
+    let url = `/admin/transactions?page=${page}&limit=20`;
+    if (type)   url += `&type=${type}`;
+    if (status) url += `&status=${status}`;
+    const data = await http.get(url);
+    if (!data.transactions.length) {
+      body.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:30px;color:var(--text3)">لا توجد نتائج</td></tr>'; return;
+    }
+    body.innerHTML = data.transactions.map(tx => {
+      const l = txLabel[tx.type] || { icon:'?', lbl: tx.type, sign:'' };
+      return `<tr>
+        <td>
+          <div style="font-size:.85rem;font-weight:500">${esc(tx.user?.name || '—')}</div>
+          <div style="font-size:.72rem;color:var(--text3)">${esc(tx.user?.email || '')}</div>
+        </td>
+        <td><span style="font-size:1rem">${l.icon}</span> <span style="font-size:.84rem">${l.lbl}</span></td>
+        <td style="color:${l.sign==='+'?'var(--green)':'var(--red)'};font-weight:700">${l.sign}${fmt.usd(tx.amount)}</td>
+        <td>${statusBadge[tx.status] || tx.status}</td>
+        <td class="hide-mobile" style="color:var(--text3);font-size:.78rem">${fmt.date(tx.createdAt)}</td>
+        <td class="hide-mobile" style="font-size:.74rem;color:var(--text3);max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
+          ${esc(tx.note || tx.txHash || '—')}
+        </td>
+      </tr>`;
+    }).join('');
+    renderAdminPag('atx-pag', data.pagination, loadAdminTx);
+  } catch (e) { toast(e.message, 'e'); }
+}
+
+/* ════════════════════════════════════════
+   Adjust Balance
+   ════════════════════════════════════════ */
+async function doAdjust() {
+  const btn    = document.getElementById('adj-btn');
+  const userId = document.getElementById('adj-uid').value.trim();
+  const amount = parseFloat(document.getElementById('adj-amount').value);
+  const reason = document.getElementById('adj-reason').value.trim();
+  if (!userId || !amount || !reason) return toast('جميع الحقول مطلوبة', 'w');
+  if (!confirm(`تأكيد تعديل رصيد بمقدار ${amount > 0 ? '+' : ''}$${amount}؟`)) return;
+  btnLoad(btn, true);
+  try {
+    const data = await http.post('/admin/adjust-balance', { userId, amount, reason });
+    toast(data.message, 's');
+    document.getElementById('adj-amount').value = '';
+    document.getElementById('adj-reason').value = '';
+    loadAdjLog();
+  } catch (e) { toast(e.message, 'e'); }
+  btnLoad(btn, false);
+}
+
+async function loadAdjLog() {
+  const body = document.getElementById('adj-log-body');
+  try {
+    const [d1, d2] = await Promise.all([
+      http.get('/admin/transactions?type=admin_credit&limit=10'),
+      http.get('/admin/transactions?type=admin_debit&limit=10'),
+    ]);
+    const all = [...d1.transactions, ...d2.transactions]
+      .sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt))
+      .slice(0, 15);
+    if (!all.length) {
+      body.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--text3)">لا توجد تعديلات</td></tr>'; return;
+    }
+    body.innerHTML = all.map(tx => `<tr>
+      <td style="font-size:.82rem">${esc(tx.user?.name || '—')}</td>
+      <td>${tx.type === 'admin_credit' ? '<span class="badge badge-green">إضافة</span>' : '<span class="badge badge-red">خصم</span>'}</td>
+      <td style="color:${tx.type==='admin_credit'?'var(--green)':'var(--red)'};font-weight:700">
+        ${tx.type==='admin_credit'?'+':'-'}${fmt.usd(tx.amount)}
+      </td>
+      <td style="font-size:.78rem;color:var(--text3)">${esc(tx.note || '—')}</td>
+      <td style="font-size:.78rem;color:var(--text3)">${fmt.date(tx.createdAt)}</td>
+    </tr>`).join('');
+  } catch (e) { toast(e.message, 'e'); }
+}
+
+/* ════════════════════════════════════════
+   Audit Log
+   ════════════════════════════════════════ */
+async function loadLog(page = 1) {
+  const severity = document.getElementById('log-sev-f').value;
+  const el = document.getElementById('log-body');
+  el.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text3)">جاري التحميل...</div>';
+  try {
+    let url = `/admin/audit-log?page=${page}&limit=25`;
+    if (severity) url += `&severity=${severity}`;
+    const data = await http.get(url);
+    if (!data.logs.length) {
+      el.innerHTML = '<div style="text-align:center;padding:24px;color:var(--text3)">لا توجد سجلات</div>'; return;
+    }
+    el.innerHTML = data.logs.map(l => `
+      <div class="log-item">
+        <div class="log-sev ${l.severity}"></div>
+        <div class="log-content">
+          <div class="log-action">
+            ${esc(l.action)}
+            ${l.target ? `← <span style="color:var(--teal)">${esc(l.target.name || l.target.email || '')}</span>` : ''}
+          </div>
+          <div class="log-meta">
+            بواسطة: <strong>${esc(l.admin?.name || '—')}</strong> |
+            ${l.severity === 'critical'
+              ? '<span class="badge badge-red">حرج</span>'
+              : l.severity === 'warn'
+              ? '<span class="badge badge-gold">تحذير</span>'
+              : '<span class="badge badge-blue">معلومات</span>'}
+            | ${fmt.ago(l.createdAt)}
+            ${l.details ? `<span style="font-family:monospace;font-size:.7rem;color:var(--text3);margin-right:8px">${esc(JSON.stringify(l.details).substring(0,80))}</span>` : ''}
+          </div>
+        </div>
+      </div>`).join('');
+    renderAdminPag('log-pag', data.pagination, loadLog);
+  } catch (e) { toast(e.message, 'e'); }
+}
+
+/* ════════════════════════════════════════
+   Pagination helper
+   ════════════════════════════════════════ */
+function renderAdminPag(containerId, pag, fn) {
+  const el = document.getElementById(containerId);
+  if (!pag || pag.pages <= 1) { el.innerHTML = ''; return; }
+  el.innerHTML = `
+    <div class="pagination">
+      <button class="pag-btn" onclick="${fn.name}(${pag.page - 1})" ${pag.page <= 1 ? 'disabled' : ''}>← السابق</button>
+      <span class="pag-info">صفحة ${pag.page} من ${pag.pages} &nbsp;·&nbsp; ${pag.total} إجمالي</span>
+      <button class="pag-btn" onclick="${fn.name}(${pag.page + 1})" ${pag.page >= pag.pages ? 'disabled' : ''}>التالي →</button>
+    </div>`;
+}
+
+/* ════════════════════════════════════════
+   Boot
+   ════════════════════════════════════════ */
+init();
+</script>
+</body>
+</html>
