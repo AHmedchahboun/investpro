@@ -1,0 +1,360 @@
+/* ═══════════════════════════════════════════════════════════
+   InvestPro — Fintech Pro Enhancement
+   Ticker + Charts + Notifications + Dark Mode
+═══════════════════════════════════════════════════════════ */
+
+/* ── Dark Mode Root ──────────────────────────────────────── */
+:root {
+  --mode-transition: background .3s, color .3s, border-color .3s;
+}
+body.dark-mode {
+  --bg: #0d1117;
+  --bg2: #161b22;
+  --bg3: #21262d;
+  --text: #e6edf3;
+  --text2: #8b949e;
+  --text3: #6e7681;
+  --border: #30363d;
+  filter: none;
+}
+
+/* ── Live Price Ticker ───────────────────────────────────── */
+.ticker-wrap {
+  width: 100%;
+  background: linear-gradient(90deg, #0a0e1a 0%, #0f1929 50%, #0a0e1a 100%);
+  border-bottom: 1px solid rgba(56,189,248,0.15);
+  overflow: hidden;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 9999;
+}
+
+.ticker-track {
+  display: flex;
+  gap: 0;
+  animation: tickerScroll 35s linear infinite;
+  white-space: nowrap;
+  will-change: transform;
+}
+
+.ticker-track:hover { animation-play-state: paused; }
+
+@keyframes tickerScroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.ticker-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 22px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  border-right: 1px solid rgba(255,255,255,0.06);
+  color: #e2e8f0;
+  cursor: default;
+  transition: background .2s;
+}
+.ticker-item:hover { background: rgba(255,255,255,0.04); }
+
+.ticker-symbol {
+  color: #94a3b8;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.ticker-price { font-variant-numeric: tabular-nums; }
+.ticker-change { font-size: 0.68rem; }
+.ticker-up   { color: #22c55e; }
+.ticker-down { color: #ef4444; }
+
+.ticker-label {
+  padding: 0 14px;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #38bdf8;
+  background: rgba(56,189,248,0.08);
+  border-right: 1px solid rgba(56,189,248,0.2);
+  height: 100%;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+/* ── Notification Bell ───────────────────────────────────── */
+.notif-wrapper {
+  position: relative;
+  display: inline-flex;
+}
+
+.notif-bell {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255,255,255,0.08);
+  color: #94a3b8;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  transition: all .2s;
+  position: relative;
+}
+.notif-bell:hover { background: rgba(255,255,255,0.14); color: #e2e8f0; }
+
+.notif-badge {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  background: #ef4444;
+  color: #fff;
+  font-size: 0.6rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: pulse-bell .8s ease infinite alternate;
+}
+@keyframes pulse-bell { from { transform: scale(1); } to { transform: scale(1.2); } }
+
+.notif-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 0;
+  width: 320px;
+  background: #1e293b;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  z-index: 10000;
+  overflow: hidden;
+  transform: translateY(-8px) scale(0.96);
+  opacity: 0;
+  pointer-events: none;
+  transition: all .25s cubic-bezier(.4,0,.2,1);
+}
+.notif-dropdown.show {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+  pointer-events: all;
+}
+
+.notif-header {
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.notif-header h4 { margin: 0; font-size: .85rem; font-weight: 700; color: #e2e8f0; }
+.notif-mark-all {
+  font-size: .7rem;
+  color: #38bdf8;
+  cursor: pointer;
+  padding: 3px 8px;
+  border-radius: 6px;
+  transition: background .2s;
+}
+.notif-mark-all:hover { background: rgba(56,189,248,0.1); }
+
+.notif-list { max-height: 340px; overflow-y: auto; }
+.notif-item {
+  display: flex;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  cursor: pointer;
+  transition: background .15s;
+  position: relative;
+}
+.notif-item:hover { background: rgba(255,255,255,0.04); }
+.notif-item.unread { background: rgba(56,189,248,0.04); }
+.notif-item.unread::before {
+  content: '';
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #38bdf8;
+}
+
+.notif-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: .9rem;
+  flex-shrink: 0;
+}
+.notif-icon.success { background: rgba(34,197,94,.15); }
+.notif-icon.warning { background: rgba(234,179,8,.15); }
+.notif-icon.info    { background: rgba(56,189,248,.15); }
+.notif-icon.danger  { background: rgba(239,68,68,.15); }
+
+.notif-content { flex: 1; min-width: 0; }
+.notif-title { font-size: .8rem; font-weight: 600; color: #e2e8f0; margin-bottom: 3px; }
+.notif-msg   { font-size: .72rem; color: #8b949e; line-height: 1.4; }
+.notif-time  { font-size: .65rem; color: #6e7681; margin-top: 4px; }
+
+.notif-empty {
+  padding: 32px 16px;
+  text-align: center;
+  color: #6e7681;
+  font-size: .8rem;
+}
+
+/* ── Charts Section ──────────────────────────────────────── */
+.charts-section {
+  padding: 0 16px;
+  margin-bottom: 20px;
+}
+
+.chart-card {
+  background: linear-gradient(145deg, #1e293b, #162032);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 20px;
+  padding: 16px;
+  margin-bottom: 14px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+}
+
+.chart-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.chart-card-title {
+  font-size: .82rem;
+  font-weight: 700;
+  color: #e2e8f0;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.chart-period-btns {
+  display: flex;
+  gap: 4px;
+}
+.chart-period-btn {
+  padding: 3px 9px;
+  font-size: .65rem;
+  font-weight: 600;
+  border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: transparent;
+  color: #8b949e;
+  cursor: pointer;
+  transition: all .2s;
+}
+.chart-period-btn.active {
+  background: rgba(56,189,248,0.15);
+  border-color: rgba(56,189,248,0.3);
+  color: #38bdf8;
+}
+
+.chart-value-display {
+  margin-bottom: 10px;
+}
+.chart-main-val {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #e2e8f0;
+  font-variant-numeric: tabular-nums;
+}
+.chart-sub-val {
+  font-size: .72rem;
+  color: #22c55e;
+  margin-top: 2px;
+}
+
+.chart-canvas-wrap {
+  height: 140px;
+  position: relative;
+}
+
+/* ── Dark Mode Toggle ────────────────────────────────────── */
+.theme-toggle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255,255,255,0.08);
+  color: #94a3b8;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: .95rem;
+  transition: all .2s;
+}
+.theme-toggle:hover { background: rgba(255,255,255,0.14); color: #f59e0b; }
+
+/* ── Live Dot Pulse ──────────────────────────────────────── */
+.live-dot {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: .65rem;
+  font-weight: 600;
+  color: #22c55e;
+}
+.live-dot::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 0 0 rgba(34,197,94,.6);
+  animation: live-pulse 1.4s ease infinite;
+}
+@keyframes live-pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(34,197,94,.6); }
+  70%  { box-shadow: 0 0 0 8px rgba(34,197,94,0); }
+  100% { box-shadow: 0 0 0 0 rgba(34,197,94,0); }
+}
+
+/* ── Profit Summary Strip ────────────────────────────────── */
+.profit-strip {
+  display: flex;
+  gap: 10px;
+  padding: 12px 16px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.profit-strip::-webkit-scrollbar { display: none; }
+
+.profit-chip {
+  flex-shrink: 0;
+  background: linear-gradient(135deg, #1e293b, #0f172a);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 12px;
+  padding: 10px 14px;
+  min-width: 110px;
+  text-align: center;
+}
+.profit-chip-lbl { font-size: .65rem; color: #8b949e; margin-bottom: 5px; }
+.profit-chip-val { font-size: .95rem; font-weight: 700; }
+.profit-chip-val.up   { color: #22c55e; }
+.profit-chip-val.down { color: #ef4444; }
+.profit-chip-val.neut { color: #38bdf8; }

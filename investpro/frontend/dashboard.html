@@ -11,8 +11,16 @@
   <link rel="stylesheet" href="css/referral.css">
   <link rel="stylesheet" href="css/how-it-works.css">
   <link rel="stylesheet" href="css/welcome-modal.css">
+  <link rel="stylesheet" href="css/fintech-pro.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 <body>
+
+<!-- Live Price Ticker -->
+<div class="ticker-wrap">
+  <div class="ticker-label">📈 LIVE</div>
+  <div class="ticker-track" id="ticker-track"></div>
+</div>
 
 <!-- Top Bar -->
 <div class="top-bar">
@@ -23,7 +31,25 @@
       <div class="vip-badge" id="sb-vip-label">VIP —</div>
     </div>
   </div>
-  <div class="flex gap-2">
+  <div class="flex gap-2" style="align-items:center">
+    <!-- Notification Bell -->
+    <div class="notif-wrapper" id="notif-wrapper">
+      <button class="notif-bell" onclick="toggleNotifications()">
+        🔔
+        <span class="notif-badge" id="notif-badge" style="display:none">0</span>
+      </button>
+      <div class="notif-dropdown" id="notif-dropdown">
+        <div class="notif-header">
+          <h4>الإشعارات</h4>
+          <span class="notif-mark-all" onclick="markAllRead()">تحديد كمقروء</span>
+        </div>
+        <div class="notif-list" id="notif-list"></div>
+      </div>
+    </div>
+    <!-- Dark Mode Toggle -->
+    <button class="theme-toggle" onclick="toggleTheme()" title="تبديل الوضع">
+      <span id="theme-icon">☀️</span>
+    </button>
     <button class="btn-icon" style="width: 40px; height: 40px; font-size: 1rem; border-radius: 50%;" onclick="auth.logout()">
       <i class="fas fa-sign-out-alt text-danger"></i>
     </button>
@@ -96,6 +122,46 @@
       <div class="tx-item skeleton"></div>
     </div>
     
+    <!-- Profit Strip -->
+    <div class="profit-strip" id="profit-strip"></div>
+
+    <!-- Charts Section -->
+    <div class="charts-section">
+      <!-- Portfolio Performance -->
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div class="chart-card-title">📈 أداء المحفظة</div>
+          <div class="chart-period-btns">
+            <button class="chart-period-btn active" data-period="7"  onclick="refreshCharts(7)">7د</button>
+            <button class="chart-period-btn"        data-period="30" onclick="refreshCharts(30)">30د</button>
+            <button class="chart-period-btn"        data-period="90" onclick="refreshCharts(90)">90د</button>
+          </div>
+        </div>
+        <div class="chart-value-display">
+          <div class="chart-main-val" id="portfolio-val">$—</div>
+          <div class="chart-sub-val"  id="portfolio-gain">جاري الحساب...</div>
+        </div>
+        <div class="chart-canvas-wrap">
+          <canvas id="portfolio-chart"></canvas>
+        </div>
+      </div>
+
+      <!-- Daily Profit -->
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div class="chart-card-title">💰 الأرباح اليومية (7 أيام)</div>
+          <span class="live-dot">مباشر</span>
+        </div>
+        <div class="chart-value-display">
+          <div class="chart-main-val" id="profit-week-val">+$—</div>
+          <div class="chart-sub-val"  id="profit-week-sub">جاري الحساب...</div>
+        </div>
+        <div class="chart-canvas-wrap">
+          <canvas id="profit-chart"></canvas>
+        </div>
+      </div>
+    </div>
+
     <!-- Trust Indicators -->
     <div class="trust-badges">
       <div class="trust-item">
@@ -759,6 +825,7 @@
 <!-- Scripts -->
 <script src="js/config.js"></script>
 <script src="js/api.js"></script>
+<script src="js/fintech-pro.js"></script>
 <script>
 /* ════════════════════════════════════════════════════════════
    Global state
