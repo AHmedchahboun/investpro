@@ -3,7 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#060d1a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="InvestPro">
+  <meta name="mobile-web-app-capable" content="yes">
   <title>InvestPro — لوحة التحكم</title>
+  <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/dashboard-v2.css">
@@ -12,9 +18,16 @@
   <link rel="stylesheet" href="css/how-it-works.css">
   <link rel="stylesheet" href="css/welcome-modal.css">
   <link rel="stylesheet" href="css/fintech-pro.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="css/mobile.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" defer></script>
 </head>
 <body>
+
+<!-- App Loading Screen -->
+<div class="app-loader" id="app-loader">
+  <div class="loader-logo">Invest<span>Pro</span></div>
+  <div class="loader-spinner"></div>
+</div>
 
 <!-- Live Price Ticker -->
 <div class="ticker-wrap">
@@ -40,10 +53,13 @@
       </button>
       <div class="notif-dropdown" id="notif-dropdown">
         <div class="notif-header">
-          <h4>الإشعارات</h4>
+          <h4>🔔 الإشعارات</h4>
           <span class="notif-mark-all" onclick="markAllRead()">تحديد كمقروء</span>
         </div>
         <div class="notif-list" id="notif-list"></div>
+        <button class="notif-close-btn" onclick="toggleNotifications()">
+          <i class="fas fa-times"></i> إغلاق
+        </button>
       </div>
     </div>
     <!-- Dark Mode Toggle -->
@@ -92,6 +108,10 @@
       <div class="action-btn vip" data-go="pg-vip">
         <div class="icon"><i class="fas fa-crown"></i></div>
         <span>ترقية VIP</span>
+      </div>
+      <div class="action-btn" data-go="pg-ref" style="cursor:pointer" onclick="goPage('pg-ref')">
+        <div class="icon" style="background:rgba(168,85,247,.15);color:#a855f7"><i class="fas fa-users"></i></div>
+        <span>الإحالة</span>
       </div>
     </div>
 
@@ -2029,6 +2049,126 @@ function checkWelcomeModal() {
 
   </div>
 </div>
+
+<!-- Mobile App Init + PWA -->
+<script>
+/* ════════════════════════════════════════════════════════════
+   Mobile App Shell — Navigation, PWA, Loader, Haptics
+   ════════════════════════════════════════════════════════════ */
+
+/* ── goPage alias (used by quick-action referral btn) ─────── */
+function goPage(id) { if (typeof go === 'function') go(id); }
+
+/* ── App Loader ──────────────────────────────────────────── */
+function hideLoader() {
+  const el = document.getElementById('app-loader');
+  if (!el) return;
+  el.classList.add('hidden');
+  setTimeout(() => el.remove(), 450);
+}
+
+/* Hide loader once DOMContentLoaded fires & data starts loading */
+window.addEventListener('DOMContentLoaded', () => {
+  setTimeout(hideLoader, 1200); /* max 1.2s splash */
+});
+
+/* ── Haptic-like tap feedback ────────────────────────────── */
+document.addEventListener('click', e => {
+  const tappable = e.target.closest('.action-btn, .nav-item, .btn, .wallet-tab, .vip-pro-card');
+  if (!tappable) return;
+  tappable.classList.remove('tap-pop');
+  void tappable.offsetWidth; /* force reflow */
+  tappable.classList.add('tap-pop');
+  /* Use Vibration API for light haptic on supported devices */
+  if (navigator.vibrate) navigator.vibrate(8);
+}, { passive: true });
+
+/* ── Scroll-to-top on page switch ───────────────────────── */
+const _origGo = (typeof go !== 'undefined') ? go : null;
+function _resetPageScroll(id) {
+  const pg = document.getElementById(id);
+  if (pg) pg.scrollTop = 0;
+}
+
+/* ── PWA — Service Worker registration ───────────────────── */
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(reg => console.log('[SW] registered, scope:', reg.scope))
+      .catch(err => console.warn('[SW] registration failed:', err));
+  });
+}
+
+/* ── PWA Install Banner ──────────────────────────────────── */
+let _deferredInstall = null;
+
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  _deferredInstall = e;
+
+  /* Show banner only if not already installed & not dismissed recently */
+  const dismissed = localStorage.getItem('pwa_dismissed');
+  if (dismissed && Date.now() - parseInt(dismissed) < 7 * 86400000) return;
+
+  const banner = document.createElement('div');
+  banner.className = 'pwa-banner';
+  banner.id = 'pwa-banner';
+  banner.innerHTML = `
+    <div class="pwa-banner-icon">📲</div>
+    <div class="pwa-banner-text">
+      <div class="pwa-banner-title">تثبيت InvestPro</div>
+      <div class="pwa-banner-sub">أضفه للشاشة الرئيسية كتطبيق</div>
+    </div>
+    <div class="pwa-banner-btns">
+      <button class="pwa-install-btn" onclick="installPWA()">تثبيت</button>
+      <button class="pwa-dismiss-btn" onclick="dismissPWA()">لاحقاً</button>
+    </div>`;
+  document.body.appendChild(banner);
+});
+
+function installPWA() {
+  if (!_deferredInstall) return;
+  _deferredInstall.prompt();
+  _deferredInstall.userChoice.then(c => {
+    if (c.outcome === 'accepted') dismissPWA();
+    _deferredInstall = null;
+  });
+}
+
+function dismissPWA() {
+  localStorage.setItem('pwa_dismissed', Date.now().toString());
+  const b = document.getElementById('pwa-banner');
+  if (b) b.remove();
+}
+
+/* ── Swipe-down to close notifications ───────────────────── */
+(function initSwipeClose() {
+  let startY = 0;
+  const dd = document.getElementById('notif-dropdown');
+  if (!dd) return;
+
+  dd.addEventListener('touchstart', e => {
+    startY = e.touches[0].clientY;
+  }, { passive: true });
+
+  dd.addEventListener('touchend', e => {
+    const dy = e.changedTouches[0].clientY - startY;
+    if (dy > 80) toggleNotifications(); /* swipe down 80px = close */
+  }, { passive: true });
+})();
+
+/* ── Standalone PWA: adjust viewport for status bar ─────── */
+if (window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches) {
+  document.documentElement.style.setProperty('--safe-top', '44px');
+}
+
+/* ── Visibility change: pause/resume ticker ─────────────── */
+document.addEventListener('visibilitychange', () => {
+  const track = document.getElementById('ticker-track');
+  if (!track) return;
+  track.style.animationPlayState = document.hidden ? 'paused' : 'running';
+});
+</script>
 
 </body>
 </html>
