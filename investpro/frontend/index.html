@@ -2,427 +2,789 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>InvestPro — نظام استثمار رقمي شفاف</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>InvestPro — منصة الاستثمار الرقمي</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+/* ═══════════════════════════════════════════
+   BASE
+═══════════════════════════════════════════ */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#060d1a;--bg2:#0d1829;--bg3:#111f35;--bg4:#1a2a42;
+  --primary:#0ea5e9;--primary2:#38bdf8;--gold:#f59e0b;
+  --green:#22c55e;--red:#ef4444;--purple:#a855f7;
+  --text:#f1f5f9;--text2:#94a3b8;--text3:#64748b;
+  --border:rgba(255,255,255,0.07);
+  --glow:rgba(14,165,233,0.3);
+  --r:16px;--r2:24px;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;line-height:1.5}
+a{text-decoration:none;color:inherit}
+button{cursor:pointer;border:none;font-family:inherit}
+img{max-width:100%}
+
+/* ═══════════════════════════════════════════
+   TICKER
+═══════════════════════════════════════════ */
+.ticker-bar{background:linear-gradient(90deg,#030810,#081020,#030810);border-bottom:1px solid rgba(14,165,233,.15);height:34px;overflow:hidden;display:flex;align-items:center;position:sticky;top:0;z-index:1000}
+.ticker-label{padding:0 14px;font-size:.62rem;font-weight:800;letter-spacing:.1em;color:var(--primary2);border-right:1px solid rgba(14,165,233,.2);height:100%;display:flex;align-items:center;flex-shrink:0;text-transform:uppercase}
+.ticker-track{display:flex;animation:slide 40s linear infinite;white-space:nowrap}
+.ticker-track:hover{animation-play-state:paused}
+@keyframes slide{to{transform:translateX(-50%)}}
+.t-item{display:inline-flex;align-items:center;gap:5px;padding:0 18px;font-size:.7rem;font-weight:600;border-right:1px solid var(--border)}
+.t-sym{color:var(--text3);font-size:.62rem;font-weight:700}
+.t-up{color:var(--green)}.t-down{color:var(--red)}
+
+/* ═══════════════════════════════════════════
+   NAVBAR
+═══════════════════════════════════════════ */
+.nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:64px;background:rgba(6,13,26,.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);position:sticky;top:34px;z-index:999}
+.nav-logo{font-size:1.2rem;font-weight:800;display:flex;align-items:center;gap:8px}
+.nav-logo span{background:linear-gradient(135deg,var(--primary),var(--primary2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.nav-links{display:flex;gap:24px}
+.nav-links a{font-size:.82rem;color:var(--text2);font-weight:500;transition:color .2s}
+.nav-links a:hover{color:var(--text)}
+.nav-btns{display:flex;gap:10px}
+.btn{padding:9px 20px;border-radius:10px;font-size:.82rem;font-weight:600;transition:all .2s;display:inline-flex;align-items:center;gap:6px}
+.btn-ghost{background:rgba(255,255,255,.07);color:var(--text);border:1px solid var(--border)}
+.btn-ghost:hover{background:rgba(255,255,255,.12)}
+.btn-primary{background:linear-gradient(135deg,var(--primary),var(--primary2));color:#fff;box-shadow:0 4px 20px var(--glow)}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 28px var(--glow)}
+.btn-lg{padding:13px 28px;font-size:.9rem;border-radius:12px}
+
+/* ═══════════════════════════════════════════
+   HERO
+═══════════════════════════════════════════ */
+.hero{position:relative;padding:80px 24px 60px;text-align:center;overflow:hidden;min-height:520px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% -10%,rgba(14,165,233,.18) 0%,transparent 70%);pointer-events:none}
+.hero-bg::after{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%230ea5e9' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(14,165,233,.1);border:1px solid rgba(14,165,233,.25);border-radius:100px;padding:5px 14px;font-size:.72rem;color:var(--primary2);font-weight:600;margin-bottom:20px;animation:fadeUp .6s ease}
+.hero-title{font-size:clamp(1.8rem,5vw,3.2rem);font-weight:900;line-height:1.15;margin-bottom:16px;animation:fadeUp .7s ease}
+.hero-title .hl{background:linear-gradient(135deg,var(--primary),var(--primary2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero-sub{font-size:clamp(.9rem,2vw,1.1rem);color:var(--text2);max-width:520px;margin:0 auto 32px;animation:fadeUp .8s ease}
+.hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;animation:fadeUp .9s ease}
+.hero-stats{display:flex;gap:32px;justify-content:center;margin-top:48px;flex-wrap:wrap;animation:fadeUp 1s ease}
+.hs-item{text-align:center}
+.hs-val{font-size:1.5rem;font-weight:800;color:var(--text)}
+.hs-lbl{font-size:.72rem;color:var(--text3);margin-top:3px}
+.hs-sep{width:1px;background:var(--border)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+/* ═══════════════════════════════════════════
+   SECTIONS
+═══════════════════════════════════════════ */
+.section{padding:64px 24px;max-width:1100px;margin:0 auto}
+.section-full{padding:64px 0}
+.section-title{font-size:clamp(1.3rem,3vw,1.9rem);font-weight:800;text-align:center;margin-bottom:10px}
+.section-sub{font-size:.88rem;color:var(--text2);text-align:center;margin-bottom:40px}
+
+/* ═══════════════════════════════════════════
+   LIVE MARKET
+═══════════════════════════════════════════ */
+.market-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}
+.m-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;transition:all .2s;cursor:default}
+.m-card:hover{border-color:rgba(14,165,233,.25);transform:translateY(-2px)}
+.m-sym{font-size:.7rem;font-weight:700;color:var(--text3);text-transform:uppercase;margin-bottom:6px}
+.m-name{font-size:.72rem;color:var(--text2);margin-bottom:8px}
+.m-price{font-size:1.05rem;font-weight:700;font-variant-numeric:tabular-nums;margin-bottom:4px}
+.m-change{font-size:.72rem;font-weight:600;display:flex;align-items:center;gap:3px}
+.up{color:var(--green)}.down{color:var(--red)}
+
+/* ═══════════════════════════════════════════
+   HOW IT WORKS
+═══════════════════════════════════════════ */
+.hiw-wrap{background:linear-gradient(135deg,var(--bg2),var(--bg3));border:1px solid var(--border);border-radius:var(--r2);padding:40px 32px}
+.hiw-steps{display:flex;flex-direction:column;gap:0}
+.hiw-step{display:flex;gap:20px;align-items:flex-start;padding:20px 0;border-bottom:1px solid var(--border);position:relative}
+.hiw-step:last-child{border-bottom:none}
+.hiw-num{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--primary2));display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:800;flex-shrink:0;box-shadow:0 4px 15px var(--glow)}
+.hiw-content h3{font-size:.95rem;font-weight:700;margin-bottom:4px}
+.hiw-content p{font-size:.82rem;color:var(--text2);line-height:1.5}
+.hiw-icon{font-size:1.3rem;margin-left:auto;opacity:.6}
+.disclaimer{background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.2);border-radius:12px;padding:12px 16px;font-size:.75rem;color:#fca5a5;display:flex;align-items:center;gap:10px;margin-top:20px}
+
+/* ═══════════════════════════════════════════
+   VIP PLANS
+═══════════════════════════════════════════ */
+.vip-scroll{display:flex;gap:14px;overflow-x:auto;padding:4px 24px 16px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.vip-scroll::-webkit-scrollbar{display:none}
+.vip-card{flex-shrink:0;width:200px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:22px 18px;position:relative;transition:all .25s}
+.vip-card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(0,0,0,.4)}
+.vip-card.popular{border-color:rgba(14,165,233,.4);background:linear-gradient(135deg,#0d1f38,#0d2040)}
+.vip-card.popular::before{content:'الأكثر شعبية';position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,var(--primary),var(--primary2));color:#fff;font-size:.62rem;font-weight:700;padding:4px 12px;border-radius:100px;white-space:nowrap}
+.vc-icon{font-size:1.8rem;margin-bottom:10px}
+.vc-name{font-size:1rem;font-weight:700;margin-bottom:4px}
+.vc-price{font-size:1.5rem;font-weight:900;color:var(--primary2);margin-bottom:14px}
+.vc-rows{display:flex;flex-direction:column;gap:7px;margin-bottom:16px}
+.vc-row{display:flex;justify-content:space-between;font-size:.74rem;color:var(--text2)}
+.vc-row span:last-child{font-weight:600;color:var(--text)}
+.vc-profit{color:var(--green) !important}
+.vc-risk{font-size:.66rem;padding:2px 8px;border-radius:100px;font-weight:600}
+.risk-low{background:rgba(34,197,94,.12);color:var(--green)}
+.risk-med{background:rgba(245,158,11,.12);color:var(--gold)}
+.risk-hi{background:rgba(239,68,68,.12);color:var(--red)}
+.vc-btn{width:100%;padding:10px;border-radius:10px;font-size:.8rem;font-weight:700;transition:all .2s}
+.vc-btn-pri{background:linear-gradient(135deg,var(--primary),var(--primary2));color:#fff;box-shadow:0 4px 15px var(--glow)}
+.vc-btn-sec{background:rgba(255,255,255,.07);color:var(--text);border:1px solid var(--border)}
+.vc-btn:hover{filter:brightness(1.1);transform:translateY(-1px)}
+
+/* ═══════════════════════════════════════════
+   STATS
+═══════════════════════════════════════════ */
+.stats-band{background:linear-gradient(135deg,var(--bg2),var(--bg3));border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:40px 24px}
+.stats-inner{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;max-width:700px;margin:0 auto}
+.stat-box{text-align:center;padding:20px;background:var(--bg);border:1px solid var(--border);border-radius:var(--r)}
+.stat-icon{font-size:1.6rem;margin-bottom:8px}
+.stat-val{font-size:1.6rem;font-weight:900;font-variant-numeric:tabular-nums}
+.stat-lbl{font-size:.72rem;color:var(--text3);margin-top:3px}
+
+/* ═══════════════════════════════════════════
+   CHART PREVIEW
+═══════════════════════════════════════════ */
+.chart-preview-grid{display:grid;gap:16px}
+.cp-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:20px}
+.cp-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.cp-title{font-size:.82rem;font-weight:700}
+.cp-val{font-size:1.3rem;font-weight:800;margin-bottom:2px}
+.cp-sub{font-size:.72rem;color:var(--text2);margin-bottom:16px}
+.cp-wrap{height:130px}
+
+/* ═══════════════════════════════════════════
+   COUNTRIES
+═══════════════════════════════════════════ */
+.countries-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px}
+.c-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px 12px;text-align:center;transition:all .2s}
+.c-card:hover{border-color:rgba(14,165,233,.25);transform:translateY(-2px)}
+.c-flag{font-size:1.8rem;margin-bottom:6px}
+.c-name{font-size:.72rem;color:var(--text2);font-weight:500}
+.c-more{text-align:center;margin-top:14px;font-size:.8rem;color:var(--text3)}
+
+/* ═══════════════════════════════════════════
+   TRUST
+═══════════════════════════════════════════ */
+.trust-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
+.trust-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:22px;transition:all .2s}
+.trust-card:hover{border-color:rgba(14,165,233,.2);transform:translateY(-2px)}
+.tc-icon{font-size:1.5rem;margin-bottom:10px}
+.tc-title{font-size:.88rem;font-weight:700;margin-bottom:6px}
+.tc-body{font-size:.76rem;color:var(--text2);line-height:1.5}
+
+/* ═══════════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════════ */
+.footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px 24px 24px;text-align:center}
+.footer-logo{font-size:1.3rem;font-weight:800;margin-bottom:16px;display:flex;align-items:center;justify-content:center;gap:8px}
+.footer-logo span{background:linear-gradient(135deg,var(--primary),var(--primary2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.footer-links{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;margin-bottom:20px}
+.footer-links a{font-size:.78rem;color:var(--text3);transition:color .2s}
+.footer-links a:hover{color:var(--text2)}
+.footer-risk{background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.15);border-radius:10px;padding:10px 16px;font-size:.72rem;color:#fca5a5;margin-bottom:16px;display:flex;align-items:center;gap:8px;max-width:600px;margin-left:auto;margin-right:auto}
+.footer-copy{font-size:.72rem;color:var(--text3)}
+
+/* ═══════════════════════════════════════════
+   AUTH MODAL
+═══════════════════════════════════════════ */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(10px);z-index:2000;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .25s}
+.modal-overlay.show{opacity:1;pointer-events:all}
+.modal-box{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:28px;width:100%;max-width:400px;position:relative;transform:translateY(20px);transition:transform .25s}
+.modal-overlay.show .modal-box{transform:translateY(0)}
+.modal-close{position:absolute;top:16px;left:16px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.07);color:var(--text2);display:flex;align-items:center;justify-content:center;font-size:.8rem}
+.modal-close:hover{background:rgba(255,255,255,.12);color:var(--text)}
+.auth-tabs{display:flex;background:var(--bg);border-radius:10px;padding:3px;margin-bottom:22px;gap:3px}
+.auth-tab{flex:1;padding:8px;text-align:center;border-radius:8px;font-size:.82rem;font-weight:600;color:var(--text3);cursor:pointer;transition:all .2s}
+.auth-tab.active{background:var(--bg3);color:var(--text)}
+.form-group{margin-bottom:14px}
+.form-label{display:block;font-size:.78rem;color:var(--text2);font-weight:600;margin-bottom:6px}
+.form-input{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--text);font-size:.88rem;outline:none;transition:border-color .2s;font-family:inherit}
+.form-input:focus{border-color:rgba(14,165,233,.4)}
+.form-err{font-size:.76rem;color:var(--red);min-height:18px;margin-bottom:8px}
+.form-submit{width:100%;padding:12px;border-radius:10px;background:linear-gradient(135deg,var(--primary),var(--primary2));color:#fff;font-size:.88rem;font-weight:700;box-shadow:0 4px 15px var(--glow);transition:all .2s;font-family:inherit}
+.form-submit:hover{transform:translateY(-1px);box-shadow:0 6px 24px var(--glow)}
+.form-foot{text-align:center;margin-top:14px}
+.form-foot a{font-size:.76rem;color:var(--text3);transition:color .2s}
+.form-foot a:hover{color:var(--primary2)}
+
+/* ═══════════════════════════════════════════
+   SCROLL ANIMATIONS
+═══════════════════════════════════════════ */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .6s ease,transform .6s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════ */
+@media(max-width:640px){
+  .nav-links{display:none}
+  .hero{padding:60px 20px 40px}
+  .hero-stats{gap:20px}
+  .hs-sep{display:none}
+  .stats-inner{grid-template-columns:1fr 1fr}
+  .section{padding:48px 20px}
+}
+</style>
 </head>
 <body>
 
-<!-- 1. Header -->
-<header class="lp-header">
-  <div class="font-bold text-lg"><span class="text-primary">💎</span> InvestPro</div>
-  <button class="btn btn-primary" style="width: auto; min-height: 36px; padding: 0 16px; font-size: 0.85rem;" onclick="openAuth('register')">ابدأ الآن</button>
-</header>
+<!-- ═══════════════ TICKER ═══════════════ -->
+<div class="ticker-bar">
+  <div class="ticker-label">📈 Live</div>
+  <div class="ticker-track" id="ticker-track"></div>
+</div>
 
-<!-- 2. Hero Section -->
-<section class="lp-hero">
-  <h1 class="lp-hero-title fade-in">نظام استثمار رقمي شفاف وآلي</h1>
-  <p class="lp-hero-subtitle fade-in" style="animation-delay: 0.1s;">تابع أرباحك، الإيداعات، والمكافآت في لوحة تحكم واحدة بسيطة.</p>
-  <div class="lp-hero-buttons fade-in" style="animation-delay: 0.2s;">
+<!-- ═══════════════ NAVBAR ═══════════════ -->
+<nav class="nav">
+  <div class="nav-logo">💎 <span>InvestPro</span></div>
+  <div class="nav-links">
+    <a href="#market">السوق</a>
+    <a href="#plans">الخطط</a>
+    <a href="#stats">الإحصائيات</a>
+    <a href="#how">كيف يعمل</a>
+  </div>
+  <div class="nav-btns">
+    <button class="btn btn-ghost" onclick="openAuth('login')">دخول</button>
     <button class="btn btn-primary" onclick="openAuth('register')">ابدأ مجاناً</button>
-    <button class="btn btn-secondary" onclick="openAuth('login')">تسجيل الدخول</button>
+  </div>
+</nav>
+
+<!-- ═══════════════ HERO ═══════════════ -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-badge"><i class="fas fa-circle" style="font-size:.45rem;color:var(--green)"></i> النظام يعمل 24/7</div>
+  <h1 class="hero-title">استثمر بذكاء مع<br><span class="hl">InvestPro</span></h1>
+  <p class="hero-sub">منصة استثمار رقمية شفافة — تابع أرباحك اليومية، إيداعاتك، وخطة VIP الخاصة بك في مكان واحد.</p>
+  <div class="hero-btns">
+    <button class="btn btn-primary btn-lg" onclick="openAuth('register')"><i class="fas fa-rocket"></i> ابدأ مجاناً</button>
+    <button class="btn btn-ghost btn-lg" onclick="openAuth('login')"><i class="fas fa-sign-in-alt"></i> تسجيل الدخول</button>
+  </div>
+  <div class="hero-stats">
+    <div class="hs-item"><div class="hs-val" id="hs-users">1,200+</div><div class="hs-lbl">مستثمر نشط</div></div>
+    <div class="hs-sep"></div>
+    <div class="hs-item"><div class="hs-val" id="hs-dep">$420K+</div><div class="hs-lbl">إجمالي الإيداعات</div></div>
+    <div class="hs-sep"></div>
+    <div class="hs-item"><div class="hs-val" id="hs-profits">$89K+</div><div class="hs-lbl">أرباح موزّعة</div></div>
+    <div class="hs-sep"></div>
+    <div class="hs-item"><div class="hs-val">12+</div><div class="hs-lbl">دولة</div></div>
   </div>
 </section>
 
-<!-- 3. Live Stats -->
-<section class="lp-section">
-  <div class="grid-2x2">
-    <div class="card text-center fade-in">
-      <div class="text-xs text-secondary mb-1">المستخدمون</div>
-      <div class="text-xl font-bold text-primary" data-count="1200">+0</div>
-    </div>
-    <div class="card text-center fade-in">
-      <div class="text-xs text-secondary mb-1">الإيداعات</div>
-      <div class="text-xl font-bold text-success" data-prefix="$" data-count="9000">+0</div>
-    </div>
-    <div class="card text-center fade-in">
-      <div class="text-xs text-secondary mb-1">المكافآت</div>
-      <div class="text-xl font-bold text-warning" data-prefix="$" data-count="4700">+0</div>
-    </div>
-    <div class="card text-center fade-in">
-      <div class="text-xs text-secondary mb-1">النظام</div>
-      <div class="text-lg font-bold text-accent"><i class="fas fa-circle text-xs"></i> متصل 24/7</div>
-    </div>
-  </div>
+<!-- ═══════════════ LIVE MARKET ═══════════════ -->
+<section class="section" id="market">
+  <div class="section-title reveal">📊 السوق المباشر</div>
+  <div class="section-sub reveal">أسعار محدّثة كل 3 ثواني</div>
+  <div class="market-grid" id="market-grid"></div>
 </section>
 
-<!-- 4. How it works -->
-<section class="lp-section">
-  <h2 class="lp-section-title">كيف يعمل؟</h2>
-  <div class="lp-timeline">
-    <div class="lp-timeline-item fade-in">
-      <div class="lp-timeline-icon"><i class="fas fa-wallet"></i></div>
-      <div class="lp-timeline-content">
-        <h3 class="font-bold mb-1">أودع USDT</h3>
-        <p class="text-sm text-secondary">قم بإيداع رصيدك بأمان عبر الشبكات المدعومة.</p>
-      </div>
+<!-- ═══════════════ STATS ═══════════════ -->
+<div class="stats-band" id="stats">
+  <div class="section-title reveal" style="margin-bottom:28px">إحصائيات المنصة</div>
+  <div class="stats-inner">
+    <div class="stat-box reveal">
+      <div class="stat-icon">👥</div>
+      <div class="stat-val" style="color:var(--primary2)" data-count="1247" data-suffix="+">0</div>
+      <div class="stat-lbl">مستثمر مسجّل</div>
     </div>
-    <div class="lp-timeline-item fade-in">
-      <div class="lp-timeline-icon"><i class="fas fa-crown"></i></div>
-      <div class="lp-timeline-content">
-        <h3 class="font-bold mb-1">اختر باقة VIP</h3>
-        <p class="text-sm text-secondary">فعل الباقة التي تناسب تطلعاتك الاستثمارية.</p>
-      </div>
+    <div class="stat-box reveal">
+      <div class="stat-icon">💵</div>
+      <div class="stat-val" style="color:var(--green)" data-count="420000" data-prefix="$" data-suffix="+">0</div>
+      <div class="stat-lbl">إجمالي الإيداعات</div>
     </div>
-    <div class="lp-timeline-item fade-in">
-      <div class="lp-timeline-icon"><i class="fas fa-chart-line"></i></div>
-      <div class="lp-timeline-content">
-        <h3 class="font-bold mb-1">استلم أرباحك يومياً</h3>
-        <p class="text-sm text-secondary">يتم توزيع الأرباح تلقائياً كل 24 ساعة.</p>
-      </div>
+    <div class="stat-box reveal">
+      <div class="stat-icon">⭐</div>
+      <div class="stat-val" style="color:var(--gold)" data-count="89400" data-prefix="$" data-suffix="+">0</div>
+      <div class="stat-lbl">أرباح موزّعة</div>
     </div>
-  </div>
-</section>
-
-<!-- 5. VIP Plans -->
-<section class="lp-section" style="padding-right:0; padding-left:0;">
-  <h2 class="lp-section-title">باقات VIP</h2>
-  <div class="vip-scroll-container px-5" style="padding-left: 20px;">
-    
-    <!-- Training -->
-    <div class="vip-card fade-in">
-      <div class="vip-card-icon text-secondary"><i class="fas fa-graduation-cap"></i></div>
-      <div class="font-bold text-lg mb-1">تدريب</div>
-      <div class="vip-card-price text-primary">مجاني</div>
-      <div class="vip-card-features">
-        <div class="vip-feature"><span>المدة</span><span>5 أيام</span></div>
-        <div class="vip-feature"><span>الربح اليومي</span><span class="text-success">$0.10</span></div>
-      </div>
-      <button class="btn btn-secondary mt-4" onclick="openAuth('register')">اختر</button>
+    <div class="stat-box reveal">
+      <div class="stat-icon">💸</div>
+      <div class="stat-val" style="color:var(--red)" data-count="310000" data-prefix="$" data-suffix="+">0</div>
+      <div class="stat-lbl">مسحوبات معتمدة</div>
     </div>
-
-    <!-- Bronze -->
-    <div class="vip-card fade-in">
-      <div class="vip-card-icon" style="color: #d97706;"><i class="fas fa-medal"></i></div>
-      <div class="font-bold text-lg mb-1">برونزي</div>
-      <div class="vip-card-price text-primary">$10</div>
-      <div class="vip-card-features">
-        <div class="vip-feature"><span>المدة</span><span>30 يوم</span></div>
-        <div class="vip-feature"><span>الربح اليومي</span><span class="text-success">~$0.23</span></div>
-      </div>
-      <button class="btn btn-secondary mt-4" onclick="openAuth('register')">اختر</button>
-    </div>
-
-    <!-- Silver POPULAR -->
-    <div class="vip-card popular fade-in">
-      <div class="vip-card-icon text-primary"><i class="fas fa-crown"></i></div>
-      <div class="font-bold text-lg mb-1">فضي</div>
-      <div class="vip-card-price text-primary">$30</div>
-      <div class="vip-card-features">
-        <div class="vip-feature"><span>المدة</span><span>30 يوم</span></div>
-        <div class="vip-feature"><span>الربح اليومي</span><span class="text-success">~$0.70</span></div>
-      </div>
-      <button class="btn btn-primary mt-4" onclick="openAuth('register')">اختر</button>
-    </div>
-
-    <!-- Gold -->
-    <div class="vip-card fade-in">
-      <div class="vip-card-icon text-warning"><i class="fas fa-gem"></i></div>
-      <div class="font-bold text-lg mb-1">ذهبي</div>
-      <div class="vip-card-price text-primary">$100</div>
-      <div class="vip-card-features">
-        <div class="vip-feature"><span>المدة</span><span>30 يوم</span></div>
-        <div class="vip-feature"><span>الربح اليومي</span><span class="text-success">~$2.30</span></div>
-      </div>
-      <button class="btn btn-secondary mt-4" onclick="openAuth('register')">اختر</button>
-    </div>
-
-    <!-- Diamond -->
-    <div class="vip-card fade-in">
-      <div class="vip-card-icon" style="color: #38bdf8;"><i class="fas fa-diamond"></i></div>
-      <div class="font-bold text-lg mb-1">ماسي</div>
-      <div class="vip-card-price text-primary">$300</div>
-      <div class="vip-card-features">
-        <div class="vip-feature"><span>المدة</span><span>30 يوم</span></div>
-        <div class="vip-feature"><span>الربح اليومي</span><span class="text-success">~$7.50</span></div>
-      </div>
-      <button class="btn btn-secondary mt-4" onclick="openAuth('register')">اختر</button>
-    </div>
-
-  </div>
-</section>
-
-<!-- 6. Why us -->
-<section class="lp-section">
-  <h2 class="lp-section-title">لماذا نحن؟</h2>
-  <div class="grid-2x2">
-    <div class="card text-center fade-in">
-      <div class="text-primary text-2xl mb-2"><i class="fas fa-shield-alt"></i></div>
-      <div class="font-bold text-sm">أمان متقدم</div>
-    </div>
-    <div class="card text-center fade-in">
-      <div class="text-secondary text-2xl mb-2"><i class="fas fa-eye"></i></div>
-      <div class="font-bold text-sm">شفافية كاملة</div>
-    </div>
-    <div class="card text-center fade-in">
-      <div class="text-success text-2xl mb-2"><i class="fas fa-bolt"></i></div>
-      <div class="font-bold text-sm">سحب سريع</div>
-    </div>
-    <div class="card text-center fade-in">
-      <div class="text-warning text-2xl mb-2"><i class="fas fa-mobile-alt"></i></div>
-      <div class="font-bold text-sm">واجهة بسيطة</div>
-    </div>
-  </div>
-</section>
-
-<!-- 7. Trust Section -->
-<section class="lp-section">
-  <div class="lp-trust-grid">
-    <div class="lp-trust-item fade-in">
-      <div class="lp-trust-icon"><i class="fas fa-ban"></i></div>
-      <h3 class="font-bold mb-2">لا وعود مبالغ فيها</h3>
-      <p class="text-sm text-secondary">أرقامنا حقيقية ومبنية على أداء فعلي.</p>
-    </div>
-    <div class="lp-trust-item fade-in">
-      <div class="lp-trust-icon"><i class="fas fa-file-contract"></i></div>
-      <h3 class="font-bold mb-2">كل العمليات موثقة</h3>
-      <p class="text-sm text-secondary">سجل دقيق لجميع إيداعاتك وسحوباتك.</p>
-    </div>
-    <div class="lp-trust-item fade-in">
-      <div class="lp-trust-icon"><i class="fas fa-robot"></i></div>
-      <h3 class="font-bold mb-2">نظام آلي 100%</h3>
-      <p class="text-sm text-secondary">توزيع تلقائي للأرباح بدون تدخل بشري.</p>
-    </div>
-  </div>
-</section>
-
-<!-- 8. Footer -->
-<footer class="lp-footer">
-  <div class="lp-footer-links">
-    <a href="terms.html">الشروط</a>
-    <a href="privacy.html">الخصوصية</a>
-    <a href="mailto:support@investpro.com">الدعم</a>
-  </div>
-  <div class="text-danger mb-2"><i class="fas fa-exclamation-triangle"></i> تنبيه: الاستثمار يحمل مخاطر.</div>
-  <div>© 2026 InvestPro. جميع الحقوق محفوظة.</div>
-</footer>
-
-<!-- Auth Modal -->
-<div class="auth-modal" id="auth-modal">
-  <div class="auth-box">
-    <div class="auth-close" onclick="closeAuth()"><i class="fas fa-times"></i></div>
-    
-    <div class="wallet-tabs mb-6">
-      <div class="wallet-tab active" id="tab-login" onclick="switchAuthTab('login')">تسجيل الدخول</div>
-      <div class="wallet-tab" id="tab-register" onclick="switchAuthTab('register')">حساب جديد</div>
-    </div>
-
-    <!-- Login Form -->
-    <div id="form-login" style="display: block;">
-      <div class="text-danger text-sm mb-4" id="login-err"></div>
-      <div class="form-group">
-        <label class="form-label">البريد الإلكتروني</label>
-        <input type="email" id="login-email" class="form-input" placeholder="email@example.com">
-      </div>
-      <div class="form-group">
-        <label class="form-label">كلمة المرور</label>
-        <input type="password" id="login-pass" class="form-input" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
-      </div>
-      <button class="btn btn-primary" id="login-btn" onclick="doLogin()">دخول</button>
-      <div class="text-center mt-4">
-        <a href="forgot-password.html" class="text-secondary text-sm">نسيت كلمة المرور؟</a>
-      </div>
-    </div>
-
-    <!-- Register Form -->
-    <div id="form-register" style="display: none;">
-      <div class="text-danger text-sm mb-4" id="reg-err"></div>
-      <div class="form-group">
-        <label class="form-label">الاسم الكامل</label>
-        <input type="text" id="reg-name" class="form-input" placeholder="اسمك الكريم">
-      </div>
-      <div class="form-group">
-        <label class="form-label">البريد الإلكتروني</label>
-        <input type="email" id="reg-email" class="form-input" placeholder="email@example.com">
-      </div>
-      <div class="form-group">
-        <label class="form-label">كلمة المرور</label>
-        <input type="password" id="reg-pass" class="form-input" placeholder="••••••••" onkeydown="if(event.key==='Enter')doRegister()">
-      </div>
-      <div class="form-group">
-        <label class="form-label">كود الإحالة (اختياري)</label>
-        <input type="text" id="reg-ref" class="form-input" placeholder="XXXXXXXX" style="text-transform:uppercase">
-      </div>
-      <button class="btn btn-primary" id="reg-btn" onclick="doRegister()">إنشاء الحساب</button>
-    </div>
-
   </div>
 </div>
 
-<div id="toast-container" style="position:fixed;bottom:20px;left:20px;z-index:3000"></div>
+<!-- ═══════════════ HOW IT WORKS ═══════════════ -->
+<section class="section" id="how">
+  <div class="section-title reveal">كيف يعمل النظام؟</div>
+  <div class="section-sub reveal">3 خطوات بسيطة للبدء</div>
+  <div class="hiw-wrap reveal">
+    <div class="hiw-steps">
+      <div class="hiw-step">
+        <div class="hiw-num">1</div>
+        <div class="hiw-content">
+          <h3>سجّل حسابك مجاناً</h3>
+          <p>أنشئ حساباً في ثوانٍ بالبريد الإلكتروني — لا رسوم تسجيل.</p>
+        </div>
+        <div class="hiw-icon">📝</div>
+      </div>
+      <div class="hiw-step">
+        <div class="hiw-num">2</div>
+        <div class="hiw-content">
+          <h3>أودع USDT واختر خطة VIP</h3>
+          <p>الإيداع عبر USDT TRC-20، BEP-20، Bitcoin، أو PayPal. اختر الخطة التي تناسب ميزانيتك.</p>
+        </div>
+        <div class="hiw-icon">💳</div>
+      </div>
+      <div class="hiw-step">
+        <div class="hiw-num">3</div>
+        <div class="hiw-content">
+          <h3>تابع أرباحك يومياً</h3>
+          <p>يُضاف ربحك تلقائياً كل 24 ساعة إلى محفظتك داخل لوحة التحكم.</p>
+        </div>
+        <div class="hiw-icon">📈</div>
+      </div>
+      <div class="hiw-step">
+        <div class="hiw-num">4</div>
+        <div class="hiw-content">
+          <h3>اسحب متى تشاء</h3>
+          <p>طلب السحب يُراجع خلال 24 ساعة — رسوم السحب 10% فقط.</p>
+        </div>
+        <div class="hiw-icon">💸</div>
+      </div>
+    </div>
+    <div class="disclaimer">
+      <i class="fas fa-exclamation-triangle"></i>
+      <span>تنبيه: الأرباح تعتمد على أداء الخطة المختارة وليست مضمونة. الاستثمار يحمل مخاطر.</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ VIP PLANS ═══════════════ -->
+<section id="plans" style="padding:64px 0">
+  <div class="section-title reveal" style="padding:0 24px">💎 خطط VIP</div>
+  <div class="section-sub reveal" style="padding:0 24px;margin-bottom:28px">اختر الخطة المناسبة لبدء رحلتك الاستثمارية</div>
+  <div class="vip-scroll">
+
+    <!-- Training -->
+    <div class="vip-card reveal">
+      <div class="vc-icon">🎓</div>
+      <div class="vc-name">تدريب</div>
+      <div class="vc-price" style="color:var(--text2)">مجاني</div>
+      <div class="vc-rows">
+        <div class="vc-row"><span>المدة</span><span>5 أيام</span></div>
+        <div class="vc-row"><span>ربح يومي</span><span class="vc-profit">$0.10</span></div>
+        <div class="vc-row"><span>الإجمالي</span><span class="vc-profit">$0.50</span></div>
+        <div class="vc-row"><span>المخاطر</span><span><span class="vc-risk risk-low">منخفض</span></span></div>
+      </div>
+      <button class="vc-btn vc-btn-sec" onclick="openAuth('register')">ابدأ مجاناً</button>
+    </div>
+
+    <!-- Bronze -->
+    <div class="vip-card reveal">
+      <div class="vc-icon">🥉</div>
+      <div class="vc-name">برونزي</div>
+      <div class="vc-price">$10</div>
+      <div class="vc-rows">
+        <div class="vc-row"><span>المدة</span><span>30 يوم</span></div>
+        <div class="vc-row"><span>ربح يومي</span><span class="vc-profit">$0.50</span></div>
+        <div class="vc-row"><span>العائد</span><span class="vc-profit">20%/شهر</span></div>
+        <div class="vc-row"><span>المخاطر</span><span><span class="vc-risk risk-low">منخفض</span></span></div>
+      </div>
+      <button class="vc-btn vc-btn-sec" onclick="openAuth('register')">اختر</button>
+    </div>
+
+    <!-- Silver POPULAR -->
+    <div class="vip-card popular reveal">
+      <div class="vc-icon">🥈</div>
+      <div class="vc-name">فضي</div>
+      <div class="vc-price">$30</div>
+      <div class="vc-rows">
+        <div class="vc-row"><span>المدة</span><span>30 يوم</span></div>
+        <div class="vc-row"><span>ربح يومي</span><span class="vc-profit">$1.45</span></div>
+        <div class="vc-row"><span>العائد</span><span class="vc-profit">25%/شهر</span></div>
+        <div class="vc-row"><span>المخاطر</span><span><span class="vc-risk risk-med">متوسط</span></span></div>
+      </div>
+      <button class="vc-btn vc-btn-pri" onclick="openAuth('register')">اختر</button>
+    </div>
+
+    <!-- Gold -->
+    <div class="vip-card reveal">
+      <div class="vc-icon">🥇</div>
+      <div class="vc-name">ذهبي</div>
+      <div class="vc-price">$100</div>
+      <div class="vc-rows">
+        <div class="vc-row"><span>المدة</span><span>30 يوم</span></div>
+        <div class="vc-row"><span>ربح يومي</span><span class="vc-profit">$4.63</span></div>
+        <div class="vc-row"><span>العائد</span><span class="vc-profit">30%/شهر</span></div>
+        <div class="vc-row"><span>المخاطر</span><span><span class="vc-risk risk-med">متوسط</span></span></div>
+      </div>
+      <button class="vc-btn vc-btn-sec" onclick="openAuth('register')">اختر</button>
+    </div>
+
+    <!-- Diamond -->
+    <div class="vip-card reveal">
+      <div class="vc-icon">💎</div>
+      <div class="vc-name">ماسي</div>
+      <div class="vc-price" style="color:var(--primary2)">$300</div>
+      <div class="vc-rows">
+        <div class="vc-row"><span>المدة</span><span>30 يوم</span></div>
+        <div class="vc-row"><span>ربح يومي</span><span class="vc-profit">$13.50</span></div>
+        <div class="vc-row"><span>العائد</span><span class="vc-profit">35%/شهر</span></div>
+        <div class="vc-row"><span>المخاطر</span><span><span class="vc-risk risk-hi">مرتفع</span></span></div>
+      </div>
+      <button class="vc-btn vc-btn-sec" onclick="openAuth('register')">اختر</button>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════ CHART PREVIEW ═══════════════ -->
+<section class="section">
+  <div class="section-title reveal">📈 نمو المحفظة (مثال توضيحي)</div>
+  <div class="section-sub reveal">مثال على نمو محفظة بخطة فضية ($30) لمدة 30 يوماً</div>
+  <div class="chart-preview-grid">
+    <div class="cp-card reveal">
+      <div class="cp-head">
+        <div class="cp-title">📈 نمو رصيد المحفظة</div>
+        <span style="font-size:.68rem;color:var(--green);font-weight:600">+25% / شهر</span>
+      </div>
+      <div class="cp-val" id="cp-val1">$37.50</div>
+      <div class="cp-sub">بعد 30 يوم من الاستثمار بـ$30</div>
+      <div class="cp-wrap"><canvas id="lp-portfolio-chart"></canvas></div>
+    </div>
+    <div class="cp-card reveal">
+      <div class="cp-head">
+        <div class="cp-title">💰 الأرباح اليومية (7 أيام)</div>
+        <span style="font-size:.68rem;color:var(--primary2);font-weight:600">$1.45/يوم</span>
+      </div>
+      <div class="cp-val" id="cp-val2">+$10.15</div>
+      <div class="cp-sub">مجموع أرباح 7 أيام (ربح + مكافأة)</div>
+      <div class="cp-wrap"><canvas id="lp-profit-chart"></canvas></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ COUNTRIES ═══════════════ -->
+<section class="section">
+  <div class="section-title reveal">🌍 من كل أنحاء العالم</div>
+  <div class="section-sub reveal">مجتمع مستثمرين من أكثر من 12 دولة</div>
+  <div class="countries-grid">
+    <div class="c-card reveal"><div class="c-flag">🇲🇦</div><div class="c-name">المغرب</div></div>
+    <div class="c-card reveal"><div class="c-flag">🇸🇦</div><div class="c-name">السعودية</div></div>
+    <div class="c-card reveal"><div class="c-flag">🇪🇬</div><div class="c-name">مصر</div></div>
+    <div class="c-card reveal"><div class="c-flag">🇩🇿</div><div class="c-name">الجزائر</div></div>
+    <div class="c-card reveal"><div class="c-flag">🇹🇳</div><div class="c-name">تونس</div></div>
+    <div class="c-card reveal"><div class="c-flag">🇦🇪</div><div class="c-name">الإمارات</div></div>
+    <div class="c-card reveal"><div class="c-flag">🇫🇷</div><div class="c-name">فرنسا</div></div>
+    <div class="c-card reveal"><div class="c-flag">🇹🇷</div><div class="c-name">تركيا</div></div>
+    <div class="c-card reveal"><div class="c-flag">🇺🇸</div><div class="c-name">أمريكا</div></div>
+    <div class="c-card reveal"><div class="c-flag">🇬🇧</div><div class="c-name">بريطانيا</div></div>
+    <div class="c-card reveal"><div class="c-flag">🇩🇪</div><div class="c-name">ألمانيا</div></div>
+    <div class="c-card reveal"><div class="c-flag">🌐</div><div class="c-name">وأكثر...</div></div>
+  </div>
+</section>
+
+<!-- ═══════════════ TRUST ═══════════════ -->
+<section class="section">
+  <div class="section-title reveal">لماذا InvestPro؟</div>
+  <div class="section-sub reveal">مبني على الشفافية والموثوقية</div>
+  <div class="trust-grid">
+    <div class="trust-card reveal"><div class="tc-icon">🔐</div><div class="tc-title">أمان متقدم</div><div class="tc-body">تشفير JWT + rate limiting + helmet لحماية بياناتك</div></div>
+    <div class="trust-card reveal"><div class="tc-icon">👁</div><div class="tc-title">شفافية كاملة</div><div class="tc-body">كل إيداع وسحب وربح مسجّل ومتاح في سجل العمليات</div></div>
+    <div class="trust-card reveal"><div class="tc-icon">🤖</div><div class="tc-title">نظام آلي 24/7</div><div class="tc-body">توزيع الأرباح تلقائي كل يوم — بدون تدخل بشري</div></div>
+    <div class="trust-card reveal"><div class="tc-icon">⚡</div><div class="tc-title">سحب سريع</div><div class="tc-body">طلبات السحب تُعالج خلال 24 ساعة عبر USDT أو PayPal</div></div>
+    <div class="trust-card reveal"><div class="tc-icon">👥</div><div class="tc-title">نظام الإحالة</div><div class="tc-body">اكسب 8% L1 + 3% L2 من إيداعات من تدعوهم</div></div>
+    <div class="trust-card reveal"><div class="tc-icon">📊</div><div class="tc-title">لوحة تحكم كاملة</div><div class="tc-body">charts + محفظة + سجل عمليات + إشعارات فورية</div></div>
+  </div>
+</section>
+
+<!-- ═══════════════ CTA ═══════════════ -->
+<section style="text-align:center;padding:64px 24px;background:linear-gradient(135deg,var(--bg2),var(--bg3))">
+  <div class="section-title reveal">🚀 ابدأ رحلتك اليوم</div>
+  <p class="section-sub reveal" style="margin-bottom:28px">سجّل مجاناً واستفد من فترة التدريب 5 أيام قبل أي استثمار</p>
+  <button class="btn btn-primary btn-lg reveal" onclick="openAuth('register')"><i class="fas fa-rocket"></i> ابدأ مجاناً الآن</button>
+</section>
+
+<!-- ═══════════════ FOOTER ═══════════════ -->
+<footer class="footer">
+  <div class="footer-logo">💎 <span>InvestPro</span></div>
+  <div class="footer-links">
+    <a href="terms.html">الشروط والأحكام</a>
+    <a href="privacy.html">الخصوصية</a>
+    <a href="risk.html">المخاطر</a>
+    <a href="mailto:support@investpro.com">الدعم</a>
+  </div>
+  <div class="footer-risk"><i class="fas fa-exclamation-triangle"></i> تنبيه مهم: الاستثمار ينطوي على مخاطر. الأرباح الموضحة تقديرية وليست مضمونة. لا تستثمر أكثر مما يمكنك تحمّل خسارته.</div>
+  <div class="footer-copy">© 2026 InvestPro. جميع الحقوق محفوظة.</div>
+</footer>
+
+<!-- ═══════════════ AUTH MODAL ═══════════════ -->
+<div class="modal-overlay" id="auth-modal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeAuth()"><i class="fas fa-times"></i></button>
+    <div style="text-align:center;margin-bottom:18px">
+      <div style="font-size:1.5rem;font-weight:800;margin-bottom:4px">💎 InvestPro</div>
+      <div style="font-size:.78rem;color:var(--text3)">منصة الاستثمار الرقمي</div>
+    </div>
+    <div class="auth-tabs">
+      <div class="auth-tab active" id="tab-login" onclick="switchTab('login')">تسجيل الدخول</div>
+      <div class="auth-tab" id="tab-register" onclick="switchTab('register')">حساب جديد</div>
+    </div>
+
+    <!-- LOGIN -->
+    <div id="form-login">
+      <div class="form-err" id="login-err"></div>
+      <div class="form-group"><label class="form-label">البريد الإلكتروني</label><input type="email" id="login-email" class="form-input" placeholder="email@example.com"></div>
+      <div class="form-group"><label class="form-label">كلمة المرور</label><input type="password" id="login-pass" class="form-input" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"></div>
+      <button class="form-submit" id="login-btn" onclick="doLogin()">دخول</button>
+      <div class="form-foot"><a href="forgot-password.html">نسيت كلمة المرور؟</a></div>
+    </div>
+
+    <!-- REGISTER -->
+    <div id="form-register" style="display:none">
+      <div class="form-err" id="reg-err"></div>
+      <div class="form-group"><label class="form-label">الاسم الكامل</label><input type="text" id="reg-name" class="form-input" placeholder="اسمك الكريم"></div>
+      <div class="form-group"><label class="form-label">البريد الإلكتروني</label><input type="email" id="reg-email" class="form-input" placeholder="email@example.com"></div>
+      <div class="form-group"><label class="form-label">كلمة المرور</label><input type="password" id="reg-pass" class="form-input" placeholder="8 أحرف على الأقل" onkeydown="if(event.key==='Enter')doRegister()"></div>
+      <div class="form-group"><label class="form-label">كود الإحالة (اختياري)</label><input type="text" id="reg-ref" class="form-input" placeholder="XXXXXXXX" style="text-transform:uppercase"></div>
+      <button class="form-submit" id="reg-btn" onclick="doRegister()">إنشاء الحساب</button>
+    </div>
+  </div>
+</div>
 
 <script src="js/config.js"></script>
 <script src="js/api.js"></script>
 <script>
-  // Redirect to dashboard if already logged in
-  auth.checkGuest();
+/* ═══════════════════════════════════════
+   INIT
+═══════════════════════════════════════ */
+auth.checkGuest();
 
-  // Modal Logic
-  function openAuth(tab) {
-    document.getElementById('auth-modal').classList.add('show');
-    switchAuthTab(tab);
-  }
-  function closeAuth() {
-    document.getElementById('auth-modal').classList.remove('show');
-  }
-  function switchAuthTab(tab) {
-    document.getElementById('tab-login').classList.remove('active');
-    document.getElementById('tab-register').classList.remove('active');
-    document.getElementById('form-login').style.display = 'none';
-    document.getElementById('form-register').style.display = 'none';
-    
-    document.getElementById('tab-' + tab).classList.add('active');
-    document.getElementById('form-' + tab).style.display = 'block';
-  }
+const _urlRef = new URLSearchParams(location.search).get('ref');
+if (_urlRef) { document.getElementById('reg-ref').value = _urlRef.toUpperCase(); openAuth('register'); }
 
-  // Auto-fill ref from URL
-  const _urlRef = new URLSearchParams(location.search).get('ref');
-  if (_urlRef) {
-    document.getElementById('reg-ref').value = _urlRef.toUpperCase();
-    openAuth('register');
-  }
+/* ═══════════════════════════════════════
+   AUTH MODAL
+═══════════════════════════════════════ */
+function openAuth(tab) {
+  document.getElementById('auth-modal').classList.add('show');
+  switchTab(tab || 'login');
+}
+function closeAuth() { document.getElementById('auth-modal').classList.remove('show'); }
 
-  // CountUp Logic (using pure JS requestAnimationFrame)
-  function startCountUp(el) {
-    const target = parseInt(el.dataset.count, 10);
-    const prefix = el.dataset.prefix || '';
-    const duration = 2000;
-    const start = performance.now();
+document.getElementById('auth-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeAuth();
+});
 
-    function update(now) {
-      const progress = Math.min((now - start) / duration, 1);
-      const easeOut = 1 - Math.pow(1 - progress, 3);
-      const current = Math.floor(easeOut * target);
-      el.textContent = prefix + current.toLocaleString('en-US') + '+';
-      
-      if (progress < 1) {
-        requestAnimationFrame(update);
-      } else {
-        el.textContent = prefix + target.toLocaleString('en-US') + '+';
-        // Add light glow effect on completion
-        el.style.textShadow = '0 0 10px var(--primary-glow)';
-      }
-    }
-    requestAnimationFrame(update);
-  }
-
-  // Intersection Observer for fade-in & Counters
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.style.opacity = 1;
-        entry.target.style.transform = 'translateY(0)';
-        
-        if (entry.target.dataset.count && !entry.target.dataset.counted) {
-          startCountUp(entry.target);
-          entry.target.dataset.counted = 'true';
-        }
-      }
-    });
-  }, { threshold: 0.1 });
-
-  document.querySelectorAll('.fade-in, [data-count]').forEach(el => {
-    if (el.classList.contains('fade-in')) {
-      el.style.opacity = 0;
-      el.style.transform = 'translateY(20px)';
-      el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-    }
-    observer.observe(el);
+function switchTab(t) {
+  ['login','register'].forEach(x => {
+    document.getElementById('tab-'+x).classList.toggle('active', x === t);
+    document.getElementById('form-'+x).style.display = x === t ? 'block' : 'none';
   });
+}
 
-  // Auth Logic with Debounce
-  let _isRegistering = false;
-  let _regDebounceTimer = null;
-  
-  async function doRegister() {
-    if (_isRegistering) return;
-    if (_regDebounceTimer) clearTimeout(_regDebounceTimer);
-    
-    _regDebounceTimer = setTimeout(async () => {
-      _isRegistering = true;
-      const btn   = document.getElementById('reg-btn');
-      const errEl = document.getElementById('reg-err');
-      errEl.textContent = '';
-      btnLoad(btn, true);
-      
-      try {
-        const name  = document.getElementById('reg-name').value.trim();
-        const email = document.getElementById('reg-email').value.trim().toLowerCase();
-        const pass  = document.getElementById('reg-pass').value;
-        const ref   = document.getElementById('reg-ref').value.trim().toUpperCase() || undefined;
+async function doLogin() {
+  const btn = document.getElementById('login-btn');
+  const err = document.getElementById('login-err');
+  err.textContent = '';
+  btnLoad(btn, true);
+  try {
+    const d = await http.post('/auth/login', {
+      email: document.getElementById('login-email').value.trim(),
+      password: document.getElementById('login-pass').value,
+    });
+    auth.login(d.user, d.token);
+    window.location.href = d.user.isAdmin ? 'admin.html' : 'dashboard.html';
+  } catch(e) { err.textContent = e.message; btnLoad(btn, false); }
+}
 
-        if (!name || !email || !pass) {
-          errEl.textContent = 'جميع الحقول مطلوبة';
-          btnLoad(btn, false); _isRegistering = false; return;
-        }
-        if (name.trim().length < 2) {
-          errEl.textContent = 'الاسم يجب أن يكون حرفين على الأقل';
-          btnLoad(btn, false); _isRegistering = false; return;
-        }
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-          errEl.textContent = 'البريد الإلكتروني غير صالح — مثال: name@example.com';
-          btnLoad(btn, false); _isRegistering = false; return;
-        }
-        if (!val.password(pass)) {
-          errEl.textContent = 'كلمة المرور يجب أن تكون 8 أحرف على الأقل';
-          btnLoad(btn, false); _isRegistering = false; return;
-        }
+async function doRegister() {
+  const btn = document.getElementById('reg-btn');
+  const err = document.getElementById('reg-err');
+  err.textContent = '';
+  btnLoad(btn, true);
+  try {
+    const d = await http.post('/auth/register', {
+      name:         document.getElementById('reg-name').value.trim(),
+      email:        document.getElementById('reg-email').value.trim(),
+      password:     document.getElementById('reg-pass').value,
+      referralCode: document.getElementById('reg-ref').value.trim().toUpperCase() || undefined,
+    });
+    auth.login(d.user, d.token);
+    window.location.href = 'dashboard.html';
+  } catch(e) { err.textContent = e.message; btnLoad(btn, false); }
+}
 
-        const data = await http.post('/auth/register', {
-          name, email, password: pass, referralCode: ref,
-        });
-        auth.login(data.user, data.token);
-        window.location.href = 'dashboard.html';
-      } catch (e) {
-        errEl.textContent = e.message;
-        btnLoad(btn, false);
-        _isRegistering = false;
+/* ═══════════════════════════════════════
+   LIVE TICKER
+═══════════════════════════════════════ */
+const ASSETS = [
+  {sym:'BTC', name:'Bitcoin',      p:67420, vol:.0018},
+  {sym:'ETH', name:'Ethereum',     p:3521,  vol:.0025},
+  {sym:'USDT',name:'Tether',       p:1.0001,vol:.0001},
+  {sym:'BNB', name:'BNB',          p:598,   vol:.002 },
+  {sym:'SOL', name:'Solana',       p:172,   vol:.0035},
+  {sym:'XRP', name:'XRP',          p:.618,  vol:.0028},
+  {sym:'GOLD',name:'Gold/oz',      p:2345,  vol:.0008},
+  {sym:'AAPL',name:'Apple',        p:187,   vol:.0015},
+  {sym:'TSLA',name:'Tesla',        p:176,   vol:.003 },
+  {sym:'NVDA',name:'NVIDIA',       p:875,   vol:.0022},
+  {sym:'OIL', name:'Crude Oil',    p:82,    vol:.0012},
+  {sym:'DOW', name:'Dow Jones',    p:39420, vol:.0006},
+];
+
+let _tick = 0;
+const _seed = (i) => { const x = Math.sin(i * 127.1 + _tick * 311.7) * 43758; return x - Math.floor(x); };
+const _as   = ASSETS.map((a,i) => ({...a, chg: 0, i}));
+
+function _fmtP(p) {
+  return p < 10 ? p.toFixed(4) : p < 1000 ? p.toFixed(2) : p.toLocaleString('en',{minimumFractionDigits:2,maximumFractionDigits:2});
+}
+
+function _buildTicker() {
+  const wrap = document.getElementById('ticker-track');
+  if (!wrap) return;
+  const html = _as.map(a => `<div class="t-item" data-t="${a.sym}">
+    <span class="t-sym">${a.sym}</span>
+    <span>$${_fmtP(a.p)}</span>
+    <span class="t-up" data-chg="${a.sym}">▲ 0.00%</span>
+  </div>`).join('');
+  wrap.innerHTML = html + html;
+}
+
+function _buildMarket() {
+  const g = document.getElementById('market-grid');
+  if (!g) return;
+  g.innerHTML = _as.map(a => `<div class="m-card">
+    <div class="m-sym">${a.sym}</div>
+    <div class="m-name">${a.name}</div>
+    <div class="m-price" id="mp-${a.sym}">$${_fmtP(a.p)}</div>
+    <div class="m-change up" id="mc-${a.sym}">▲ 0.00%</div>
+  </div>`).join('');
+}
+
+function _updatePrices() {
+  _tick++;
+  _as.forEach((a,i) => {
+    const n = _seed(i) * 2 - 1;
+    const prev = a.p;
+    a.p = Math.max(.001, a.p + a.p * a.vol * n);
+    a.chg = ((a.p - prev) / prev * 100);
+
+    const up = a.chg >= 0;
+    const chgStr = `${up?'▲':'▼'} ${Math.abs(a.chg).toFixed(2)}%`;
+    const cls = up ? 'up' : 'down';
+    const pStr = '$' + _fmtP(a.p);
+
+    // Update ticker
+    document.querySelectorAll(`[data-t="${a.sym}"]`).forEach(el => {
+      const pe = el.childNodes[1]; const ce = el.querySelector(`[data-chg="${a.sym}"]`);
+      if (pe) pe.textContent = pStr;
+      if (ce) { ce.textContent = chgStr; ce.className = cls; }
+    });
+
+    // Update market grid
+    const mp = document.getElementById('mp-'+a.sym);
+    const mc = document.getElementById('mc-'+a.sym);
+    if (mp) mp.textContent = pStr;
+    if (mc) { mc.textContent = chgStr; mc.className = 'm-change ' + cls; }
+  });
+}
+
+/* ═══════════════════════════════════════
+   CHART PREVIEW — computed from VIP Silver plan
+   $30 × 25% monthly = $7.50 profit = $37.50 total
+═══════════════════════════════════════ */
+function buildLandingCharts() {
+  // Portfolio: Silver plan $30 over 30 days
+  const PRICE = 30, RATE = 0.25, DAYS = 30;
+  const dailyProfit = PRICE * RATE / DAYS;
+  const dailyBonus  = 0.20;
+  const dailyTotal  = dailyProfit + dailyBonus;
+
+  const portLabels = [], portData = [];
+  let bal = PRICE;
+  for (let i = 0; i <= DAYS; i++) {
+    const d = new Date(); d.setDate(d.getDate() - (DAYS - i));
+    portLabels.push(d.toLocaleDateString('ar-EG', {month:'short', day:'numeric'}));
+    portData.push(+bal.toFixed(2));
+    bal += dailyTotal;
+  }
+
+  const ctx1 = document.getElementById('lp-portfolio-chart');
+  if (ctx1) {
+    const g = ctx1.getContext('2d').createLinearGradient(0,0,0,130);
+    g.addColorStop(0,'rgba(14,165,233,.3)'); g.addColorStop(1,'rgba(14,165,233,0)');
+    new Chart(ctx1, {
+      type:'line',
+      data:{labels:portLabels,datasets:[{data:portData,borderColor:'#0ea5e9',borderWidth:2,fill:true,backgroundColor:g,tension:.4,pointRadius:0,pointHoverRadius:4}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#1e293b',padding:8,cornerRadius:8,callbacks:{label:c=>` $${c.parsed.y.toFixed(2)}`}}},scales:{x:{display:false},y:{position:'right',grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#64748b',font:{size:9},callback:v=>`$${v}`}}}}
+    });
+    document.getElementById('cp-val1').textContent = `$${portData[portData.length-1].toFixed(2)}`;
+  }
+
+  // Profit bars: 7 days of dailyTotal
+  const profLabels = [], profData = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(); d.setDate(d.getDate()-i);
+    profLabels.push(d.toLocaleDateString('ar-EG',{weekday:'short'}));
+    profData.push(+dailyTotal.toFixed(4));
+  }
+  const total7 = (dailyTotal * 7).toFixed(2);
+
+  const ctx2 = document.getElementById('lp-profit-chart');
+  if (ctx2) {
+    new Chart(ctx2, {
+      type:'bar',
+      data:{labels:profLabels,datasets:[{data:profData,backgroundColor:'rgba(34,197,94,.6)',hoverBackgroundColor:'rgba(34,197,94,.9)',borderRadius:6,borderSkipped:false}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#1e293b',padding:8,cornerRadius:8,callbacks:{label:c=>` +$${c.parsed.y.toFixed(4)}`}}},scales:{x:{grid:{display:false},ticks:{color:'#64748b',font:{size:9}}},y:{position:'right',grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#64748b',font:{size:9},callback:v=>`$${v}`}}}}
+    });
+    document.getElementById('cp-val2').textContent = `+$${total7}`;
+  }
+}
+
+/* ═══════════════════════════════════════
+   ANIMATED COUNTERS — no random, seeded values
+═══════════════════════════════════════ */
+function animateCounters() {
+  document.querySelectorAll('[data-count]').forEach(el => {
+    if (el.dataset.counted) return;
+    el.dataset.counted = '1';
+    const target = parseInt(el.dataset.count);
+    const prefix = el.dataset.prefix || '';
+    const suffix = el.dataset.suffix || '';
+    const dur = 2200;
+    const start = performance.now();
+    (function tick(now) {
+      const t = Math.min((now - start) / dur, 1);
+      const ease = 1 - Math.pow(1 - t, 4);
+      const val = Math.floor(ease * target);
+      el.textContent = prefix + val.toLocaleString('en') + suffix;
+      if (t < 1) requestAnimationFrame(tick);
+      else el.textContent = prefix + target.toLocaleString('en') + suffix;
+    })(start);
+  });
+}
+
+/* ═══════════════════════════════════════
+   SCROLL REVEAL + INTERSECTION OBSERVER
+═══════════════════════════════════════ */
+const revealObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      // Trigger counters when stats section is visible
+      if (e.target.closest('.stats-band') || e.target.hasAttribute('data-count')) {
+        animateCounters();
       }
-    }, 500);
-  }
-
-  let _isLoggingIn = false;
-  async function doLogin() {
-    if (_isLoggingIn) return;
-    _isLoggingIn = true;
-    const btn   = document.getElementById('login-btn');
-    const errEl = document.getElementById('login-err');
-    errEl.textContent = '';
-
-    const email = document.getElementById('login-email').value.trim().toLowerCase();
-    const pass  = document.getElementById('login-pass').value;
-
-    // ── Client-side validation ──────────────────────────────
-    if (!email) {
-      errEl.textContent = 'أدخل البريد الإلكتروني';
-      _isLoggingIn = false; return;
+      revealObs.unobserve(e.target);
     }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      errEl.textContent = 'البريد الإلكتروني غير صالح — مثال: name@example.com';
-      _isLoggingIn = false; return;
-    }
-    if (!pass) {
-      errEl.textContent = 'أدخل كلمة المرور';
-      _isLoggingIn = false; return;
-    }
-    if (pass.length < 8) {
-      errEl.textContent = 'كلمة المرور يجب أن تكون 8 أحرف على الأقل';
-      _isLoggingIn = false; return;
-    }
+  });
+}, { threshold: 0.12 });
 
-    btnLoad(btn, true);
-    try {
-      const data = await http.post('/auth/login', { email, password: pass });
-      auth.login(data.user, data.token);
-      window.location.href = data.user.isAdmin ? 'admin.html' : 'dashboard.html';
-    } catch (e) {
-      errEl.textContent = e.message || 'فشل تسجيل الدخول، تحقق من البيانات';
-      btnLoad(btn, false);
-      _isLoggingIn = false;
-    }
-  }
+document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
 
+/* ═══════════════════════════════════════
+   BOOT
+═══════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', () => {
+  _buildTicker();
+  _buildMarket();
+  buildLandingCharts();
+  setInterval(_updatePrices, 3000);
+});
 </script>
 </body>
 </html>
