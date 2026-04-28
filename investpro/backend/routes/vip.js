@@ -3,7 +3,7 @@ const User     = require('../models/User');
 const { Wallet, Transaction } = require('../models/Wallet');
 const { protect } = require('../middleware');
 const { VIP_LEVELS } = require('../config/vipConfig');
-const { addReferralCommissions } = require('../jobs/rewards');
+const { addReferralCommissions, processUserHourlyRewards, getHourlyProfitStatus } = require('../jobs/rewards');
 
 /* GET /api/vip — plans + user status */
 router.get('/', protect, async (req, res) => {
@@ -34,6 +34,7 @@ router.get('/', protect, async (req, res) => {
     }));
 
     const currentCfg = VIP_LEVELS.find(v => v.level === user.vipLevel);
+    const hourlyProfit = await getHourlyProfitStatus(user._id);
 
     res.json({
       success: true,
@@ -47,6 +48,7 @@ router.get('/', protect, async (req, res) => {
         trainingDaysLeft:  user.trainingDaysLeft,
         trainingCompleted: user.trainingCompleted,
         balance:           wallet ? wallet.balance : 0,
+        hourlyProfit,
       },
     });
   } catch (err) {
@@ -62,9 +64,12 @@ router.post('/start-training', protect, async (req, res) => {
       return res.status(400).json({ success: false, message: 'لقد بدأت التدريب مسبقاً' });
     }
     user.vipLevel         = 0;
-    user.trainingDaysLeft = parseInt(process.env.TRAINING_DAYS || 5);
+    user.trainingDaysLeft = parseInt(process.env.TRAINING_DAYS || 30);
     user.vipActivatedAt   = new Date();
+    user.vipLastHourlyRewardAt = user.vipActivatedAt;
+    user.vipExpiresAt     = new Date(user.vipActivatedAt.getTime() + 30 * 86400000);
     await user.save();
+    await processUserHourlyRewards(user._id);
     res.json({ success: true, message: `تم تفعيل فترة التدريب المجانية (${user.trainingDaysLeft} أيام)` });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
@@ -120,6 +125,7 @@ router.post('/activate', protect, async (req, res) => {
             vipLevel:          lvl,
             vipActivatedAt:    now,
             vipExpiresAt:      expires,
+            vipLastHourlyRewardAt: now,
             trainingCompleted: true,  // auto-complete training if skipped
             lastRewardDate:    null,  // reset so profit runs on next cron
           },
@@ -143,6 +149,7 @@ router.post('/activate', protect, async (req, res) => {
       await addReferralCommissions(user._id, config.price).catch(e =>
         console.error('[VIP] Referral commission error:', e.message)
       );
+      await processUserHourlyRewards(user._id);
 
     } catch (saveErr) {
       // Rollback wallet deduction on any failure
@@ -178,6 +185,7 @@ router.get('/status', protect, async (req, res) => {
   try {
     const user   = req.user;
     const config = VIP_LEVELS.find(v => v.level === user.vipLevel);
+    const hourly = await getHourlyProfitStatus(user._id);
     res.json({
       success:           true,
       vipLevel:          user.vipLevel,
@@ -190,7 +198,18 @@ router.get('/status', protect, async (req, res) => {
       dailyProfit:       config ? config.dailyProfit : 0,
       dailyBonus:        config ? config.dailyBonus  : 0,
       dailyTotal:        config ? +(config.dailyProfit + config.dailyBonus).toFixed(4) : 0,
+      hourlyProfit:      hourly,
     });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+/* GET /api/vip/hourly-profit */
+router.get('/hourly-profit', protect, async (req, res) => {
+  try {
+    const hourlyProfit = await getHourlyProfitStatus(req.user._id);
+    res.json({ success: true, hourlyProfit });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }

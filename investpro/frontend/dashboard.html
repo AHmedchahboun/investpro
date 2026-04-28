@@ -2,14 +2,8 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="theme-color" content="#060d1a">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="InvestPro">
-  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>InvestPro — لوحة التحكم</title>
-  <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/dashboard-v2.css">
@@ -19,15 +13,10 @@
   <link rel="stylesheet" href="css/welcome-modal.css">
   <link rel="stylesheet" href="css/fintech-pro.css">
   <link rel="stylesheet" href="css/mobile.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" defer></script>
+  <link rel="stylesheet" href="css/entry-modal.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 <body>
-
-<!-- App Loading Screen -->
-<div class="app-loader" id="app-loader">
-  <div class="loader-logo">Invest<span>Pro</span></div>
-  <div class="loader-spinner"></div>
-</div>
 
 <!-- Live Price Ticker -->
 <div class="ticker-wrap">
@@ -115,18 +104,23 @@
       </div>
     </div>
 
+    <!-- Smart State Banner -->
+    <div id="dash-state-banner" class="dash-state-banner new-user" style="display:none"></div>
+
     <!-- Mini Stats -->
-    <div class="section-title">
-      إحصائيات المنصة
-    </div>
+    <div class="section-title">إحصائيات المنصة</div>
     <div class="stats-grid mb-6">
       <div class="stat-box">
         <div class="text-xs text-secondary mb-1">المستثمرين</div>
-        <div class="text-lg font-bold text-primary" id="plat-users">0</div>
+        <div class="text-lg font-bold text-primary" id="plat-users">
+          <span class="skeleton" style="width:50px;height:18px;display:inline-block;border-radius:6px"></span>
+        </div>
       </div>
       <div class="stat-box">
         <div class="text-xs text-secondary mb-1">إجمالي السحوبات</div>
-        <div class="text-lg font-bold text-success" id="plat-withdrawals">$0.00</div>
+        <div class="text-lg font-bold text-success" id="plat-withdrawals">
+          <span class="skeleton" style="width:70px;height:18px;display:inline-block;border-radius:6px"></span>
+        </div>
       </div>
     </div>
 
@@ -136,18 +130,35 @@
       <span class="section-link" data-go="pg-hist">عرض الكل</span>
     </div>
     <div class="tx-list" id="dash-tx-body">
-      <!-- Skeletons -->
       <div class="tx-item skeleton"></div>
       <div class="tx-item skeleton"></div>
       <div class="tx-item skeleton"></div>
     </div>
-    
+
     <!-- Profit Strip -->
     <div class="profit-strip" id="profit-strip"></div>
 
+    <!-- Hourly VIP Profit -->
+    <div class="hourly-profit-card" id="hourly-profit-card" style="display:none">
+      <div class="hourly-profit-top">
+        <div>
+          <div class="hourly-profit-label">خطة VIP الحالية</div>
+          <div class="hourly-profit-plan" id="hp-plan">—</div>
+        </div>
+        <div class="hourly-profit-status" id="hp-status">—</div>
+      </div>
+      <div class="hourly-profit-grid">
+        <div><span>ربح اليوم</span><strong id="hp-daily">$0.00</strong></div>
+        <div><span>ربح الساعة</span><strong id="hp-hourly">$0.0000</strong></div>
+        <div><span>الوقت المتبقي</span><strong id="hp-countdown">—</strong></div>
+        <div><span>ربح مجمد</span><strong id="hp-frozen">$0.0000</strong></div>
+        <div><span>قابل للسحب</span><strong id="hp-available">$0.0000</strong></div>
+      </div>
+    </div>
+
     <!-- Charts Section -->
     <div class="charts-section">
-      <!-- Portfolio Performance -->
+      <!-- Portfolio Performance (shown on both mobile & desktop) -->
       <div class="chart-card">
         <div class="chart-card-header">
           <div class="chart-card-title">📈 أداء المحفظة</div>
@@ -158,23 +169,23 @@
           </div>
         </div>
         <div class="chart-value-display">
-          <div class="chart-main-val" id="portfolio-val">$—</div>
-          <div class="chart-sub-val"  id="portfolio-gain">جاري الحساب...</div>
+          <div class="chart-main-val" id="portfolio-val">$0.00</div>
+          <div class="chart-sub-val"  id="portfolio-gain">ابدأ بالإيداع لعرض أداء محفظتك</div>
         </div>
         <div class="chart-canvas-wrap">
           <canvas id="portfolio-chart"></canvas>
         </div>
       </div>
 
-      <!-- Daily Profit -->
+      <!-- Daily Profit (hidden on mobile via CSS) -->
       <div class="chart-card">
         <div class="chart-card-header">
-          <div class="chart-card-title">💰 الأرباح اليومية (7 أيام)</div>
+          <div class="chart-card-title">💰 الأرباح اليومية</div>
           <span class="live-dot">مباشر</span>
         </div>
         <div class="chart-value-display">
-          <div class="chart-main-val" id="profit-week-val">+$—</div>
-          <div class="chart-sub-val"  id="profit-week-sub">جاري الحساب...</div>
+          <div class="chart-main-val" id="profit-week-val">+$0.00</div>
+          <div class="chart-sub-val"  id="profit-week-sub">لا توجد أرباح بعد</div>
         </div>
         <div class="chart-canvas-wrap">
           <canvas id="profit-chart"></canvas>
@@ -184,24 +195,47 @@
 
     <!-- Trust Indicators -->
     <div class="trust-badges">
-      <div class="trust-item">
-        <i class="fas fa-shield-alt"></i>
-        <span>معاملات آمنة</span>
-      </div>
-      <div class="trust-item">
-        <i class="fas fa-bolt"></i>
-        <span>نظام آلي 24/7</span>
-      </div>
-      <div class="trust-item">
-        <i class="fas fa-link"></i>
-        <span>شبكة موثقة</span>
-      </div>
+      <div class="trust-item"><i class="fas fa-shield-alt"></i><span>معاملات آمنة</span></div>
+      <div class="trust-item"><i class="fas fa-bolt"></i><span>نظام آلي 24/7</span></div>
+      <div class="trust-item"><i class="fas fa-link"></i><span>شبكة موثقة</span></div>
     </div>
   </div>
 
-
-  <!-- ==================== WALLET ==================== -->
+  <!-- ==================== WALLET PAGE ==================== -->
   <div id="pg-wal" class="page-content fade-in">
+    <div class="wallet-overview-card">
+      <div class="wallet-overview-head">
+        <div>
+          <div class="wallet-overview-label">المحفظة</div>
+          <div class="wallet-overview-balance" id="wallet-card-balance">$0.00</div>
+        </div>
+        <div class="wallet-overview-pill">USDT</div>
+      </div>
+      <div class="wallet-overview-grid">
+        <div>
+          <span>الأرباح</span>
+          <strong id="wallet-card-earned">$0.00</strong>
+        </div>
+        <div>
+          <span>الإيداع</span>
+          <strong id="wallet-card-deposited">$0.00</strong>
+        </div>
+      </div>
+      <div class="wallet-overview-actions">
+        <button class="wallet-action-btn deposit" type="button" onclick="switchWalletTab('deposit')">
+          <i class="fas fa-arrow-down"></i>
+          <span>إيداع</span>
+        </button>
+        <button class="wallet-action-btn withdraw" type="button" onclick="switchWalletTab('withdraw')">
+          <i class="fas fa-arrow-up"></i>
+          <span>سحب</span>
+        </button>
+        <button class="wallet-action-btn vip" type="button" onclick="go('pg-vip')">
+          <i class="fas fa-crown"></i>
+          <span>VIP</span>
+        </button>
+      </div>
+    </div>
 
     <!-- Tabs -->
     <div class="wallet-tabs">
@@ -798,10 +832,6 @@
     <i class="fas fa-user nav-icon"></i>
     <span class="nav-label">حسابي</span>
   </div>
-  <div class="nav-item" data-nav="pg-ref" data-go="pg-ref">
-    <i class="fas fa-users nav-icon"></i>
-    <span class="nav-label">الإحالة</span>
-  </div>
 </nav>
 
 <!-- VIP Purchase Modal -->
@@ -846,6 +876,7 @@
 <script src="js/config.js"></script>
 <script src="js/api.js"></script>
 <script src="js/fintech-pro.js"></script>
+<script src="js/entry-modal.js"></script>
 <script>
 /* ════════════════════════════════════════════════════════════
    Global state
@@ -905,8 +936,7 @@ function switchWalletTab(tab) {
 window.addEventListener('DOMContentLoaded', async () => {
   if (!auth.check()) return;
 
-  // Check welcome modal FIRST — blocks dashboard until accepted
-  checkWelcomeModal();
+  // Entry rules modal is shown on every visit by js/entry-modal.js.
 
   // Global Navigation Listener (Professional Fix for ReferenceError)
   document.addEventListener('click', (e) => {    const btn = e.target.closest('[data-go]');
@@ -992,9 +1022,9 @@ async function loadUserData() {
 
 function applyUserToUI(user, wallet) {
   const w = wallet || {};
-  const balance     = (w.balance       || 0).toFixed(2);
-  const deposited   = (w.totalDeposited || 0).toFixed(2);
-  const earned      = (w.totalEarned   || 0).toFixed(2);
+  const balance     = (w.balance       || 0);
+  const deposited   = (w.totalDeposited || 0);
+  const earned      = (w.totalEarned   || 0);
 
   const vipNames = { '-1':'غير نشط', '0':'تدريب', '1':'برونزي', '2':'فضي', '3':'ذهبي', '4':'ماسي' };
   const vipName  = vipNames[String(user.vipLevel)] || `VIP ${user.vipLevel}`;
@@ -1016,6 +1046,9 @@ function applyUserToUI(user, wallet) {
 
   // Wallet
   document.getElementById('w-balance').textContent   = fmt.usd(balance);
+  document.getElementById('wallet-card-balance').textContent    = fmt.usd(balance);
+  document.getElementById('wallet-card-earned').textContent     = fmt.usd(earned);
+  document.getElementById('wallet-card-deposited').textContent  = fmt.usd(deposited);
 
   // Referral link
   const refLink = `${window.location.origin}/?ref=${user.referralCode}`;
@@ -1028,12 +1061,16 @@ function applyUserToUI(user, wallet) {
 async function loadSystemStats() {
   try {
     const s = await http.get('/system/stats');
-    document.getElementById('plat-users').textContent       = `+${(s.totalUsers || 0).toLocaleString()}`;
-    document.getElementById('plat-withdrawals').textContent = fmt.usd(s.totalWithdrawals || 0);
+    const usersEl = document.getElementById('plat-users');
+    const wdEl    = document.getElementById('plat-withdrawals');
+    if (usersEl) usersEl.textContent = `+${(s.totalUsers || 0).toLocaleString()}`;
+    if (wdEl)    wdEl.textContent    = fmt.usd(s.totalWithdrawals || 0);
   } catch (e) {
     console.error('loadSystemStats error:', e);
-    document.getElementById('plat-users').textContent       = '—';
-    document.getElementById('plat-withdrawals').textContent = '—';
+    const usersEl = document.getElementById('plat-users');
+    const wdEl    = document.getElementById('plat-withdrawals');
+    if (usersEl) usersEl.textContent = '0';
+    if (wdEl)    wdEl.textContent    = '$0.00';
   }
 }
 
@@ -1937,10 +1974,7 @@ function exitPlatform() {
 }
 
 function checkWelcomeModal() {
-  const accepted = store.get(WELCOME_KEY);
-  if (!accepted || !accepted.accepted) {
-    showWelcomeModal();
-  }
+  // Deprecated: replaced by js/entry-modal.js, which appears on every visit without storage.
 }
 </script>
 

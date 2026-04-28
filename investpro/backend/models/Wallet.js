@@ -8,6 +8,8 @@ const walletSchema = new mongoose.Schema({
   totalWithdrawn:   { type: Number, default: 0 },
   totalEarned:      { type: Number, default: 0 },  // profits + bonuses
   totalBonus:       { type: Number, default: 0 },  // daily bonus only
+  availableProfit:  { type: Number, default: 0 },
+  frozenProfit:     { type: Number, default: 0 },
   pendingWithdraw:  { type: Number, default: 0 },
 }, { timestamps: true });
 
@@ -63,8 +65,26 @@ const auditLogSchema = new mongoose.Schema({
   severity: { type: String, enum: ['info', 'warn', 'critical'], default: 'info' },
 }, { timestamps: true });
 
+const hourlyProfitSchema = new mongoose.Schema({
+  user:       { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, index: true },
+  userName:   { type: String },
+  vipLevel:   { type: Number, required: true },
+  planName:   { type: String, required: true },
+  amount:     { type: Number, required: true },
+  cycleStart: { type: Date, required: true },
+  eligibleAt: { type: Date, required: true, index: true },
+  status:     { type: String, enum: ['frozen', 'available', 'withdrawn'], default: 'frozen', index: true },
+  transaction:{ type: mongoose.Schema.Types.ObjectId, ref: 'Transaction' },
+  withdrawTx: { type: mongoose.Schema.Types.ObjectId, ref: 'Transaction' },
+  timezone:   { type: String, default: 'Africa/Casablanca' },
+}, { timestamps: true });
+
+hourlyProfitSchema.index({ user: 1, cycleStart: 1 }, { unique: true });
+hourlyProfitSchema.index({ user: 1, status: 1, eligibleAt: -1 });
+
 const Wallet      = mongoose.model('Wallet',      walletSchema);
 const Transaction = mongoose.model('Transaction', transactionSchema);
 const AuditLog    = mongoose.model('AuditLog',    auditLogSchema);
+const HourlyProfit = mongoose.model('HourlyProfit', hourlyProfitSchema);
 
-module.exports = { Wallet, Transaction, AuditLog };
+module.exports = { Wallet, Transaction, AuditLog, HourlyProfit };

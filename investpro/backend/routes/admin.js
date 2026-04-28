@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const mongoose = require('mongoose');
 const User = require('../models/User');
-const { Wallet, Transaction, AuditLog } = require('../models/Wallet');
+const { Wallet, Transaction, AuditLog, HourlyProfit } = require('../models/Wallet');
 const { protect, adminOnly } = require('../middleware');
 const { addReferralCommissions, runDailyRewards, notifyAdmin } = require('../jobs/rewards');
 
@@ -227,7 +227,11 @@ router.post('/withdraws/:id/reject', async (req, res) => {
       // Restore balance and clear pending
       await Wallet.findOneAndUpdate(
         { user: tx.user },
-        { $inc: { balance: tx.amount, pendingWithdraw: -tx.amount } }
+        { $inc: { balance: tx.amount, availableProfit: tx.amount, pendingWithdraw: -tx.amount } }
+      );
+      await HourlyProfit.updateMany(
+        { user: tx.user, withdrawTx: tx._id, status: 'withdrawn' },
+        { $set: { status: 'available' }, $unset: { withdrawTx: '' } }
       );
       await log(req.user, 'REJECT_WITHDRAW', tx.user, { txId: tx._id, reason }, req, 'warn');
       res.json({ success: true, message: 'تم رفض السحب وإعادة الرصيد' });

@@ -16,36 +16,80 @@ const VIP_CONFIG = {
    '4': { name: 'ماسي',     dailyProfit: 13.50, dailyBonus: 0,    monthlyPct: 35 },
 };
 
+Object.assign(VIP_CONFIG, {
+  '-1': { name: 'غير نشط', dailyProfit: 0, dailyBonus: 0, monthlyPct: 0 },
+  '0':  { name: 'التدريب', dailyProfit: 0.10, dailyBonus: 0, monthlyPct: 0 },
+  '1':  { name: 'البرونزي', dailyProfit: 0.50, dailyBonus: 0, monthlyPct: 0 },
+  '2':  { name: 'الفضي', dailyProfit: 1.50, dailyBonus: 0, monthlyPct: 0 },
+  '3':  { name: 'الذهبي', dailyProfit: 5.00, dailyBonus: 0, monthlyPct: 0 },
+  '4':  { name: 'الماسي', dailyProfit: 17.00, dailyBonus: 0, monthlyPct: 0 },
+});
+
 /* ────────────────────────────────────────────────────────────
    STATE — single source of truth, set once from API
 ──────────────────────────────────────────────────────────── */
 const _state = {
   wallet:       null,   // { balance, totalDeposited, totalWithdrawn, totalEarned }
   vip:          null,   // { vipLevel, dailyProfit, dailyBonus, isActive, daysLeft }
+  hourlyProfit: null,
   transactions: [],     // all tx records
   ready:        false,
 };
 
 /* ────────────────────────────────────────────────────────────
-   1. DATA LOADING
+   1. DATA LOADING — sequential to avoid 429 errors
 ──────────────────────────────────────────────────────────── */
 async function loadFintechData() {
+  _showSkeletons();
   try {
-    const [walletRes, vipRes, txRes] = await Promise.all([
-      http.get('/wallet'),
-      http.get('/vip/status'),
-      http.get('/wallet/transactions?limit=100'),
-    ]);
-
-    _state.wallet       = walletRes.wallet;
-    _state.vip          = vipRes;
-    _state.transactions = txRes.transactions || [];
+    // Try unified dashboard endpoint first (1 request instead of 3)
+    const dashRes = await requestWithRetry(() => http.get('/system/dashboard'));
+    _state.wallet       = dashRes.wallet;
+    _state.vip          = dashRes.vip;
+    _state.hourlyProfit = dashRes.hourlyProfit || dashRes.vip?.hourlyProfit || null;
+    _state.transactions = dashRes.transactions || [];
     _state.ready        = true;
-
     _applyAllCalculations();
   } catch (err) {
-    console.warn('[Fintech] API load failed — using wallet cache:', err.message);
-    _tryFromCache();
+    // Fallback: sequential individual requests with delays
+    console.warn('[Fintech] Dashboard endpoint failed, falling back:', err.message);
+    try {
+      const walletRes = await requestWithRetry(() => http.get('/wallet'));
+      _state.wallet = walletRes.wallet;
+      await delay(300);
+
+      const vipRes = await requestWithRetry(() => http.get('/vip/status'));
+      _state.vip = vipRes;
+      _state.hourlyProfit = vipRes.hourlyProfit || null;
+      await delay(300);
+
+      const txRes = await requestWithRetry(() => http.get('/wallet/transactions?limit=100'));
+      _state.transactions = txRes.transactions || [];
+
+      _state.ready = true;
+      _applyAllCalculations();
+    } catch (fallbackErr) {
+      console.warn('[Fintech] All API calls failed — using cache:', fallbackErr.message);
+      _tryFromCache();
+    }
+  }
+}
+
+function _showSkeletons() {
+  // Show skeleton state for chart values instead of "—" or "جاري الحساب"
+  const portfolioVal  = document.getElementById('portfolio-val');
+  const portfolioGain = document.getElementById('portfolio-gain');
+  const profitWeekVal = document.getElementById('profit-week-val');
+  const profitWeekSub = document.getElementById('profit-week-sub');
+  if (portfolioVal)  portfolioVal.innerHTML  = '<span class="skeleton-text" style="width:80px;height:20px;display:inline-block;border-radius:6px;background:rgba(255,255,255,0.08);animation:pulse 1.5s ease-in-out infinite"></span>';
+  if (portfolioGain) portfolioGain.innerHTML = '<span class="skeleton-text" style="width:120px;height:14px;display:inline-block;border-radius:6px;background:rgba(255,255,255,0.06);animation:pulse 1.5s ease-in-out infinite"></span>';
+  if (profitWeekVal) profitWeekVal.innerHTML = '<span class="skeleton-text" style="width:70px;height:20px;display:inline-block;border-radius:6px;background:rgba(255,255,255,0.08);animation:pulse 1.5s ease-in-out infinite"></span>';
+  if (profitWeekSub) profitWeekSub.innerHTML = '<span class="skeleton-text" style="width:100px;height:14px;display:inline-block;border-radius:6px;background:rgba(255,255,255,0.06);animation:pulse 1.5s ease-in-out infinite"></span>';
+  if (!document.getElementById('pulse-style')) {
+    const s = document.createElement('style');
+    s.id = 'pulse-style';
+    s.textContent = '@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}';
+    document.head.appendChild(s);
   }
 }
 
@@ -61,13 +105,155 @@ function _tryFromCache() {
 }
 
 function _applyAllCalculations() {
+  _state.wallet = _normalizeWallet(_state.wallet, _state.transactions);
+  _syncWalletSummary();
   _buildProfitStrip();
+  _renderHourlyProfitCard();
   _buildNotificationsFromTx();
   _renderNotifBadge();
+  _renderDashStateBanner();
   if (typeof Chart !== 'undefined') {
     _initPortfolioChart(30);
     _initProfitChart();
   }
+}
+
+function _syncWalletSummary() {
+  const w = _state.wallet;
+  if (!w) return;
+  const setText = (id, value) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = fmt.usd(value);
+  };
+  setText('d-balance', w.balance || 0);
+  setText('d-deposited', w.totalDeposited || 0);
+  setText('d-earned', w.totalEarned || 0);
+  setText('w-balance', w.balance || 0);
+  setText('wallet-card-balance', w.balance || 0);
+  setText('wallet-card-earned', w.totalEarned || 0);
+  setText('wallet-card-deposited', w.totalDeposited || 0);
+}
+
+function _fmtCountdown(ms) {
+  const total = Math.max(0, Math.ceil((Number(ms) || 0) / 1000));
+  const h = Math.floor(total / 3600);
+  const m = Math.floor((total % 3600) / 60);
+  const s = total % 60;
+  return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+}
+
+function _renderHourlyProfitCard() {
+  const hp = _state.hourlyProfit;
+  const card = document.getElementById('hourly-profit-card');
+  if (!card || !hp || !hp.active) {
+    if (card) card.style.display = 'none';
+    const wdBtn = document.getElementById('wd-btn');
+    if (wdBtn) wdBtn.disabled = true;
+    return;
+  }
+
+  card.style.display = 'block';
+  const set = (id, value) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = value;
+  };
+  const statusEl = document.getElementById('hp-status');
+  set('hp-plan', hp.planName || '—');
+  set('hp-daily', fmt.usd(hp.dailyProfit || 0));
+  set('hp-hourly', '$' + Number(hp.hourlyProfit || 0).toFixed(4));
+  set('hp-countdown', _fmtCountdown(hp.msRemaining));
+  set('hp-frozen', '$' + Number(hp.frozenProfit || 0).toFixed(4));
+  set('hp-available', '$' + Number(hp.availableProfit || 0).toFixed(4));
+  if (statusEl) {
+    statusEl.textContent = hp.status || 'الربح في مرحلة المعالجة';
+    statusEl.classList.toggle('available', !!hp.canWithdraw);
+  }
+  const wdBtn = document.getElementById('wd-btn');
+  if (wdBtn) wdBtn.disabled = !hp.canWithdraw;
+}
+
+setInterval(() => {
+  if (!_state.hourlyProfit || !_state.hourlyProfit.active) return;
+  _state.hourlyProfit.msRemaining = Math.max(0, Number(_state.hourlyProfit.msRemaining || 0) - 1000);
+  _renderHourlyProfitCard();
+}, 1000);
+
+setInterval(async () => {
+  if (!store.get('token')) return;
+  try {
+    const res = await http.get('/vip/hourly-profit');
+    _state.hourlyProfit = res.hourlyProfit;
+    _renderHourlyProfitCard();
+  } catch (_) {}
+}, 60000);
+
+function _normalizeWallet(wallet = {}, transactions = []) {
+  const approvedOrReserved = transactions.filter(tx =>
+    tx.status === 'approved' || (tx.type === 'withdraw' && tx.status === 'pending')
+  );
+  const sum = (types) => approvedOrReserved
+    .filter(tx => types.includes(tx.type))
+    .reduce((total, tx) => total + (Number(tx.amount) || 0), 0);
+
+  const deposits = sum(['deposit', 'admin_credit']);
+  const profits = sum([
+    'daily_profit', 'daily_bonus', 'training_reward',
+    'referral_l1', 'referral_l2', 'referral_l3', 'signup_bonus'
+  ]);
+  const withdrawals = sum(['withdraw', 'vip_purchase', 'admin_debit']);
+  const balance = Math.max(0, deposits - withdrawals + profits);
+
+  return {
+    ...wallet,
+    balance,
+    totalDeposited: deposits,
+    totalWithdrawn: sum(['withdraw']),
+    totalEarned: profits,
+  };
+}
+
+/* ── Smart dashboard state banner ───────────────────────── */
+function _renderDashStateBanner() {
+  const el = document.getElementById('dash-state-banner');
+  if (!el || !_state.wallet) return;
+
+  const balance  = _state.wallet.balance || 0;
+  const vipLevel = _state.vip?.vipLevel ?? -1;
+  const isActive = vipLevel >= 1;
+
+  if (balance === 0) {
+    // New user — no deposit yet
+    el.className = 'dash-state-banner new-user';
+    el.innerHTML = `
+      <div class="dash-state-banner-icon">🚀</div>
+      <div class="dash-state-banner-text">
+        <div class="dash-state-banner-title">ابدأ رحلتك الاستثمارية</div>
+        <div class="dash-state-banner-sub">أودع أول مبلغ لتفعيل حسابك</div>
+      </div>
+      <button class="dash-state-banner-btn" onclick="go('pg-wal')">إيداع الآن</button>`;
+  } else if (!isActive) {
+    // Has balance but no VIP
+    el.className = 'dash-state-banner has-balance';
+    el.innerHTML = `
+      <div class="dash-state-banner-icon">👑</div>
+      <div class="dash-state-banner-text">
+        <div class="dash-state-banner-title">فعّل خطة VIP</div>
+        <div class="dash-state-banner-sub">رصيدك جاهز — ابدأ تحقيق أرباح يومية</div>
+      </div>
+      <button class="dash-state-banner-btn" onclick="go('pg-vip')">ترقية VIP</button>`;
+  } else {
+    // Active investor
+    const daily = _dailyProfit();
+    el.className = 'dash-state-banner active-vip';
+    el.innerHTML = `
+      <div class="dash-state-banner-icon">📈</div>
+      <div class="dash-state-banner-text">
+        <div class="dash-state-banner-title">حسابك نشط</div>
+        <div class="dash-state-banner-sub">ربح يومي متوقع: +$${daily.toFixed(2)}</div>
+      </div>
+      <button class="dash-state-banner-btn" onclick="go('pg-hist')">العمليات</button>`;
+  }
+  el.style.display = 'flex';
 }
 
 /* ────────────────────────────────────────────────────────────
@@ -79,7 +265,10 @@ function _applyAllCalculations() {
 function _dailyProfit() {
   const level = String(_state.vip?.vipLevel ?? -1);
   const cfg   = VIP_CONFIG[level] || VIP_CONFIG['-1'];
-  return cfg.dailyProfit + cfg.dailyBonus;
+  if (_state.hourlyProfit?.dailyProfit !== undefined) {
+    return +Number(_state.hourlyProfit.dailyProfit || 0).toFixed(4);
+  }
+  return +(Number(cfg.dailyProfit || 0) + Number(cfg.dailyBonus || 0)).toFixed(4);
 }
 
 /** Sum of a tx type in the last N days */
@@ -315,8 +504,15 @@ function _initProfitChart() {
   const valEl  = document.getElementById('profit-week-val');
   const subEl  = document.getElementById('profit-week-sub');
   const daily  = _dailyProfit();
-  if (valEl) valEl.textContent = total > 0 ? `+$${total.toFixed(2)}` : `~+$${(daily*7).toFixed(2)}`;
-  if (subEl) subEl.textContent = `متوسط يومي: $${(total > 0 ? total/7 : daily).toFixed(2)}`;
+  if (valEl) {
+    if (total > 0) { valEl.textContent = `+$${total.toFixed(2)}`; }
+    else if (daily > 0) { valEl.textContent = `~+$${(daily*7).toFixed(2)}`; }
+    else { valEl.textContent = 'فعّل خطة VIP لبدء الأرباح'; }
+  }
+  if (subEl) {
+    if (total > 0 || daily > 0) { subEl.textContent = `متوسط يومي: $${(total > 0 ? total/7 : daily).toFixed(2)}`; }
+    else { subEl.textContent = 'لا توجد أرباح بعد'; }
+  }
 }
 
 function refreshCharts(period) {
@@ -434,21 +630,15 @@ document.addEventListener('click', e => {
 });
 
 /* ────────────────────────────────────────────────────────────
-   6. LIVE PRICE TICKER
-   Market prices are always simulated (standard on all fintech demos)
-   Volatility is deterministic per asset — no arbitrary randomness
+   6. LIVE PRICE TICKER — 6 assets, clean display
 ──────────────────────────────────────────────────────────── */
 const TICKER_ASSETS = [
   { symbol:'BTC',  price:67420.50, vol:0.0018 },
   { symbol:'ETH',  price:3521.80,  vol:0.0025 },
   { symbol:'USDT', price:1.0001,   vol:0.0001 },
-  { symbol:'BNB',  price:598.40,   vol:0.0020 },
-  { symbol:'SOL',  price:172.30,   vol:0.0035 },
-  { symbol:'XRP',  price:0.6182,   vol:0.0028 },
   { symbol:'GOLD', price:2345.70,  vol:0.0008 },
   { symbol:'AAPL', price:187.40,   vol:0.0015 },
   { symbol:'TSLA', price:176.50,   vol:0.0030 },
-  { symbol:'NVDA', price:875.20,   vol:0.0022 },
 ];
 
 // Deterministic pseudo-random using seed (asset index + tick count)
@@ -466,8 +656,7 @@ const _tickerState = TICKER_ASSETS.map((a, i) => ({
 function _buildTicker() {
   const wrap = document.getElementById('ticker-track');
   if (!wrap) return;
-  const html = _tickerState.map(a => _tickerItemHtml(a)).join('');
-  wrap.innerHTML = html + html;
+  wrap.innerHTML = _tickerState.map(a => _tickerItemHtml(a)).join('');
 }
 
 function _tickerItemHtml(a) {
@@ -513,7 +702,8 @@ function _updateTicker() {
 
 function initTicker() {
   _buildTicker();
-  setInterval(_updateTicker, 3000);
+  if (window._investproTickerTimer) clearInterval(window._investproTickerTimer);
+  window._investproTickerTimer = setInterval(_updateTicker, 3500);
 }
 
 /* ────────────────────────────────────────────────────────────

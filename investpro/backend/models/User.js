@@ -10,6 +10,7 @@ const userSchema = new mongoose.Schema({
   vipLevel:          { type: Number, default: -1 },  // -1=none, 0=training, 1-4=paid
   vipActivatedAt:    { type: Date },
   vipExpiresAt:      { type: Date },
+  vipLastHourlyRewardAt: { type: Date },
   trainingDaysLeft:  { type: Number, default: 0 },
   trainingCompleted: { type: Boolean, default: false },
 
@@ -57,13 +58,15 @@ userSchema.methods.matchPassword = function (plain) {
 };
 
 userSchema.methods.isVipActive = function () {
-  if (this.vipLevel === 0) return this.trainingDaysLeft > 0;
+  if (this.vipLevel === 0) return this.vipExpiresAt && this.vipExpiresAt > new Date();
   if (this.vipLevel >= 1) return this.vipExpiresAt && this.vipExpiresAt > new Date();
   return false;
 };
 
 userSchema.methods.vipDaysLeft = function () {
-  if (this.vipLevel === 0) return this.trainingDaysLeft;
+  if (this.vipLevel === 0 && this.vipExpiresAt) {
+    return Math.max(0, Math.ceil((this.vipExpiresAt - Date.now()) / 86400000));
+  }
   if (this.vipLevel >= 1 && this.vipExpiresAt) {
     return Math.max(0, Math.ceil((this.vipExpiresAt - Date.now()) / 86400000));
   }

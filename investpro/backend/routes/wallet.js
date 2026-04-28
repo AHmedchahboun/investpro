@@ -166,12 +166,12 @@ router.post('/withdraw', protect, withdrawLimit, async (req, res) => {
     //         approved by admin — not at request time — so it always
     //         reflects actually-completed withdrawals.
     const wallet = await Wallet.findOneAndUpdate(
-      { user: req.user._id, balance: { $gte: amt }, pendingWithdraw: 0 },
-      { $inc: { balance: -amt, pendingWithdraw: amt } },
+      { user: req.user._id, balance: { $gte: amt }, availableProfit: { $gte: amt }, pendingWithdraw: 0 },
+      { $inc: { balance: -amt, availableProfit: -amt, pendingWithdraw: amt } },
       { new: true }
     );
     if (!wallet) {
-      return res.status(400).json({ success: false, message: 'رصيد غير كافٍ أو يوجد سحب معلق بالفعل' });
+      return res.status(400).json({ success: false, message: 'لا يمكن سحب الربح المجمد. المبلغ المتاح للسحب غير كافٍ أو يوجد سحب معلق بالفعل' });
     }
 
     let tx;
@@ -185,12 +185,15 @@ router.post('/withdraw', protect, withdrawLimit, async (req, res) => {
         netAmount,
         paymentMethod,
         toAddress: toAddress.trim().substring(0, 200),
+        note: 'سحب أرباح متاحة',
       });
+      const { markAvailableProfitWithdrawn } = require('../jobs/rewards');
+      await markAvailableProfitWithdrawn(req.user._id, amt, tx._id);
     } catch (txErr) {
       // Rollback wallet deduction if transaction record fails
       await Wallet.findOneAndUpdate(
         { user: req.user._id },
-        { $inc: { balance: amt, pendingWithdraw: -amt } }
+        { $inc: { balance: amt, availableProfit: amt, pendingWithdraw: -amt } }
       ).catch(() => {});
       throw txErr;
     }
