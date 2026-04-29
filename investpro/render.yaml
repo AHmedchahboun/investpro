@@ -1,0 +1,57 @@
+services:
+  - type: web
+    name: investpro-api
+    runtime: node
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: JWT_EXPIRES
+        value: 30d
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: SITE_URL
+        sync: false
+      - key: MIN_DEPOSIT
+        value: "10"
+      - key: MAX_DEPOSIT
+        value: "50000"
+      - key: MIN_WITHDRAW
+        value: "10"
+      - key: MAX_WITHDRAW
+        value: "10000"
+      - key: WITHDRAWAL_FEE
+        value: "10"
+      - key: TRAINING_DAYS
+        value: "30"
+      - key: TRAINING_DAILY
+        value: "0.10"
+      - key: REFERRAL_L1
+        value: "15"
+      - key: REFERRAL_L2
+        value: "10"
+      - key: REFERRAL_L3
+        value: "5"
+      - key: HOURLY_CRON
+        value: "0 * * * *"
+      - key: WALLET_USDT_TRC20
+        sync: false
+      - key: WALLET_USDT_BEP20
+        sync: false
+      - key: WALLET_USDT_POLYGON
+        sync: false
+      - key: TELEGRAM_BOT_TOKEN
+        sync: false
+      - key: TELEGRAM_ADMIN_CHAT
+        sync: false

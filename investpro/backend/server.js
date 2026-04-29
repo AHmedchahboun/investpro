@@ -19,13 +19,18 @@ app.use(cors({
   credentials: true,
 }));
 app.use(express.json({ limit: '10kb' }));
-app.use((req, res, next) => {
-  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
-  next();
-});
+
+// Request logger — dev only
+if (process.env.NODE_ENV !== 'production') {
+  app.use((req, res, next) => {
+    console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+    next();
+  });
+}
 app.use(generalLimit);
 
 /* ── API Routes ──────────────────────────────────────────────────────────── */
+app.get('/api/health', (req, res) => res.json({ success: true, status: 'ok', ts: Date.now() }));
 app.use('/api/auth',   require('./routes/auth'));
 app.use('/api/wallet', require('./routes/wallet'));
 app.use('/api/vip',    require('./routes/vip'));

@@ -1,4 +1,4 @@
-const router   = require('express').Router();
+﻿const router   = require('express').Router();
 const crypto   = require('crypto');
 const User     = require('../models/User');
 const { Wallet, Transaction } = require('../models/Wallet');
@@ -9,10 +9,14 @@ const { isValidPassword } = require('../utils/validation');
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const IS_PROD  = process.env.NODE_ENV === 'production';
 
+/* â”€â”€ Helper: masked card number (safe for all user objects) â”€ */
+const getMaskedCard = (user) =>
+  user?.cardNumber ? `**** **** **** ${user.cardNumber.slice(-4)}` : '**** **** **** ****';
+
 /* FIX #7: Never expose internal error details in production */
 const serverError = (res, err) => {
   console.error('[Auth Error]', err.message);
-  res.status(500).json({ success: false, message: IS_PROD ? 'خطأ في الخادم' : err.message });
+  res.status(500).json({ success: false, message: IS_PROD ? 'ط®ط·ط£ ظپظٹ ط§ظ„ط®ط§ط¯ظ…' : err.message });
 };
 
 /* POST /api/auth/register */
@@ -21,15 +25,15 @@ router.post('/register', registerLimit, async (req, res) => {
   try {
     const { name, email, password, referralCode } = req.body;
 
-    /* ── Input validation ─────────────────────────────────────────────────── */
+    /* â”€â”€ Input validation â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
     if (!name || !email || !password) {
-      return res.status(400).json({ success: false, message: 'جميع الحقول مطلوبة' });
+      return res.status(400).json({ success: false, message: 'ط¬ظ…ظٹط¹ ط§ظ„ط­ظ‚ظˆظ„ ظ…ط·ظ„ظˆط¨ط©' });
     }
     if (typeof name !== 'string' || name.trim().length < 2 || name.trim().length > 100) {
-      return res.status(400).json({ success: false, message: 'الاسم يجب أن يكون بين 2 و100 حرف' });
+      return res.status(400).json({ success: false, message: 'ط§ظ„ط§ط³ظ… ظٹط¬ط¨ ط£ظ† ظٹظƒظˆظ† ط¨ظٹظ† 2 ظˆ100 ط­ط±ظپ' });
     }
     if (!EMAIL_RE.test(email)) {
-      return res.status(400).json({ success: false, message: 'صيغة البريد الإلكتروني غير صحيحة' });
+      return res.status(400).json({ success: false, message: 'طµظٹط؛ط© ط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ط؛ظٹط± طµط­ظٹط­ط©' });
     }
     if (!isValidPassword(password)) {
       return res.status(400).json({ success: false, message: 'Password must be at least 8 characters long' });
@@ -38,10 +42,10 @@ router.post('/register', registerLimit, async (req, res) => {
     const cleanEmail = email.toLowerCase().trim();
     const exists = await User.findOne({ email: cleanEmail });
     if (exists) {
-      return res.status(400).json({ success: false, message: 'البريد الإلكتروني مسجّل مسبقاً' });
+      return res.status(400).json({ success: false, message: 'ط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ظ…ط³ط¬ظ‘ظ„ ظ…ط³ط¨ظ‚ط§ظ‹' });
     }
 
-    /* ── Referral chain (L1 + L2 + L3) ──────────────────────────────────── */
+    /* â”€â”€ Referral chain (L1 + L2 + L3) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
     let referredBy = null, referredByL2 = null, referredByL3 = null;
     if (referralCode && typeof referralCode === 'string' && referralCode.trim() !== '') {
       const l1 = await User.findOne({ referralCode: referralCode.toUpperCase().trim().substring(0, 20) });
@@ -50,11 +54,11 @@ router.post('/register', registerLimit, async (req, res) => {
         if (l1.referredBy)   referredByL2 = l1.referredBy;
         if (l1.referredByL2) referredByL3 = l1.referredByL2;
       } else {
-        return res.status(400).json({ success: false, message: 'كود الإحالة غير صحيح' });
+        return res.status(400).json({ success: false, message: 'ظƒظˆط¯ ط§ظ„ط¥ط­ط§ظ„ط© ط؛ظٹط± طµط­ظٹط­' });
       }
     }
 
-    /* ── Create user then wallet (sequential, manual rollback on failure) ── */
+    /* â”€â”€ Create user then wallet (sequential, manual rollback on failure) â”€â”€ */
     const user = await User.create({ name: name.trim(), email: cleanEmail, password, referredBy, referredByL2, referredByL3 });
     try {
       await Wallet.create({ user: user._id });
@@ -71,6 +75,7 @@ router.post('/register', registerLimit, async (req, res) => {
         _id: user._id, name: user.name, email: user.email,
         vipLevel: user.vipLevel, isAdmin: user.isAdmin,
         referralCode: user.referralCode,
+        maskedCard: getMaskedCard(user),
         trainingDaysLeft: user.trainingDaysLeft,
         trainingCompleted: user.trainingCompleted,
       },
@@ -85,34 +90,34 @@ router.post('/login', loginLimit, async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // ── Input validation ──────────────────────────────────────────────────
+    // â”€â”€ Input validation â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     if (!email || typeof email !== 'string' || !email.trim()) {
-      return res.status(400).json({ success: false, message: 'البريد الإلكتروني مطلوب' });
+      return res.status(400).json({ success: false, message: 'ط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ظ…ط·ظ„ظˆط¨' });
     }
     if (!password || typeof password !== 'string') {
-      return res.status(400).json({ success: false, message: 'كلمة المرور مطلوبة' });
+      return res.status(400).json({ success: false, message: 'ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ظ…ط·ظ„ظˆط¨ط©' });
     }
 
     const cleanEmail = email.toLowerCase().trim();
 
-    // ── Email format check (catches "mrrobot", "user@", etc.) ────────────
+    // â”€â”€ Email format check (catches "mrrobot", "user@", etc.) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) {
-      return res.status(400).json({ success: false, message: 'صيغة البريد الإلكتروني غير صحيحة' });
+      return res.status(400).json({ success: false, message: 'طµظٹط؛ط© ط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ط؛ظٹط± طµط­ظٹط­ط©' });
     }
 
     const user = await User.findOne({ email: cleanEmail }).select('+password');
     if (!user) {
-      // Generic message — don't reveal whether email exists
-      return res.status(401).json({ success: false, message: 'فشل تسجيل الدخول، تحقق من البيانات' });
+      // Generic message â€” don't reveal whether email exists
+      return res.status(401).json({ success: false, message: 'ظپط´ظ„ طھط³ط¬ظٹظ„ ط§ظ„ط¯ط®ظˆظ„طŒ طھط­ظ‚ظ‚ ظ…ظ† ط§ظ„ط¨ظٹط§ظ†ط§طھ' });
     }
 
     if (user.isFrozen) {
-      return res.status(403).json({ success: false, message: 'الحساب مجمّد: ' + (user.frozenReason || '') });
+      return res.status(403).json({ success: false, message: 'ط§ظ„ط­ط³ط§ط¨ ظ…ط¬ظ…ظ‘ط¯: ' + (user.frozenReason || '') });
     }
 
     const ok = await user.matchPassword(password);
     if (!ok) {
-      return res.status(401).json({ success: false, message: 'فشل تسجيل الدخول، تحقق من البيانات' });
+      return res.status(401).json({ success: false, message: 'ظپط´ظ„ طھط³ط¬ظٹظ„ ط§ظ„ط¯ط®ظˆظ„طŒ طھط­ظ‚ظ‚ ظ…ظ† ط§ظ„ط¨ظٹط§ظ†ط§طھ' });
     }
 
     const wallet = await Wallet.findOne({ user: user._id });
@@ -125,6 +130,7 @@ router.post('/login', loginLimit, async (req, res) => {
         _id: user._id, name: user.name, email: user.email,
         vipLevel: user.vipLevel, isAdmin: user.isAdmin,
         referralCode: user.referralCode,
+        maskedCard: getMaskedCard(user),
         trainingDaysLeft: user.trainingDaysLeft,
         trainingCompleted: user.trainingCompleted,
         vipExpiresAt: user.vipExpiresAt,
@@ -139,14 +145,21 @@ router.post('/login', loginLimit, async (req, res) => {
 /* GET /api/auth/me */
 router.get('/me', protect, async (req, res) => {
   try {
-    const user   = req.user;
+    let user   = req.user;
     const wallet = await Wallet.findOne({ user: user._id });
+
+    // Migration: generate cardNumber for existing users who don't have one
+    if (!user.cardNumber) {
+      user = await User.findById(user._id);
+      await user.save(); // triggers pre-save to generate cardNumber
+    }
     res.json({
       success: true,
       user: {
         _id: user._id, name: user.name, email: user.email,
         vipLevel: user.vipLevel, isAdmin: user.isAdmin,
         referralCode: user.referralCode,
+        maskedCard: getMaskedCard(user),
         trainingDaysLeft: user.trainingDaysLeft,
         trainingCompleted: user.trainingCompleted,
         vipExpiresAt: user.vipExpiresAt,
@@ -168,11 +181,11 @@ router.get('/me', protect, async (req, res) => {
 router.post('/forgot-password', async (req, res) => {
   try {
     const { email } = req.body;
-    if (!email) return res.status(400).json({ success: false, message: 'البريد الإلكتروني مطلوب' });
+    if (!email) return res.status(400).json({ success: false, message: 'ط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ظ…ط·ظ„ظˆط¨' });
 
     const user = await User.findOne({ email: email.toLowerCase().trim() });
     // Always respond with success to prevent user enumeration
-    if (!user) return res.json({ success: true, message: 'إذا كان البريد مسجلاً ستصلك تعليمات الاستعادة' });
+    if (!user) return res.json({ success: true, message: 'ط¥ط°ط§ ظƒط§ظ† ط§ظ„ط¨ط±ظٹط¯ ظ…ط³ط¬ظ„ط§ظ‹ ط³طھطµظ„ظƒ طھط¹ظ„ظٹظ…ط§طھ ط§ظ„ط§ط³طھط¹ط§ط¯ط©' });
 
     const plainToken  = crypto.randomBytes(32).toString('hex');
     const hashedToken = crypto.createHash('sha256').update(plainToken).digest('hex');
@@ -183,10 +196,10 @@ router.post('/forgot-password', async (req, res) => {
 
     // TODO: send `plainToken` via email service (SendGrid, Nodemailer, etc.)
     // The plain token goes in the reset link; the hash is what's stored.
-    // FIX #6: Never log the token — even in development
+    // FIX #6: Never log the token â€” even in development
     if (!IS_PROD) console.log('[Dev] Reset token (do NOT log in production):', plainToken);
 
-    res.json({ success: true, message: 'تم إرسال رابط إعادة التعيين إلى بريدك الإلكتروني' });
+    res.json({ success: true, message: 'طھظ… ط¥ط±ط³ط§ظ„ ط±ط§ط¨ط· ط¥ط¹ط§ط¯ط© ط§ظ„طھط¹ظٹظٹظ† ط¥ظ„ظ‰ ط¨ط±ظٹط¯ظƒ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ' });
   } catch (err) {
     serverError(res, err);
   }
@@ -197,13 +210,13 @@ router.post('/reset-password', async (req, res) => {
   try {
     const { token, newPassword } = req.body;
     if (!token || !newPassword) {
-      return res.status(400).json({ success: false, message: 'الرمز وكلمة المرور الجديدة مطلوبان' });
+      return res.status(400).json({ success: false, message: 'ط§ظ„ط±ظ…ط² ظˆظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط§ظ„ط¬ط¯ظٹط¯ط© ظ…ط·ظ„ظˆط¨ط§ظ†' });
     }
     if (!isValidPassword(newPassword)) {
       return res.status(400).json({ success: false, message: 'Password must be at least 8 characters long' });
     }
 
-    /* FIX #5: Hash the incoming token before comparing — plaintext token never touches DB */
+    /* FIX #5: Hash the incoming token before comparing â€” plaintext token never touches DB */
     const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
 
     const user = await User.findOne({
@@ -211,14 +224,14 @@ router.post('/reset-password', async (req, res) => {
       resetTokenExpiry: { $gt: new Date() },
     }).select('+resetToken +resetTokenExpiry');
 
-    if (!user) return res.status(400).json({ success: false, message: 'رمز الاستعادة غير صالح أو منتهي الصلاحية' });
+    if (!user) return res.status(400).json({ success: false, message: 'ط±ظ…ط² ط§ظ„ط§ط³طھط¹ط§ط¯ط© ط؛ظٹط± طµط§ظ„ط­ ط£ظˆ ظ…ظ†طھظ‡ظٹ ط§ظ„طµظ„ط§ط­ظٹط©' });
 
     user.password         = newPassword;
     user.resetToken       = undefined;
     user.resetTokenExpiry = undefined;
     await user.save();
 
-    res.json({ success: true, message: 'تم تحديث كلمة المرور بنجاح. يمكنك تسجيل الدخول الآن.' });
+    res.json({ success: true, message: 'طھظ… طھط­ط¯ظٹط« ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط¨ظ†ط¬ط§ط­. ظٹظ…ظƒظ†ظƒ طھط³ط¬ظٹظ„ ط§ظ„ط¯ط®ظˆظ„ ط§ظ„ط¢ظ†.' });
   } catch (err) {
     serverError(res, err);
   }
@@ -229,7 +242,7 @@ router.post('/change-password', protect, async (req, res) => {
   try {
     const { currentPassword, newPassword } = req.body;
     if (!currentPassword || !newPassword) {
-      return res.status(400).json({ success: false, message: 'كلمة المرور الحالية والجديدة مطلوبتان' });
+      return res.status(400).json({ success: false, message: 'ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط§ظ„ط­ط§ظ„ظٹط© ظˆط§ظ„ط¬ط¯ظٹط¯ط© ظ…ط·ظ„ظˆط¨طھط§ظ†' });
     }
     if (!isValidPassword(newPassword)) {
       return res.status(400).json({ success: false, message: 'Password must be at least 8 characters long' });
@@ -237,11 +250,11 @@ router.post('/change-password', protect, async (req, res) => {
 
     const user = await User.findById(req.user._id).select('+password');
     const ok = await user.matchPassword(currentPassword);
-    if (!ok) return res.status(400).json({ success: false, message: 'كلمة المرور الحالية غير صحيحة' });
+    if (!ok) return res.status(400).json({ success: false, message: 'ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط§ظ„ط­ط§ظ„ظٹط© ط؛ظٹط± طµط­ظٹط­ط©' });
 
     user.password = newPassword;
     await user.save();
-    res.json({ success: true, message: 'تم تغيير كلمة المرور بنجاح' });
+    res.json({ success: true, message: 'طھظ… طھط؛ظٹظٹط± ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط¨ظ†ط¬ط§ط­' });
   } catch (err) {
     serverError(res, err);
   }
@@ -268,9 +281,9 @@ router.get('/referral-stats', protect, async (req, res) => {
 
     // Goals milestones based on direct (L1) referrals
     const goals = [
-      { target: 10,  bonus: 5,    label: 'مكافأة $5',           reached: directCount >= 10  },
-      { target: 50,  bonus: 25,   label: 'مكافأة $25',          reached: directCount >= 50  },
-      { target: 100, bonus: null, label: 'ترقية VIP مجانية',    reached: directCount >= 100 },
+      { target: 10,  bonus: 5,    label: 'ظ…ظƒط§ظپط£ط© $5',           reached: directCount >= 10  },
+      { target: 50,  bonus: 25,   label: 'ظ…ظƒط§ظپط£ط© $25',          reached: directCount >= 50  },
+      { target: 100, bonus: null, label: 'طھط±ظ‚ظٹط© VIP ظ…ط¬ط§ظ†ظٹط©',    reached: directCount >= 100 },
     ];
 
     res.json({
@@ -295,3 +308,4 @@ router.get('/referral-stats', protect, async (req, res) => {
 });
 
 module.exports = router;
+

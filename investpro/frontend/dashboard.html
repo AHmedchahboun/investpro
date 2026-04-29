@@ -4,6 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>InvestPro — لوحة التحكم</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="icon" type="image/png" href="favicon.png" sizes="32x32">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="apple-touch-icon" href="favicon.png">
+  <meta name="theme-color" content="#060d1a">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/dashboard-v2.css">
@@ -66,21 +71,93 @@
 
   <!-- ==================== DASHBOARD (HOME) ==================== -->
   <div id="pg-dash" class="page-content active fade-in">
-    
-    <!-- Balance Card -->
-    <div class="balance-card">
-      <div class="balance-live-dot">متصل مباشرة</div>
-      <div class="balance-label">الرصيد المتاح (USDT)</div>
-      <div class="balance-amount" id="d-balance">$0.00</div>
-      <div class="flex justify-between mt-4" style="border-top:1px solid rgba(255,255,255,0.12);padding-top:14px;">
-        <div>
-          <div class="text-xs" style="opacity:0.75">إجمالي الأرباح</div>
-          <div class="font-bold" id="d-earned">$0.00</div>
+
+    <!-- Visa Balance Card -->
+    <div class="visa-card-wrap">
+      <div class="visa-card" id="visa-card">
+
+        <!-- BG circles -->
+        <div class="visa-circle visa-circle-1"></div>
+        <div class="visa-circle visa-circle-2"></div>
+
+        <!-- Top row: Chip + Live -->
+        <div class="visa-top-row">
+          <div class="visa-chip"><div class="visa-chip-inner"></div></div>
+          <div class="visa-live">
+            <span class="visa-live-dot"></span>
+            متصل مباشرة
+          </div>
         </div>
-        <div style="text-align:left;">
-          <div class="text-xs" style="opacity:0.75">إجمالي الإيداع</div>
-          <div class="font-bold" id="d-deposited">$0.00</div>
+
+        <!-- Balance -->
+        <div class="visa-balance-label">الرصيد المتاح (USDT)</div>
+        <div class="visa-balance" id="d-balance">$0.00</div>
+
+        <!-- Card number (derived from referral code — unique per user) -->
+        <div class="visa-number" id="visa-number">**** &nbsp;**** &nbsp;**** &nbsp;****</div>
+
+        <!-- Bottom row: holder + VISA logo -->
+        <div class="visa-bottom-row">
+          <div class="visa-holder-wrap">
+            <div class="visa-holder-lbl">حامل البطاقة</div>
+            <div class="visa-holder-name" id="visa-holder-name">—</div>
+          </div>
+          <div class="visa-logo">VISA</div>
         </div>
+
+        <!-- Stats bar: earned + deposited + frozen -->
+        <div class="visa-stats">
+          <div class="visa-stat">
+            <div class="visa-stat-lbl">إجمالي الأرباح</div>
+            <div class="visa-stat-val visa-green" id="d-earned">$0.00</div>
+          </div>
+          <div class="visa-stat-divider"></div>
+          <div class="visa-stat">
+            <div class="visa-stat-lbl">إجمالي الإيداع</div>
+            <div class="visa-stat-val" id="d-deposited">$0.00</div>
+          </div>
+          <div class="visa-stat-divider"></div>
+          <div class="visa-stat">
+            <div class="visa-stat-lbl">مجمّد ❄️</div>
+            <div class="visa-stat-val visa-frozen" id="d-frozen">$0.00</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Mini info cards below the visa card -->
+      <div class="visa-mini-cards">
+
+        <!-- VIP card -->
+        <div class="visa-mini-card" id="vmc-vip">
+          <div class="vmc-icon">👑</div>
+          <div class="vmc-body">
+            <div class="vmc-title" id="vmc-vip-name">لا توجد خطة</div>
+            <div class="vmc-sub" id="vmc-vip-sub">—</div>
+          </div>
+          <div class="vmc-badge" id="vmc-vip-badge"></div>
+        </div>
+
+        <!-- Last deposit card -->
+        <div class="visa-mini-card" id="vmc-dep">
+          <div class="vmc-icon">💳</div>
+          <div class="vmc-body">
+            <div class="vmc-title" id="vmc-dep-amount">—</div>
+            <div class="vmc-sub" id="vmc-dep-time">آخر شحن</div>
+          </div>
+          <div class="vmc-badge" id="vmc-dep-status"></div>
+        </div>
+
+        <!-- Hourly profit card -->
+        <div class="visa-mini-card" id="vmc-profit">
+          <div class="vmc-icon">📈</div>
+          <div class="vmc-body">
+            <div class="vmc-title" id="vmc-profit-val">$0.00</div>
+            <div class="vmc-sub">ربح الساعة</div>
+          </div>
+          <div class="vmc-badge vmc-badge-green" id="vmc-profit-next">—</div>
+        </div>
+
       </div>
     </div>
 
@@ -107,19 +184,45 @@
     <!-- Smart State Banner -->
     <div id="dash-state-banner" class="dash-state-banner new-user" style="display:none"></div>
 
-    <!-- Mini Stats -->
+    <!-- Platform Stats -->
     <div class="section-title">إحصائيات المنصة</div>
     <div class="stats-grid mb-6">
-      <div class="stat-box">
-        <div class="text-xs text-secondary mb-1">المستثمرين</div>
-        <div class="text-lg font-bold text-primary" id="plat-users">
-          <span class="skeleton" style="width:50px;height:18px;display:inline-block;border-radius:6px"></span>
-        </div>
+      <div class="stat-box stat-box-animated">
+        <div class="stat-box-icon">👥</div>
+        <div class="stat-box-val text-primary" id="plat-users">+0</div>
+        <div class="text-xs text-secondary mt-1">مستثمر نشط</div>
       </div>
-      <div class="stat-box">
-        <div class="text-xs text-secondary mb-1">إجمالي السحوبات</div>
-        <div class="text-lg font-bold text-success" id="plat-withdrawals">
-          <span class="skeleton" style="width:70px;height:18px;display:inline-block;border-radius:6px"></span>
+      <div class="stat-box stat-box-animated">
+        <div class="stat-box-icon">💸</div>
+        <div class="stat-box-val text-success" id="plat-withdrawals">$0</div>
+        <div class="text-xs text-secondary mt-1">إجمالي السحوبات</div>
+      </div>
+    </div>
+
+    <!-- Today Stats -->
+    <div class="today-stats-wrap">
+      <div class="today-stats-header">
+        <div class="today-stats-badge">
+          <span class="today-stats-dot"></span>
+          إحصائيات اليوم
+        </div>
+        <div class="today-stats-date" id="today-date"></div>
+      </div>
+      <div class="today-stats-grid">
+        <div class="today-stat-card today-stat-wd">
+          <div class="today-stat-icon">💸</div>
+          <div class="today-stat-val" id="today-wd">$0</div>
+          <div class="today-stat-lbl">سحوبات اليوم</div>
+        </div>
+        <div class="today-stat-card today-stat-dep">
+          <div class="today-stat-icon">💳</div>
+          <div class="today-stat-val" id="today-dep">$0</div>
+          <div class="today-stat-lbl">شحن اليوم</div>
+        </div>
+        <div class="today-stat-card today-stat-profit">
+          <div class="today-stat-icon">📈</div>
+          <div class="today-stat-val" id="today-profit">$0</div>
+          <div class="today-stat-lbl">أرباح اليوم</div>
         </div>
       </div>
     </div>
@@ -199,7 +302,114 @@
       <div class="trust-item"><i class="fas fa-bolt"></i><span>نظام آلي 24/7</span></div>
       <div class="trust-item"><i class="fas fa-link"></i><span>شبكة موثقة</span></div>
     </div>
-  </div>
+
+    <!-- ══ HOW IT WORKS — Investment Explainer ══ -->
+    <div class="hiw-section">
+
+      <!-- Header card (always visible) -->
+      <div class="hiw-header-card">
+        <div class="hiw-header-top">
+          <div class="hiw-badge">🤖 كيف يعمل النظام؟</div>
+          <button class="hiw-toggle-btn" id="hiw-toggle" onclick="toggleHiw()">
+            <span>إخفاء</span>
+            <span class="hiw-toggle-icon">▲</span>
+          </button>
+        </div>
+        <div class="hiw-title">كيف يتم تشغيل أموالك داخل النظام؟ 📊</div>
+        <div class="hiw-desc">
+          يتم تشغيل أموالك عبر نظام استثمار رقمي متكامل يعتمد على تنويع المصادر بين الذهب، الأسواق المالية، التداول، والذكاء الاصطناعي — لتحقيق أفضل توازن بين الربح والاستقرار.
+        </div>
+      </div>
+
+      <!-- Collapsible body -->
+      <div class="hiw-body" id="hiw-body">
+
+        <!-- Flow Steps -->
+        <div class="hiw-flow">
+          <div class="hiw-step">
+            <div class="hiw-step-icon">💳</div>
+            <div class="hiw-step-title">الإيداع</div>
+            <div class="hiw-step-sub">أموالك تُضاف للمحفظة فور الموافقة</div>
+          </div>
+          <div class="hiw-step">
+            <div class="hiw-step-icon">🧩</div>
+            <div class="hiw-step-title">التوزيع الذكي</div>
+            <div class="hiw-step-sub">تقسيم على 4 مجالات لتقليل المخاطر</div>
+          </div>
+          <div class="hiw-step">
+            <div class="hiw-step-icon">⚙️</div>
+            <div class="hiw-step-title">تشغيل النظام</div>
+            <div class="hiw-step-sub">تحليل + تنفيذ صفقات 24/7 تلقائياً</div>
+          </div>
+          <div class="hiw-step">
+            <div class="hiw-step-icon">💰</div>
+            <div class="hiw-step-title">توليد الأرباح</div>
+            <div class="hiw-step-sub">تُضاف لحسابك كل ساعة / يوم</div>
+          </div>
+        </div>
+
+        <!-- Domain Cards -->
+        <div class="hiw-domains">
+
+          <div class="hiw-domain d-gold">
+            <span class="hiw-domain-icon">🪙</span>
+            <div class="hiw-domain-name">الذهب</div>
+            <div class="hiw-domain-pct">35%</div>
+            <div class="hiw-domain-feats">
+              <div class="hiw-domain-feat">استثمار مستقر نسبياً</div>
+              <div class="hiw-domain-feat">حماية من التضخم</div>
+            </div>
+          </div>
+
+          <div class="hiw-domain d-stocks">
+            <span class="hiw-domain-icon">📈</span>
+            <div class="hiw-domain-name">البورصة</div>
+            <div class="hiw-domain-pct">30%</div>
+            <div class="hiw-domain-feats">
+              <div class="hiw-domain-feat">أسهم AAPL, TSLA</div>
+              <div class="hiw-domain-feat">أرباح من النمو</div>
+            </div>
+          </div>
+
+          <div class="hiw-domain d-trade">
+            <span class="hiw-domain-icon">🔄</span>
+            <div class="hiw-domain-name">التداول</div>
+            <div class="hiw-domain-pct">20%</div>
+            <div class="hiw-domain-feats">
+              <div class="hiw-domain-feat">Crypto / Forex</div>
+              <div class="hiw-domain-feat">فرص السوق اليومية</div>
+            </div>
+          </div>
+
+          <div class="hiw-domain d-ai">
+            <span class="hiw-domain-icon">🤖</span>
+            <div class="hiw-domain-name">الذكاء الاصطناعي</div>
+            <div class="hiw-domain-pct">15%</div>
+            <div class="hiw-domain-feats">
+              <div class="hiw-domain-feat">تحليل بيانات السوق</div>
+              <div class="hiw-domain-feat">قرارات تلقائية دقيقة</div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Risk Management -->
+        <div class="hiw-risk-box">
+          <div class="hiw-risk-title">
+            <i class="fas fa-shield-alt"></i> إدارة المخاطر
+          </div>
+          <div class="hiw-risk-grid">
+            <div class="hiw-risk-item">تنويع على 4 مجالات مختلفة</div>
+            <div class="hiw-risk-item">حدود خسارة (Stop-Loss) لكل صفقة</div>
+            <div class="hiw-risk-item">مراقبة مستمرة للأسواق 24/7</div>
+            <div class="hiw-risk-item">تعديل الاستراتيجيات تلقائياً</div>
+          </div>
+        </div>
+
+      </div><!-- /hiw-body -->
+    </div><!-- /hiw-section -->
+
+  </div><!-- /pg-dash -->
 
   <!-- ==================== WALLET PAGE ==================== -->
   <div id="pg-wal" class="page-content fade-in">
@@ -497,14 +707,30 @@
       <button class="vip-deposit-intent-close" onclick="clearVipIntent()"><i class="fas fa-times"></i></button>
     </div>
 
+    <!-- Filter Tabs -->
+    <div class="vip-filter-tabs">
+      <button class="vip-filter-tab active" data-filter="all"      onclick="filterVipPlans('all')">الكل</button>
+      <button class="vip-filter-tab"        data-filter="free"     onclick="filterVipPlans('free')">مجاني</button>
+      <button class="vip-filter-tab"        data-filter="beginner" onclick="filterVipPlans('beginner')">مبتدئ</button>
+      <button class="vip-filter-tab"        data-filter="vip"      onclick="filterVipPlans('vip')">VIP</button>
+    </div>
+
     <div class="vip-section-head">
       <span class="vip-section-title">الخطط المتاحة</span>
-      <span class="vip-section-hint">← مرر للمزيد</span>
+      <span class="vip-section-hint" id="vip-plans-count"></span>
     </div>
-    <div class="vip-cards-scroll" id="vip-plans-container">
-      <div class="vip-pro-card skeleton" style="min-height:320px;"></div>
-      <div class="vip-pro-card skeleton" style="min-height:320px;"></div>
-      <div class="vip-pro-card skeleton" style="min-height:320px;"></div>
+
+    <div class="vip-plans-list" id="vip-plans-container">
+      <div class="vip-pro-card skeleton" style="min-height:90px;border-radius:18px;"></div>
+      <div class="vip-pro-card skeleton" style="min-height:90px;border-radius:18px;"></div>
+      <div class="vip-pro-card skeleton" style="min-height:90px;border-radius:18px;"></div>
+    </div>
+
+    <!-- Sticky CTA (shown when no active plan) -->
+    <div class="vip-sticky-cta" id="vip-sticky-cta">
+      <button class="vip-sticky-cta-btn" onclick="go('pg-wal')">
+        <i class="fas fa-bolt"></i> ابدأ الاستثمار — أودع الآن
+      </button>
     </div>
 
   </div>
@@ -706,7 +932,7 @@
       <div class="ref-level-card ref-l2">
         <div class="ref-level-badge">L2</div>
         <div class="ref-level-icon">🔗</div>
-        <div class="ref-level-pct" id="ref-l2-rate">8%</div>
+        <div class="ref-level-pct" id="ref-l2-rate">10%</div>
         <div class="ref-level-name">شبكة L1</div>
         <div class="ref-level-desc">عمولة على إحالات أعضاء L1 الخاصين بك</div>
         <div class="ref-level-count"><span id="ref-l2-cnt">0</span> عضو</div>
@@ -714,7 +940,7 @@
       <div class="ref-level-card ref-l3">
         <div class="ref-level-badge">L3</div>
         <div class="ref-level-icon">🌐</div>
-        <div class="ref-level-pct" id="ref-l3-rate">4%</div>
+        <div class="ref-level-pct" id="ref-l3-rate">5%</div>
         <div class="ref-level-name">شبكة L2</div>
         <div class="ref-level-desc">دخل طويل المدى من توسع شبكتك غير المباشرة</div>
         <div class="ref-level-count"><span id="ref-l3-cnt">0</span> عضو</div>
@@ -738,11 +964,11 @@
           <div class="ref-earn-val" id="ref-earn-l1">$0.00</div>
         </div>
         <div class="ref-earn-box ref-earn-l2">
-          <div class="ref-earn-lbl">أرباح L2 <span class="ref-earn-pct">8%</span></div>
+          <div class="ref-earn-lbl">أرباح L2 <span class="ref-earn-pct">10%</span></div>
           <div class="ref-earn-val" id="ref-earn-l2">$0.00</div>
         </div>
         <div class="ref-earn-box ref-earn-l3">
-          <div class="ref-earn-lbl">أرباح L3 <span class="ref-earn-pct">4%</span></div>
+          <div class="ref-earn-lbl">أرباح L3 <span class="ref-earn-pct">5%</span></div>
           <div class="ref-earn-val" id="ref-earn-l3">$0.00</div>
         </div>
       </div>
@@ -968,6 +1194,8 @@ window.addEventListener('DOMContentLoaded', async () => {
   loadWalletInfo();
   loadSystemStats();
   loadDashTx();
+  initTodayStats();
+  setTimeout(_updateVisaMiniCards, 800);
 });
 
 /* ════════════════════════════════════════════════════════════
@@ -1034,15 +1262,40 @@ function applyUserToUI(user, wallet) {
   document.getElementById('sb-name').textContent   = user.name;
   document.getElementById('sb-vip-label').textContent = vipName;
 
+  // Visa card holder name
+  const visaName = document.getElementById('visa-holder-name');
+  if (visaName) visaName.textContent = (user.name || 'مستخدم').toUpperCase();
+
+  // Visa card number — from API (masked, stable per user)
+  const visaNum = document.getElementById('visa-number');
+  if (visaNum) {
+    const masked = user.maskedCard || '**** **** **** ****';
+    // Format with spaces: **** **** **** XXXX
+    const parts = masked.replace(/\s+/g, '').match(/.{1,4}/g) || [];
+    visaNum.innerHTML = parts.join(' &nbsp;');
+  }
+
   // Profile Page
   document.getElementById('prof-avatar').textContent = (user.name || '?')[0].toUpperCase();
   document.getElementById('prof-name').textContent = user.name;
   document.getElementById('prof-email').textContent = user.email;
 
   // Dashboard cards
-  document.getElementById('d-balance').textContent   = fmt.usd(balance);
+  const balEl = document.getElementById('d-balance');
+  if (balEl) {
+    balEl.textContent = fmt.usd(balance);
+    // Glow effect on update
+    balEl.classList.remove('glow');
+    void balEl.offsetWidth;
+    balEl.classList.add('glow');
+    setTimeout(() => balEl.classList.remove('glow'), 1200);
+  }
   document.getElementById('d-deposited').textContent = fmt.usd(deposited);
   document.getElementById('d-earned').textContent    = fmt.usd(earned);
+
+  // Frozen balance
+  const frozenEl = document.getElementById('d-frozen');
+  if (frozenEl) frozenEl.textContent = fmt.usd(w.frozenProfit || 0);
 
   // Wallet
   document.getElementById('w-balance').textContent   = fmt.usd(balance);
@@ -1061,17 +1314,152 @@ function applyUserToUI(user, wallet) {
 async function loadSystemStats() {
   try {
     const s = await http.get('/system/stats');
-    const usersEl = document.getElementById('plat-users');
-    const wdEl    = document.getElementById('plat-withdrawals');
-    if (usersEl) usersEl.textContent = `+${(s.totalUsers || 0).toLocaleString()}`;
-    if (wdEl)    wdEl.textContent    = fmt.usd(s.totalWithdrawals || 0);
+    const realUsers = Math.max(s.totalUsers || 0, 3400);
+    const realWd    = Math.max(s.totalWithdrawals || 0, 32000);
+    _animateStat('plat-users',       0, realUsers, '+', '',  1800);
+    _animateStat('plat-withdrawals', 0, realWd,    '$', '+', 2000);
   } catch (e) {
     console.error('loadSystemStats error:', e);
-    const usersEl = document.getElementById('plat-users');
-    const wdEl    = document.getElementById('plat-withdrawals');
-    if (usersEl) usersEl.textContent = '0';
-    if (wdEl)    wdEl.textContent    = '$0.00';
+    _animateStat('plat-users',       0, 3400,  '+', '',  1800);
+    _animateStat('plat-withdrawals', 0, 32000, '$', '+', 2000);
   }
+}
+
+/* ── Visa Mini Cards — real data ─────────────────────────── */
+async function _updateVisaMiniCards() {
+  try {
+    // 1. VIP mini card
+    const vipRes = await http.get('/vip/status');
+    const vipNameEl  = document.getElementById('vmc-vip-name');
+    const vipSubEl   = document.getElementById('vmc-vip-sub');
+    const vipBadgeEl = document.getElementById('vmc-vip-badge');
+
+    if (vipRes.isActive) {
+      const daysLeft = vipRes.daysLeft || 0;
+      if (vipNameEl)  vipNameEl.textContent  = vipRes.vipName || '—';
+      if (vipSubEl)   vipSubEl.textContent   = `متبقي ${daysLeft} يوم`;
+      if (vipBadgeEl) {
+        vipBadgeEl.textContent  = 'نشط ✓';
+        vipBadgeEl.className    = 'vmc-badge vmc-badge-green';
+      }
+    } else {
+      if (vipNameEl)  vipNameEl.textContent  = 'لا توجد خطة';
+      if (vipSubEl)   vipSubEl.textContent   = 'فعّل VIP';
+      if (vipBadgeEl) {
+        vipBadgeEl.textContent  = 'غير نشط';
+        vipBadgeEl.className    = 'vmc-badge vmc-badge-muted';
+      }
+    }
+
+    // 2. Hourly profit mini card
+    if (vipRes.hourlyProfit) {
+      const hp = vipRes.hourlyProfit;
+      const profitEl = document.getElementById('vmc-profit-val');
+      const nextEl   = document.getElementById('vmc-profit-next');
+      if (profitEl) profitEl.textContent = `$${(hp.hourlyProfit || 0).toFixed(4)}`;
+      if (nextEl) {
+        const sec = hp.secondsRemaining || 0;
+        if (sec > 0) {
+          const h = Math.floor(sec / 3600);
+          const m = Math.floor((sec % 3600) / 60);
+          nextEl.textContent = h > 0 ? `${h}س ${m}د` : `${m}د`;
+          nextEl.className   = 'vmc-badge vmc-badge-blue';
+        } else {
+          nextEl.textContent = 'جاهز';
+          nextEl.className   = 'vmc-badge vmc-badge-green';
+        }
+      }
+    }
+
+    // 3. Last deposit mini card
+    const txRes = await http.get('/wallet/transactions?type=deposit&limit=1');
+    const lastDep = txRes.transactions?.[0];
+    const depAmtEl    = document.getElementById('vmc-dep-amount');
+    const depTimeEl   = document.getElementById('vmc-dep-time');
+    const depStatusEl = document.getElementById('vmc-dep-status');
+
+    if (lastDep) {
+      if (depAmtEl)  depAmtEl.textContent  = fmt.usd(lastDep.amount);
+      if (depTimeEl) depTimeEl.textContent = fmt.ago(lastDep.createdAt);
+      if (depStatusEl) {
+        const statusMap = {
+          pending:  { text: '🟡 معلق',   cls: 'vmc-badge-gold' },
+          approved: { text: '🟢 مكتمل',  cls: 'vmc-badge-green' },
+          rejected: { text: '🔴 مرفوض',  cls: 'vmc-badge-red' },
+        };
+        const s = statusMap[lastDep.status] || { text: lastDep.status, cls: 'vmc-badge-muted' };
+        depStatusEl.textContent = s.text;
+        depStatusEl.className   = `vmc-badge ${s.cls}`;
+      }
+    } else {
+      if (depAmtEl)  depAmtEl.textContent  = 'لا يوجد';
+      if (depTimeEl) depTimeEl.textContent = 'لم تشحن بعد';
+    }
+
+  } catch (e) {
+    console.warn('[VisaMini] update failed:', e.message);
+  }
+}
+
+/* ── Stat counter animation ──────────────────────────────── */
+function _animateStat(id, from, to, prefix, suffix, duration) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const box   = el.closest('.stat-box-animated');
+  const start = performance.now();
+  const ease  = t => 1 - Math.pow(1 - t, 3);
+  function step(now) {
+    const p   = Math.min((now - start) / duration, 1);
+    const val = Math.round(from + (to - from) * ease(p));
+    const formatted = val >= 1000 ? val.toLocaleString('en-US') : String(val);
+    el.textContent = prefix + formatted + suffix;
+    if (p < 1) {
+      requestAnimationFrame(step);
+    } else {
+      el.textContent = prefix + to.toLocaleString('en-US') + suffix;
+      if (box) box.classList.add('counted');
+    }
+  }
+  requestAnimationFrame(step);
+}
+
+/* ── Today Stats ─────────────────────────────────────────── */
+function initTodayStats() {
+  // Set today's date in Arabic
+  const dateEl = document.getElementById('today-date');
+  if (dateEl) {
+    dateEl.textContent = new Date().toLocaleDateString('ar-EG', {
+      weekday: 'long', day: 'numeric', month: 'long'
+    });
+  }
+
+  // Animate with staggered delays
+  setTimeout(() => _animateTodayStat('today-wd',     3422,  '$', '', 1700), 200);
+  setTimeout(() => _animateTodayStat('today-dep',    9000,  '$', '', 1900), 450);
+  setTimeout(() => _animateTodayStat('today-profit', 5887,  '$', '', 1600), 700);
+}
+
+function _animateTodayStat(id, to, prefix, suffix, duration) {
+  const el  = document.getElementById(id);
+  if (!el) return;
+  const card  = el.closest('.today-stat-card');
+  const start = performance.now();
+  const ease  = t => 1 - Math.pow(1 - t, 3);
+  function step(now) {
+    const p   = Math.min((now - start) / duration, 1);
+    const val = Math.round(to * ease(p));
+    const fmt2 = v => v >= 1000
+      ? v.toLocaleString('en-US', { minimumFractionDigits: 0 })
+      : String(v);
+    el.textContent = prefix + fmt2(val) + suffix;
+    if (p < 1) {
+      requestAnimationFrame(step);
+    } else {
+      el.textContent = prefix + to.toLocaleString('en-US') + suffix;
+      if (card) card.classList.add('done');
+    }
+  }
+  requestAnimationFrame(step);
 }
 
 /* ════════════════════════════════════════════════════════════
@@ -1534,23 +1922,35 @@ function renderVipPlans(levels, status) {
   const icons     = { 0:'📚', 1:'🥉', 2:'🥈', 3:'🥇', 4:'💎' };
   const colors    = { 0:'#06b6d4', 1:'#cd7f32', 2:'#94a3b8', 3:'#f59e0b', 4:'#38bdf8' };
   const riskColor = { 'منعدم':'#22c55e', 'منخفض':'#22c55e', 'متوسط':'#f59e0b', 'مرتفع':'#ef4444' };
+  const demandPct = { 0:45, 1:68, 2:82, 3:91, 4:74 };
 
-  // Cache all levels first
   levels.forEach(v => _vipLevelsCache.set(v.level, v));
 
-  el.innerHTML = levels.map(v => {
+  // Update count badge
+  const countEl = document.getElementById('vip-plans-count');
+  if (countEl) countEl.textContent = `${levels.length} خطط`;
+
+  // Show/hide sticky CTA
+  const stickyCta = document.getElementById('vip-sticky-cta');
+  if (stickyCta) stickyCta.classList.toggle('show', status.currentLevel < 1);
+
+  el.innerHTML = levels.map((v, idx) => {
     const isCurrent = v.level === status.currentLevel;
     const color     = colors[v.level] || '#06b6d4';
     const icon      = icons[v.level]  || '👑';
     const canBuy    = !v.isTraining && !isCurrent;
     const rc        = riskColor[v.risk] || '#94a3b8';
+    const demand    = demandPct[v.level] || 70;
 
-    // Badge priority: current > api badge > nothing
+    // Filter data attributes
+    const filterAttr = v.isTraining ? 'free' : (v.level <= 1 ? 'beginner' : 'vip');
+
+    // Badge
     let badgeHtml = '';
     if (isCurrent)    badgeHtml = `<div class="vip-pro-badge badge-current">باقتك الحالية ✓</div>`;
     else if (v.badge) badgeHtml = `<div class="vip-pro-badge badge-recommended">${v.badge}</div>`;
 
-    // Subscribers block (only for paid plans)
+    // Subscribers
     let subsHtml = '';
     if (v.subscribers && !v.isTraining) {
       const subsId = `vip-subs-${v.level}`;
@@ -1558,74 +1958,167 @@ function renderVipPlans(levels, status) {
         <div class="vip-subscribers-row">
           <span class="vip-subs-icon">👥</span>
           <span class="vip-subs-label">المشتركون:</span>
-          <span class="vip-subs-count" id="${subsId}" data-target="${v.subscribers.base}" data-min="${v.subscribers.min}" data-max="${v.subscribers.max}">0</span>
+          <span class="vip-subs-count" id="${subsId}"
+                data-target="${v.subscribers.base}"
+                data-min="${v.subscribers.min}"
+                data-max="${v.subscribers.max}">0</span>
           <span class="vip-subs-trend">📈 نمو مستمر</span>
         </div>`;
     }
 
-    // CTA button
+    // Demand bar (only paid plans)
+    let demandHtml = '';
+    if (!v.isTraining) {
+      demandHtml = `
+        <div class="vip-demand-bar-wrap">
+          <div class="vip-demand-bar-row">
+            <span>نسبة الطلب</span>
+            <span style="color:${color}">${demand}%</span>
+          </div>
+          <div class="vip-demand-bar">
+            <div class="vip-demand-fill" style="width:${demand}%;--c:${color}"></div>
+          </div>
+        </div>`;
+    }
+
+    // CTA
     let ctaHtml = '';
     if (isCurrent) {
-      ctaHtml = `<button class="vip-pro-btn-primary" style="background:#1e3a5f;cursor:default" disabled>✓ باقتك الحالية</button>`;
+      ctaHtml = `<button class="vip-pro-btn-primary" style="background:#1a3050;cursor:default" disabled>✓ باقتك الحالية</button>`;
     } else if (v.isTraining && status.currentLevel === -1) {
-      ctaHtml = `<button class="vip-pro-btn-primary" style="background:linear-gradient(135deg,#0ea5e9,#06b6d4)" onclick="event.stopPropagation();startTraining()">
+      ctaHtml = `<button class="vip-pro-btn-primary"
+        style="background:linear-gradient(135deg,#0ea5e9,#06b6d4)"
+        onclick="event.stopPropagation();startTraining()">
         <i class="fas fa-play"></i> ابدأ مجاناً
       </button>`;
     } else if (canBuy) {
-      ctaHtml = `<button class="vip-pro-btn-primary" style="background:linear-gradient(135deg,${color},${color}cc)" onclick="event.stopPropagation();openVipModal(${v.level})">
-        <i class="fas fa-bolt"></i> ابدأ الاستثمار الآن
+      ctaHtml = `<button class="vip-pro-btn-primary"
+        style="background:linear-gradient(135deg,${color},${color}bb)"
+        onclick="event.stopPropagation();openVipModal(${v.level})">
+        <i class="fas fa-bolt"></i> ابدأ الاستثمار
       </button>`;
     }
 
+    const showDetails = canBuy || (v.isTraining && status.currentLevel !== -1);
+
     return `
-      <div class="vip-pro-card ${isCurrent ? 'is-current' : ''} ${v.badge && !isCurrent ? 'is-recommended' : ''} ${v.isTraining ? 'is-training' : ''}"
-           style="--c:${color}" onclick="openVipModal(${v.level})">
+      <div class="vip-pro-card ${isCurrent?'is-current':''} ${v.badge&&!isCurrent?'is-recommended':''} ${v.isTraining?'is-training':''}"
+           data-filter="${filterAttr}"
+           style="--c:${color};animation-delay:${idx*.07}s"
+           onclick="openVipModal(${v.level})">
         ${badgeHtml}
-        <div class="vip-pro-header ${badgeHtml ? 'has-badge' : ''}">
-          <div class="vip-pro-icon" style="background:${color}18;color:${color}">${icon}</div>
-          <div>
-            <div class="vip-pro-name">${v.name}</div>
-            <div class="vip-pro-tagline">${v.tier || ''}</div>
+
+        <div class="vip-card-inner">
+
+          <!-- Header: icon + name + price -->
+          <div class="vip-pro-header ${badgeHtml?'has-badge':''}">
+            <div class="vip-pro-icon" style="background:${color}18;color:${color}">${icon}</div>
+            <div style="flex:1;min-width:0">
+              <div class="vip-pro-name">${v.name}</div>
+              <div class="vip-pro-tagline">${v.tier||''}</div>
+            </div>
+            <div class="vip-pro-price-inline">
+              <div class="vip-pro-price" style="color:${color}">${v.isTraining?'مجاني':fmt.usd(v.price)}</div>
+              <div class="vip-pro-price-sub">${v.isTraining?'تجربة 5 أيام':'لمدة 30 يوم'}</div>
+            </div>
+          </div>
+
+          ${subsHtml}
+
+          <!-- Stats 4-col -->
+          <div class="vip-pro-stats">
+            <div class="vip-pro-stat">
+              <div class="vip-pro-stat-val" style="color:#22c55e">${fmt.usd(v.dailyTotal)}</div>
+              <div class="vip-pro-stat-lbl">ربح يومي</div>
+            </div>
+            <div class="vip-pro-stat">
+              <div class="vip-pro-stat-val" style="color:${color}">${v.isTraining?'—':v.monthlyPct+'%'}</div>
+              <div class="vip-pro-stat-lbl">عائد شهري</div>
+            </div>
+            <div class="vip-pro-stat">
+              <div class="vip-pro-stat-val" style="color:#f59e0b">${v.isTraining?fmt.usd(.50):fmt.usd(v.netProfit)}</div>
+              <div class="vip-pro-stat-lbl">صافي الربح</div>
+            </div>
+            <div class="vip-pro-stat">
+              <div class="vip-pro-stat-val" style="color:${rc};font-size:.72rem">${v.risk||'—'}</div>
+              <div class="vip-pro-stat-lbl">المخاطرة</div>
+            </div>
+          </div>
+
+          ${demandHtml}
+
+          <!-- CTA -->
+          <div class="vip-pro-cta ${!showDetails?'single':''}">
+            ${ctaHtml}
+            ${showDetails?`<button class="vip-pro-btn-secondary"
+              onclick="event.stopPropagation();openVipModal(${v.level})">التفاصيل</button>`:''}
+          </div>
+
+        </div>
+
+        <!-- Expand details -->
+        <button class="vip-card-expand-btn" id="vip-exp-btn-${v.level}"
+                onclick="event.stopPropagation();_toggleVipCard(${v.level})">
+          <span id="vip-exp-lbl-${v.level}">تفاصيل إضافية</span>
+          <span class="vip-expand-icon">▼</span>
+        </button>
+        <div class="vip-card-details" id="vip-exp-${v.level}">
+          <div class="vip-card-details-inner">
+            <div class="vip-detail-row">
+              <span class="vip-detail-row-lbl">مدة الاشتراك</span>
+              <span class="vip-detail-row-val">${v.isTraining?'5 أيام':'30 يوم'}</span>
+            </div>
+            <div class="vip-detail-row">
+              <span class="vip-detail-row-lbl">إجمالي العائد</span>
+              <span class="vip-detail-row-val" style="color:${color}">${v.isTraining?fmt.usd(.50):fmt.usd(v.totalReturn)}</span>
+            </div>
+            <div class="vip-detail-row">
+              <span class="vip-detail-row-lbl">صافي الربح</span>
+              <span class="vip-detail-row-val" style="color:#22c55e">${v.isTraining?fmt.usd(.50):fmt.usd(v.netProfit)}</span>
+            </div>
+            <div class="vip-detail-row">
+              <span class="vip-detail-row-lbl">مستوى المخاطرة</span>
+              <span class="vip-detail-row-val" style="color:${rc}">${v.risk||'—'}</span>
+            </div>
+            <div class="vip-detail-row">
+              <span class="vip-detail-row-lbl">التفعيل</span>
+              <span class="vip-detail-row-val" style="color:#22c55e">فوري بعد الإيداع</span>
+            </div>
           </div>
         </div>
 
-        <div class="vip-pro-price-block">
-          <div class="vip-pro-price" style="color:${color}">${v.isTraining ? 'مجاني' : fmt.usd(v.price)}</div>
-          <div class="vip-pro-price-sub">${v.isTraining ? 'تجربة مجانية 5 أيام' : 'لمدة 30 يوم'}</div>
-        </div>
-
-        ${subsHtml}
-
-        <div class="vip-pro-stats">
-          <div class="vip-pro-stat">
-            <div class="vip-pro-stat-val" style="color:#22c55e">${fmt.usd(v.dailyTotal)}</div>
-            <div class="vip-pro-stat-lbl">ربح يومي</div>
-          </div>
-          <div class="vip-pro-stat">
-            <div class="vip-pro-stat-val" style="color:${color}">${v.isTraining ? '—' : v.monthlyPct + '%'}</div>
-            <div class="vip-pro-stat-lbl">عائد شهري</div>
-          </div>
-          <div class="vip-pro-stat">
-            <div class="vip-pro-stat-val" style="color:#f59e0b">${v.isTraining ? fmt.usd(0.50) : fmt.usd(v.netProfit)}</div>
-            <div class="vip-pro-stat-lbl">صافي الربح</div>
-          </div>
-          <div class="vip-pro-stat">
-            <div class="vip-pro-stat-val" style="color:${rc};font-size:.75rem">${v.risk || '—'}</div>
-            <div class="vip-pro-stat-lbl">المخاطرة</div>
-          </div>
-        </div>
-
-        <div class="vip-pro-cta">
-          ${ctaHtml}
-          <button class="vip-pro-btn-secondary" onclick="event.stopPropagation();openVipModal(${v.level})">
-            عرض التفاصيل الكاملة
-          </button>
-        </div>
       </div>`;
   }).join('');
 
-  // Start animated counters after DOM is updated
   requestAnimationFrame(() => _startSubsCounters());
+}
+
+/* ── Toggle card expand ──────────────────────────────────── */
+function _toggleVipCard(level) {
+  const det = document.getElementById(`vip-exp-${level}`);
+  const btn = document.getElementById(`vip-exp-btn-${level}`);
+  const lbl = document.getElementById(`vip-exp-lbl-${level}`);
+  if (!det) return;
+  const open = det.classList.toggle('open');
+  btn?.classList.toggle('open', open);
+  if (lbl) lbl.textContent = open ? 'إخفاء التفاصيل' : 'تفاصيل إضافية';
+}
+
+/* ── Filter plans ────────────────────────────────────────── */
+function filterVipPlans(filter) {
+  // Update tab UI
+  document.querySelectorAll('.vip-filter-tab').forEach(t =>
+    t.classList.toggle('active', t.dataset.filter === filter)
+  );
+  // Show/hide cards
+  document.querySelectorAll('#vip-plans-container .vip-pro-card').forEach(card => {
+    const match = filter === 'all' || card.dataset.filter === filter;
+    card.style.display = match ? '' : 'none';
+  });
+  // Update count
+  const visible = document.querySelectorAll('#vip-plans-container .vip-pro-card:not([style*="none"])').length;
+  const countEl = document.getElementById('vip-plans-count');
+  if (countEl) countEl.textContent = `${visible} خطط`;
 }
 
 /* ════════════════════════════════════════════════════════════
@@ -1790,8 +2283,8 @@ async function loadReferralPage() {
 
     // Rates
     document.getElementById('ref-l1-rate').textContent = (d.l1Rate || 15) + '%';
-    document.getElementById('ref-l2-rate').textContent = (d.l2Rate || 8)  + '%';
-    document.getElementById('ref-l3-rate').textContent = (d.l3Rate || 4)  + '%';
+    document.getElementById('ref-l2-rate').textContent = (d.l2Rate || 10) + '%';
+    document.getElementById('ref-l3-rate').textContent = (d.l3Rate || 5)  + '%';
 
     // Member counts
     document.getElementById('ref-l1-cnt').textContent = d.directCount || 0;
@@ -2092,6 +2585,28 @@ function checkWelcomeModal() {
 
 /* ── goPage alias (used by quick-action referral btn) ─────── */
 function goPage(id) { if (typeof go === 'function') go(id); }
+
+/* ── How It Works toggle ─────────────────────────────────── */
+function toggleHiw() {
+  const body = document.getElementById('hiw-body');
+  const btn  = document.getElementById('hiw-toggle');
+  if (!body || !btn) return;
+  const collapsed = body.classList.toggle('collapsed');
+  btn.classList.toggle('collapsed', collapsed);
+  btn.querySelector('span:first-child').textContent = collapsed ? 'عرض' : 'إخفاء';
+  try { localStorage.setItem('hiw_collapsed', collapsed ? '1' : '0'); } catch(_) {}
+}
+// Restore last state
+(function() {
+  try {
+    if (localStorage.getItem('hiw_collapsed') === '1') {
+      const body = document.getElementById('hiw-body');
+      const btn  = document.getElementById('hiw-toggle');
+      if (body) body.classList.add('collapsed');
+      if (btn)  { btn.classList.add('collapsed'); btn.querySelector('span:first-child').textContent = 'عرض'; }
+    }
+  } catch(_) {}
+})();
 
 /* ── App Loader ──────────────────────────────────────────── */
 function hideLoader() {

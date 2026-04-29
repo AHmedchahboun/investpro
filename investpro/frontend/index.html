@@ -1,9 +1,14 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>InvestPro — منصة الاستثمار الرقمي</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="icon" type="image/png" href="favicon.png" sizes="32x32">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="apple-touch-icon" href="favicon.png">
+  <meta name="theme-color" content="#060d1a">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="css/entry-modal.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -183,7 +188,6 @@ img{max-width:100%}
 .footer-links{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;margin-bottom:20px}
 .footer-links a{font-size:.78rem;color:var(--text3);transition:color .2s}
 .footer-links a:hover{color:var(--text2)}
-.footer-risk{background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.15);border-radius:10px;padding:10px 16px;font-size:.72rem;color:#fca5a5;margin-bottom:16px;display:flex;align-items:center;gap:8px;max-width:600px;margin-left:auto;margin-right:auto}
 .footer-copy{font-size:.72rem;color:var(--text3)}
 
 /* ═══════════════════════════════════════════
@@ -345,10 +349,7 @@ img{max-width:100%}
         <div class="hiw-icon">💸</div>
       </div>
     </div>
-    <div class="disclaimer">
-      <i class="fas fa-exclamation-triangle"></i>
-      <span>تنبيه: الأرباح تعتمد على أداء الخطة المختارة وليست مضمونة. الاستثمار يحمل مخاطر.</span>
-    </div>
+    <div class="disclaimer" style="display:none"></div>
   </div>
 </section>
 
@@ -486,7 +487,7 @@ img{max-width:100%}
     <div class="trust-card reveal"><div class="tc-icon">👁</div><div class="tc-title">شفافية كاملة</div><div class="tc-body">كل إيداع وسحب وربح مسجّل ومتاح في سجل العمليات</div></div>
     <div class="trust-card reveal"><div class="tc-icon">🤖</div><div class="tc-title">نظام آلي 24/7</div><div class="tc-body">توزيع الأرباح تلقائي كل يوم — بدون تدخل بشري</div></div>
     <div class="trust-card reveal"><div class="tc-icon">⚡</div><div class="tc-title">سحب سريع</div><div class="tc-body">طلبات السحب تُعالج خلال 24 ساعة عبر USDT أو PayPal</div></div>
-    <div class="trust-card reveal"><div class="tc-icon">👥</div><div class="tc-title">نظام الإحالة</div><div class="tc-body">اكسب 8% L1 + 3% L2 من إيداعات من تدعوهم</div></div>
+    <div class="trust-card reveal"><div class="tc-icon">👥</div><div class="tc-title">نظام الإحالة</div><div class="tc-body">اكسب 15% L1 + 10% L2 + 5% L3 من إيداعات من تدعوهم</div></div>
     <div class="trust-card reveal"><div class="tc-icon">📊</div><div class="tc-title">لوحة تحكم كاملة</div><div class="tc-body">charts + محفظة + سجل عمليات + إشعارات فورية</div></div>
   </div>
 </section>
@@ -507,7 +508,6 @@ img{max-width:100%}
     <a href="risk.html">المخاطر</a>
     <a href="mailto:support@investpro.com">الدعم</a>
   </div>
-  <div class="footer-risk"><i class="fas fa-exclamation-triangle"></i> تنبيه مهم: الاستثمار ينطوي على مخاطر. الأرباح الموضحة تقديرية وليست مضمونة. لا تستثمر أكثر مما يمكنك تحمّل خسارته.</div>
   <div class="footer-copy">© 2026 InvestPro. جميع الحقوق محفوظة.</div>
 </footer>
 

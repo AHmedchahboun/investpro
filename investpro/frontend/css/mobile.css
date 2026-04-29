@@ -1195,3 +1195,471 @@ select.form-input {
   100% { transform: scale(1); }
 }
 .tap-pop { animation: tapPop .2s ease; }
+
+/* ── Animated Stat Boxes (Platform Stats) ───────────────── */
+.stat-box-animated {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 16px 14px;
+  position: relative;
+  overflow: hidden;
+}
+.stat-box-animated::after {
+  content: '';
+  position: absolute;
+  bottom: 0; right: 0; left: 0;
+  height: 2px;
+  border-radius: 0 0 var(--r) var(--r);
+  opacity: 0;
+  transition: opacity .5s;
+}
+.stat-box-animated.counted::after { opacity: 1; }
+.stat-box-animated:nth-child(1)::after { background: var(--primary); }
+.stat-box-animated:nth-child(2)::after { background: var(--green); }
+
+.stat-box-icon {
+  font-size: 1.25rem;
+  margin-bottom: 4px;
+  line-height: 1;
+}
+.stat-box-val {
+  font-size: 1.4rem;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -.02em;
+  line-height: 1;
+}
+.stat-box-val.text-primary { color: var(--primary); }
+.stat-box-val.text-success  { color: var(--green); }
+.stat-box-animated.counted .stat-box-val.text-primary {
+  text-shadow: 0 0 16px rgba(14,165,233,.4);
+}
+.stat-box-animated.counted .stat-box-val.text-success {
+  text-shadow: 0 0 16px rgba(34,197,94,.4);
+}
+.stat-box .mt-1 { margin-top: 4px; }
+
+/* ── Today Stats Section ─────────────────────────────────── */
+.today-stats-wrap {
+  margin: 0 16px 16px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r2);
+  overflow: hidden;
+}
+
+.today-stats-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.today-stats-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: .72rem;
+  font-weight: 700;
+  color: var(--green);
+}
+
+.today-stats-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--green);
+  flex-shrink: 0;
+  animation: todayPulse 1.6s ease infinite;
+}
+@keyframes todayPulse {
+  0%,100% { box-shadow: 0 0 0 0 rgba(34,197,94,.5); }
+  60%      { box-shadow: 0 0 0 6px rgba(34,197,94,0); }
+}
+
+.today-stats-date {
+  font-size: .65rem;
+  color: var(--text3);
+  font-weight: 500;
+}
+
+.today-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.today-stat-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 8px;
+  text-align: center;
+  position: relative;
+  transition: background .15s;
+}
+.today-stat-card:not(:last-child) {
+  border-left: 1px solid var(--border);
+}
+.today-stat-card:hover { background: rgba(255,255,255,.03); }
+
+.today-stat-icon {
+  font-size: 1.2rem;
+  margin-bottom: 6px;
+  line-height: 1;
+}
+
+.today-stat-val {
+  font-size: 1.05rem;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -.02em;
+  line-height: 1;
+  margin-bottom: 4px;
+  transition: text-shadow .4s;
+}
+.today-stat-card.done .today-stat-val {
+  text-shadow: 0 0 14px currentColor;
+}
+
+.today-stat-wd     .today-stat-val { color: var(--red); }
+.today-stat-dep    .today-stat-val { color: var(--primary); }
+.today-stat-profit .today-stat-val { color: var(--green); }
+
+.today-stat-lbl {
+  font-size: .6rem;
+  color: var(--text3);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* Mobile: smaller font on very small screens */
+@media (max-width: 360px) {
+  .today-stat-val { font-size: .9rem; }
+  .today-stat-lbl { font-size: .55rem; }
+}
+
+/* Desktop */
+@media (min-width: 768px) {
+  .today-stats-wrap { margin: 0 24px 16px; }
+  .today-stat-val   { font-size: 1.15rem; }
+}
+@media (min-width: 1024px) {
+  .today-stats-wrap { margin: 0 32px 16px; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Visa Balance Card
+═══════════════════════════════════════════════════════════ */
+
+.visa-card-wrap {
+  padding: 16px 16px 0;
+}
+
+.visa-card {
+  position: relative;
+  width: 100%;
+  min-height: 210px;
+  border-radius: 22px;
+  padding: 22px 22px 0;
+  overflow: hidden;
+  background: linear-gradient(135deg,
+    #0a1628 0%,
+    #0d1f3c 30%,
+    #1a1040 65%,
+    #0c1a30 100%);
+  box-shadow:
+    0 8px 32px rgba(0,0,0,.5),
+    0 0 0 1px rgba(255,255,255,.07),
+    0 0 40px rgba(34,197,94,.06);
+  transition: transform .3s ease, box-shadow .3s ease;
+  cursor: default;
+  user-select: none;
+}
+.visa-card:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 16px 48px rgba(0,0,0,.6),
+    0 0 0 1px rgba(255,255,255,.1),
+    0 0 60px rgba(34,197,94,.1);
+}
+
+/* Decorative background circles */
+.visa-circle {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+.visa-circle-1 {
+  width: 220px; height: 220px;
+  top: -80px; left: -60px;
+  background: radial-gradient(circle, rgba(14,165,233,.12) 0%, transparent 70%);
+}
+.visa-circle-2 {
+  width: 180px; height: 180px;
+  bottom: -60px; right: -40px;
+  background: radial-gradient(circle, rgba(168,85,247,.1) 0%, transparent 70%);
+}
+
+/* Top row */
+.visa-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Chip */
+.visa-chip {
+  width: 42px; height: 32px;
+  border-radius: 6px;
+  background: linear-gradient(135deg, #c8a84b, #f0d060, #a07830, #e8c040);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,.4);
+  position: relative;
+  overflow: hidden;
+}
+.visa-chip::before {
+  content: '';
+  position: absolute;
+  top: 50%; left: 0; right: 0;
+  height: 1px;
+  background: rgba(0,0,0,.25);
+  transform: translateY(-50%);
+}
+.visa-chip::after {
+  content: '';
+  position: absolute;
+  left: 50%; top: 0; bottom: 0;
+  width: 1px;
+  background: rgba(0,0,0,.2);
+  transform: translateX(-50%);
+}
+.visa-chip-inner {
+  width: 22px; height: 18px;
+  border-radius: 3px;
+  border: 1px solid rgba(0,0,0,.2);
+  background: linear-gradient(135deg, #d4a840, #f8e060);
+}
+
+/* Live dot */
+.visa-live {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: .62rem;
+  font-weight: 600;
+  color: #22c55e;
+  letter-spacing: .04em;
+}
+.visa-live-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: #22c55e;
+  animation: visaLivePulse 1.6s ease infinite;
+  flex-shrink: 0;
+}
+@keyframes visaLivePulse {
+  0%,100% { box-shadow: 0 0 0 0 rgba(34,197,94,.5); }
+  60%      { box-shadow: 0 0 0 6px rgba(34,197,94,0); }
+}
+
+/* Balance */
+.visa-balance-label {
+  font-size: .65rem;
+  color: rgba(255,255,255,.55);
+  font-weight: 500;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+  position: relative; z-index: 1;
+}
+.visa-balance {
+  font-size: 2.4rem;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: -.03em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  margin-bottom: 16px;
+  position: relative; z-index: 1;
+  transition: text-shadow .4s;
+}
+.visa-balance.glow {
+  text-shadow: 0 0 24px rgba(34,197,94,.6);
+}
+
+/* Card number */
+.visa-number {
+  font-size: .82rem;
+  font-weight: 600;
+  color: rgba(255,255,255,.5);
+  letter-spacing: .18em;
+  font-family: 'Courier New', monospace;
+  margin-bottom: 16px;
+  position: relative; z-index: 1;
+}
+
+/* Bottom row */
+.visa-bottom-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 0;
+  position: relative; z-index: 1;
+  padding-bottom: 16px;
+}
+.visa-holder-lbl {
+  font-size: .55rem;
+  color: rgba(255,255,255,.4);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  margin-bottom: 3px;
+}
+.visa-holder-name {
+  font-size: .82rem;
+  font-weight: 700;
+  color: rgba(255,255,255,.85);
+  letter-spacing: .06em;
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* VISA logo */
+.visa-logo {
+  font-size: 1.5rem;
+  font-weight: 900;
+  font-style: italic;
+  color: #fff;
+  letter-spacing: -.02em;
+  font-family: 'Times New Roman', serif;
+  text-shadow: 0 2px 8px rgba(0,0,0,.4);
+  line-height: 1;
+}
+
+/* Stats bar */
+.visa-stats {
+  display: flex;
+  align-items: center;
+  border-top: 1px solid rgba(255,255,255,.08);
+  padding: 12px 0 14px;
+  position: relative; z-index: 1;
+}
+.visa-stat {
+  flex: 1;
+  text-align: center;
+}
+.visa-stat-divider {
+  width: 1px;
+  height: 28px;
+  background: rgba(255,255,255,.1);
+  flex-shrink: 0;
+}
+.visa-stat-lbl {
+  font-size: .6rem;
+  color: rgba(255,255,255,.45);
+  margin-bottom: 3px;
+  letter-spacing: .03em;
+}
+.visa-stat-val {
+  font-size: .95rem;
+  font-weight: 800;
+  color: rgba(255,255,255,.85);
+  font-variant-numeric: tabular-nums;
+}
+.visa-stat-val.visa-green { color: #22c55e; }
+
+/* Desktop */
+@media (min-width: 768px) {
+  .visa-card-wrap { padding: 20px 24px 0; }
+  .visa-card { min-height: 220px; padding: 24px 28px 0; }
+  .visa-balance { font-size: 2.8rem; }
+}
+@media (min-width: 1024px) {
+  .visa-card-wrap { padding: 24px 32px 0; }
+  .visa-card { max-width: 480px; }
+}
+
+/* ── Visa Card — frozen stat ─────────────────────────────── */
+.visa-stat-val.visa-frozen { color: #38bdf8; }
+
+/* ── Visa Mini Cards ─────────────────────────────────────── */
+.visa-mini-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 10px;
+}
+@media (max-width: 360px) {
+  .visa-mini-cards { grid-template-columns: 1fr 1fr; }
+}
+
+.visa-mini-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 10px 10px 9px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transition: border-color .2s, background .2s;
+  cursor: default;
+}
+.visa-mini-card:hover {
+  border-color: rgba(14,165,233,.25);
+  background: var(--card2);
+}
+
+.vmc-icon {
+  font-size: 1rem;
+  line-height: 1;
+  margin-bottom: 2px;
+}
+.vmc-body { flex: 1; min-width: 0; }
+.vmc-title {
+  font-size: .78rem;
+  font-weight: 700;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-variant-numeric: tabular-nums;
+}
+.vmc-sub {
+  font-size: .6rem;
+  color: var(--text3);
+  margin-top: 1px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.vmc-badge {
+  font-size: .58rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 6px;
+  align-self: flex-start;
+  white-space: nowrap;
+}
+.vmc-badge-green  { background: rgba(34,197,94,.12);  color: #22c55e; }
+.vmc-badge-gold   { background: rgba(245,158,11,.12); color: #f59e0b; }
+.vmc-badge-red    { background: rgba(239,68,68,.12);  color: #ef4444; }
+.vmc-badge-blue   { background: rgba(14,165,233,.12); color: #38bdf8; }
+.vmc-badge-muted  { background: rgba(100,116,139,.12);color: var(--text3); }
+
+/* Desktop */
+@media (min-width: 768px) {
+  .visa-mini-cards { gap: 10px; margin-top: 12px; }
+  .vmc-title { font-size: .82rem; }
+}
+@media (min-width: 1024px) {
+  .visa-mini-cards { grid-template-columns: repeat(3, 1fr); }
+}

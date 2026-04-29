@@ -1,12 +1,11 @@
 /*
  * InvestPro — Runtime Config
  *
- * Set window._BACKEND_URL to your backend server URL when
- * frontend and backend are hosted separately (e.g. Netlify + Render).
+ * PRODUCTION: Set window._BACKEND_URL to your Render/Railway backend URL.
+ *   Example: window._BACKEND_URL = 'https://investpro-api.onrender.com';
  *
- * Leave as empty string '' when both are on the same server.
+ * DEVELOPMENT: Leave as empty string '' — uses same-origin (localhost:5000).
  *
- * Example:
- *   window._BACKEND_URL = 'https://investpro-api.onrender.com';
+ * This file is safe to commit. Never put secrets here.
  */
-window._BACKEND_URL = '';  // ← Replace with your Render/Railway URL
+window._BACKEND_URL = '';  // ← Set your production backend URL here

@@ -272,6 +272,38 @@ function btnLoad(btn, loading) {
   }
 }
 
-/* ---- Offline / Online detection ---- */
-window.addEventListener('offline', () => toast('انقطع الاتصال بالإنترنت', 'w', 5000));
-window.addEventListener('online',  () => toast('عاد الاتصال بالإنترنت', 's', 3000));
+/* ---- Delay helper ---- */
+function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+/* ---- Real connection check (no navigator.onLine) ---- */
+async function checkConnection() {
+  try {
+    await fetch('/api/health', { cache: 'no-store' });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/* ---- Retry wrapper ---- */
+async function requestWithRetry(fn, retries = 2) {
+  try {
+    return await fn();
+  } catch (e) {
+    if (retries > 0) {
+      await delay(2000);
+      return requestWithRetry(fn, retries - 1);
+    }
+    throw e;
+  }
+}
+
+/* ---- Offline / Online detection (real check, not navigator.onLine) ---- */
+window.addEventListener('offline', async () => {
+  const online = await checkConnection();
+  if (!online) toast('انقطع الاتصال بالإنترنت', 'w', 5000);
+});
+window.addEventListener('online', async () => {
+  const online = await checkConnection();
+  if (online) toast('عاد الاتصال بالإنترنت', 's', 3000);
+});

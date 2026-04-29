@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+﻿const mongoose = require('mongoose');
 const bcrypt   = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
@@ -6,38 +6,44 @@ const userSchema = new mongoose.Schema({
   email:    { type: String, required: true, unique: true, lowercase: true, trim: true },
   password: { type: String, required: true, select: false, minlength: 8 },
 
-  // VIP state
-  vipLevel:          { type: Number, default: -1 },  // -1=none, 0=training, 1-4=paid
-  vipActivatedAt:    { type: Date },
-  vipExpiresAt:      { type: Date },
-  vipLastHourlyRewardAt: { type: Date },
-  trainingDaysLeft:  { type: Number, default: 0 },
-  trainingCompleted: { type: Boolean, default: false },
+  // Virtual Visa card number (UI only - not a real payment card)
+  cardNumber: { type: String, default: null },
 
-  // Referral chain (L1 + L2 + L3)
+  // VIP state
+  vipLevel:              { type: Number, default: -1 },
+  vipActivatedAt:        { type: Date },
+  vipExpiresAt:          { type: Date },
+  vipLastHourlyRewardAt: { type: Date },
+  trainingDaysLeft:      { type: Number, default: 0 },
+  trainingCompleted:     { type: Boolean, default: false },
+
+  // Referral chain
   referralCode: { type: String, unique: true, uppercase: true },
-  referredBy:   { type: mongoose.Schema.Types.ObjectId, ref: 'User' },  // L1
-  referredByL2: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },  // L2
-  referredByL3: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },  // L3
+  referredBy:   { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  referredByL2: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  referredByL3: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
 
   isAdmin:      { type: Boolean, default: false },
   isFrozen:     { type: Boolean, default: false },
   frozenReason: { type: String },
 
-  // Password reset (token stored server-side, never sent to client)
   resetToken:       { type: String, select: false },
   resetTokenExpiry: { type: Date,   select: false },
 
-  // Bonus Steps (Total $1.50)
   bonusSteps: {
-    registered: { type: Boolean, default: true }, // Always true on creation
-    joinedTelegram: { type: Boolean, default: false },
-    completedFirstTask: { type: Boolean, default: false }
+    registered:         { type: Boolean, default: true },
+    joinedTelegram:     { type: Boolean, default: false },
+    completedFirstTask: { type: Boolean, default: false },
   },
-  lastRewardDate: { type: String }, // Format: YYYY-MM-DD
+  lastRewardDate: { type: String },
 }, { timestamps: true });
 
-// Auto-generate referral code + hash password
+function _generateCardNumber() {
+  let n = '4';
+  for (let i = 0; i < 15; i++) n += Math.floor(Math.random() * 10);
+  return n;
+}
+
 userSchema.pre('save', async function (next) {
   if (!this.referralCode) {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -46,6 +52,9 @@ userSchema.pre('save', async function (next) {
       code = Array.from({ length: 8 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
     } while (await mongoose.model('User').exists({ referralCode: code }));
     this.referralCode = code;
+  }
+  if (!this.cardNumber) {
+    this.cardNumber = _generateCardNumber();
   }
   if (this.isModified('password')) {
     this.password = await bcrypt.hash(this.password, 12);
@@ -58,15 +67,13 @@ userSchema.methods.matchPassword = function (plain) {
 };
 
 userSchema.methods.isVipActive = function () {
-  if (this.vipLevel === 0) return this.vipExpiresAt && this.vipExpiresAt > new Date();
+  if (this.vipLevel === 0) return this.trainingDaysLeft > 0;
   if (this.vipLevel >= 1) return this.vipExpiresAt && this.vipExpiresAt > new Date();
   return false;
 };
 
 userSchema.methods.vipDaysLeft = function () {
-  if (this.vipLevel === 0 && this.vipExpiresAt) {
-    return Math.max(0, Math.ceil((this.vipExpiresAt - Date.now()) / 86400000));
-  }
+  if (this.vipLevel === 0) return this.trainingDaysLeft;
   if (this.vipLevel >= 1 && this.vipExpiresAt) {
     return Math.max(0, Math.ceil((this.vipExpiresAt - Date.now()) / 86400000));
   }

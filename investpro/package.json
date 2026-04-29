@@ -1,0 +1,15 @@
+{
+  "name": "investpro",
+  "version": "2.0.0",
+  "description": "InvestPro — Digital Investment Platform",
+  "private": true,
+  "scripts": {
+    "start":   "cd backend && npm start",
+    "dev":     "cd backend && npm run dev",
+    "seed":    "cd backend && npm run seed",
+    "install": "cd backend && npm install"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

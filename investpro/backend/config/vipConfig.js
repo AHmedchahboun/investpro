@@ -110,8 +110,8 @@ const VIP_LEVELS = [
 
 const REFERRAL_RATES = {
   L1: parseFloat(process.env.REFERRAL_L1 || 15),
-  L2: parseFloat(process.env.REFERRAL_L2 || 8),
-  L3: parseFloat(process.env.REFERRAL_L3 || 4),
+  L2: parseFloat(process.env.REFERRAL_L2 || 10),
+  L3: parseFloat(process.env.REFERRAL_L3 || 5),
 };
 
 const PAYMENT_METHODS = [

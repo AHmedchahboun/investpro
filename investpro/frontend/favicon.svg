@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Background -->
+  <rect width="64" height="64" rx="14" fill="#060d1a"/>
+  <!-- Outer glow ring -->
+  <circle cx="32" cy="32" r="26" fill="none" stroke="#0ea5e9" stroke-width="1.5" opacity="0.4"/>
+  <!-- Diamond shape -->
+  <polygon points="32,10 52,28 32,54 12,28" fill="none" stroke="#0ea5e9" stroke-width="2.5" stroke-linejoin="round"/>
+  <!-- Inner diamond highlight -->
+  <polygon points="32,16 46,28 32,48 18,28" fill="#0ea5e9" opacity="0.15"/>
+  <!-- Center line -->
+  <line x1="12" y1="28" x2="52" y2="28" stroke="#38bdf8" stroke-width="1.5" opacity="0.6"/>
+  <!-- Top facet lines -->
+  <line x1="32" y1="10" x2="22" y2="28" stroke="#38bdf8" stroke-width="1" opacity="0.5"/>
+  <line x1="32" y1="10" x2="42" y2="28" stroke="#38bdf8" stroke-width="1" opacity="0.5"/>
+  <!-- IP text -->
+  <text x="32" y="33" font-family="Arial,sans-serif" font-size="11" font-weight="900"
+        fill="#0ea5e9" text-anchor="middle" dominant-baseline="middle" letter-spacing="0.5">IP</text>
+</svg>
