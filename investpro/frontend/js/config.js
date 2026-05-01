@@ -1,11 +1,11 @@
 /*
  * InvestPro — Runtime Config
  *
- * PRODUCTION: Set window._BACKEND_URL to your Render/Railway backend URL.
- *   Example: window._BACKEND_URL = 'https://investpro-api.onrender.com';
- *
- * DEVELOPMENT: Leave as empty string '' — uses same-origin (localhost:5000).
+ * PRODUCTION: Use the Render backend URL.
+ * DEVELOPMENT: Keep same-origin for localhost.
  *
  * This file is safe to commit. Never put secrets here.
  */
-window._BACKEND_URL = '';  // ← Set your production backend URL here
+window._BACKEND_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+  ? ''
+  : 'https://investpro1.onrender.com';

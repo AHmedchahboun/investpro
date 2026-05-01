@@ -8,16 +8,34 @@ const seed = async () => {
     await mongoose.connect(process.env.MONGODB_URI);
     console.log('Connected to MongoDB');
 
-    const existing = await User.findOne({ email: process.env.ADMIN_EMAIL });
+    const adminEmail = (process.env.ADMIN_EMAIL || '').toLowerCase().trim();
+    const adminPassword = (process.env.ADMIN_PASSWORD || '').trim();
+
+    if (!adminEmail || !adminPassword) {
+      throw new Error('ADMIN_EMAIL and ADMIN_PASSWORD are required');
+    }
+
+    const existing = await User.findOne({ email: adminEmail });
     if (existing) {
-      console.log('Admin already exists:', process.env.ADMIN_EMAIL);
+      existing.email = adminEmail;
+      existing.password = adminPassword;
+      existing.isAdmin = true;
+      existing.isFrozen = false;
+      existing.frozenReason = '';
+      await existing.save();
+      await Wallet.findOneAndUpdate(
+        { user: existing._id },
+        { $setOnInsert: { user: existing._id } },
+        { upsert: true, setDefaultsOnInsert: true }
+      );
+      console.log('Admin updated:', adminEmail);
       process.exit(0);
     }
 
     const admin = await User.create({
       name: 'Admin',
-      email: process.env.ADMIN_EMAIL,
-      password: process.env.ADMIN_PASSWORD,
+      email: adminEmail,
+      password: adminPassword,
       isAdmin: true,
       vipLevel: -1,
     });
@@ -29,7 +47,7 @@ const seed = async () => {
       throw e;
     }
 
-    console.log('Admin created:', process.env.ADMIN_EMAIL);
+    console.log('Admin created:', adminEmail);
 
     process.exit(0);
   } catch (err) {
