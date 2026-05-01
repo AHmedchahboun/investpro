@@ -1840,7 +1840,7 @@ function openVipModal(level) {
   } else {
     buyBtn.innerHTML = '<i class="fas fa-arrow-up"></i> ترقية للأعلى فقط'; buyBtn.disabled = true; buyBtn.className = 'btn btn-secondary';
   }
-  document.getElementById('vip-modal').classList.add('show');
+  document.getElementById('vip-modal').classList.add('show', 'open');
 }
 
 function _openVipDetailModal(v, status, color, icons) {
@@ -1893,12 +1893,12 @@ function _openVipDetailModal(v, status, color, icons) {
     }
   }
 
-  document.getElementById('vip-detail-modal').classList.add('show');
+  document.getElementById('vip-detail-modal').classList.add('show', 'open');
 }
 
 function closeVipModal() {
-  document.getElementById('vip-modal')?.classList.remove('show');
-  document.getElementById('vip-detail-modal')?.classList.remove('show');
+  document.getElementById('vip-modal')?.classList.remove('show', 'open');
+  document.getElementById('vip-detail-modal')?.classList.remove('show', 'open');
   _vipModalData = null;
 }
 function closeVipDetail() { closeVipModal(); }

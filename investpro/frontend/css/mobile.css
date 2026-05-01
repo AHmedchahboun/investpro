@@ -929,7 +929,8 @@ select.form-input {
 
 /* ── VIP Modal (Bottom Sheet) ────────────────────────────── */
 .vip-modal-overlay, .vip-detail-overlay { position: fixed; inset: 0; z-index: 500; background: rgba(0,0,0,.65); display: none; align-items: flex-end; }
-.vip-modal-overlay.open, .vip-detail-overlay.open { display: flex; }
+.vip-modal-overlay.open, .vip-detail-overlay.open,
+.vip-modal-overlay.show, .vip-detail-overlay.show { display: flex; }
 .vip-modal-box, .vip-detail-sheet {
   width: 100%; background: #0d1829;
   border-radius: 24px 24px 0 0;
