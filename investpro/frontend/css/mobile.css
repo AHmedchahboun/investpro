@@ -1656,10 +1656,79 @@ select.form-input {
 .vmc-badge-blue   { background: rgba(14,165,233,.12); color: #38bdf8; }
 .vmc-badge-muted  { background: rgba(100,116,139,.12);color: var(--text3); }
 
+/* Telegram support */
+.support-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  background: linear-gradient(135deg, rgba(14,165,233,.12), rgba(34,197,94,.06));
+  border: 1px solid rgba(14,165,233,.22);
+  border-radius: 16px;
+}
+.support-card-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: rgba(14,165,233,.14);
+  color: #38bdf8;
+  font-size: 1.25rem;
+}
+.support-card-body { flex: 1; min-width: 0; }
+.support-card-title {
+  font-size: .86rem;
+  font-weight: 800;
+  color: var(--text);
+}
+.support-card-text {
+  margin-top: 3px;
+  font-size: .68rem;
+  line-height: 1.45;
+  color: var(--text3);
+}
+.support-card-btn {
+  height: 38px;
+  padding: 0 13px;
+  border-radius: 11px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: #0ea5e9;
+  color: #fff;
+  font-size: .72rem;
+  font-weight: 800;
+}
+.telegram-support-fab {
+  position: fixed;
+  left: 14px;
+  bottom: 82px;
+  z-index: 140;
+  min-width: 54px;
+  height: 46px;
+  padding: 0 14px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  background: linear-gradient(135deg, #0ea5e9, #06b6d4);
+  color: #fff;
+  font-size: .76rem;
+  font-weight: 800;
+  box-shadow: 0 10px 24px rgba(14,165,233,.32);
+}
+.telegram-support-fab i { font-size: 1rem; }
+
 /* Desktop */
 @media (min-width: 768px) {
   .visa-mini-cards { gap: 10px; margin-top: 12px; }
   .vmc-title { font-size: .82rem; }
+  .telegram-support-fab { bottom: 24px; left: 24px; }
 }
 @media (min-width: 1024px) {
   .visa-mini-cards { grid-template-columns: repeat(3, 1fr); }
