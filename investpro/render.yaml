@@ -55,3 +55,7 @@ services:
         sync: false
       - key: TELEGRAM_ADMIN_CHAT
         sync: false
+      - key: TELEGRAM_WEBHOOK_SECRET
+        sync: false
+      - key: TELEGRAM_SETUP_KEY
+        sync: false

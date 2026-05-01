@@ -36,6 +36,7 @@ app.use('/api/wallet', require('./routes/wallet'));
 app.use('/api/vip',    require('./routes/vip'));
 app.use('/api/admin',  require('./routes/admin'));
 app.use('/api/system', require('./routes/system'));
+app.use('/api/telegram', require('./routes/telegram'));
 
 /* ── Serve Frontend ──────────────────────────────────────────────────────── */
 const frontendPath = path.resolve(__dirname, '..', 'frontend');
