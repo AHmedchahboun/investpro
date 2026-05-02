@@ -1,9 +1,9 @@
 /* ═══════════════════════════════════════════════════════════
-   InvestPro — Service Worker v3
+   InvestPro — Service Worker v4
    Network-first strategy — no forced offline mode
 ═══════════════════════════════════════════════════════════ */
 
-const CACHE_NAME = 'investpro-v3';
+const CACHE_NAME = 'investpro-v4';
 
 const STATIC_ASSETS = [
   '/css/style.css',

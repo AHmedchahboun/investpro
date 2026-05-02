@@ -2342,23 +2342,32 @@ async function loadReferralPage() {
 
 function renderRefGoals(goals, directCount) {
   const container = document.getElementById('ref-goals-container');
-  if (!goals.length) {
-    goals = [
-      { target: 10,  label: 'مكافأة $5',        reached: directCount >= 10  },
-      { target: 50,  label: 'مكافأة $25',       reached: directCount >= 50  },
-      { target: 100, label: 'ترقية VIP مجانية', reached: directCount >= 100 },
-    ];
-  }
-  container.innerHTML = goals.map(g => {
+  const serverGoals = Array.isArray(goals) ? goals : [];
+  const reachedByTarget = serverGoals.reduce((acc, goal) => {
+    const target = Number(goal.target);
+    if (Number.isFinite(target)) acc[target] = Boolean(goal.reached);
+    return acc;
+  }, {});
+  const visibleGoals = [
+    { target: 10,  reward: 'مكافأة $5' },
+    { target: 50,  reward: 'مكافأة $25' },
+    { target: 100, reward: 'ترقية VIP مجانية' },
+  ];
+
+  container.innerHTML = visibleGoals.map(g => {
     const pct     = Math.min(100, Math.round((directCount / g.target) * 100));
-    const reached = g.reached || directCount >= g.target;
+    const reached = reachedByTarget[g.target] || directCount >= g.target;
     return `
       <div class="ref-goal-card ${reached ? 'ref-goal-reached' : ''}">
         <div class="ref-goal-top">
           <div class="ref-goal-icon">${reached ? '✅' : '🎯'}</div>
           <div class="ref-goal-info">
-            <div class="ref-goal-title">${g.target} إحالة → ${g.label}</div>
-            <div class="ref-goal-progress-label">${directCount} / ${g.target} ${reached ? '— مكتمل!' : ''}</div>
+            <div class="ref-goal-title">
+              <span class="ref-goal-target">${g.target} إحالة</span>
+              <span class="ref-goal-arrow">←</span>
+              <span class="ref-goal-reward">${g.reward}</span>
+            </div>
+            <div class="ref-goal-progress-label"><bdi>${directCount}</bdi> / <bdi>${g.target}</bdi>${reached ? ' - مكتمل!' : ''}</div>
           </div>
           ${reached ? '<div class="ref-goal-done-badge">مكتمل</div>' : ''}
         </div>

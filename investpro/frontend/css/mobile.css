@@ -32,7 +32,7 @@ html { scroll-behavior: smooth; }
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: 'Inter', 'Segoe UI', sans-serif;
+  font-family: 'Noto Sans Arabic', 'Inter', 'Segoe UI', Tahoma, sans-serif;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
   line-height: 1.5;
@@ -866,7 +866,7 @@ select.form-input {
 .ref-link-card { margin: 8px 16px; background: linear-gradient(135deg, rgba(14,165,233,.07), rgba(168,85,247,.04)); border: 1px solid rgba(14,165,233,.14); border-radius: 18px; padding: 16px; }
 .ref-link-label { font-size: .72rem; color: var(--text2); font-weight: 600; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
 .ref-link-box   { background: rgba(255,255,255,.04); border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px; margin-bottom: 10px; word-break: break-all; }
-.ref-link-value { font-size: .7rem; color: var(--p2); font-family: monospace; line-height: 1.5; }
+.ref-link-value { font-size: .7rem; color: var(--p2); font-family: 'Consolas', 'Courier New', monospace; line-height: 1.5; direction: ltr; text-align: left; unicode-bidi: plaintext; }
 .ref-link-actions { display: flex; gap: 8px; margin-bottom: 10px; }
 .ref-btn-copy, .ref-btn-share {
   flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;
@@ -926,6 +926,76 @@ select.form-input {
 .ref-how-step { display: flex; align-items: center; gap: 12px; background: var(--card); border: 1px solid var(--border); border-radius: 13px; padding: 12px 14px; }
 .ref-how-num  { width: 28px; height: 28px; border-radius: 50%; background: var(--primary); color: #fff; display: flex; align-items: center; justify-content: center; font-size: .78rem; font-weight: 700; flex-shrink: 0; }
 .ref-how-text { font-size: .75rem; color: var(--text2); line-height: 1.4; }
+
+/* Arabic readability and mixed RTL/LTR text fixes */
+#pg-ref,
+#pg-ref button {
+  font-family: 'Noto Sans Arabic', 'Inter', 'Segoe UI', Tahoma, sans-serif;
+}
+
+#pg-ref {
+  text-rendering: optimizeLegibility;
+}
+
+.ref-goal-card {
+  padding: 14px 16px;
+}
+
+.ref-goal-top {
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.ref-goal-info {
+  min-width: 0;
+  text-align: right;
+}
+
+.ref-goal-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: flex-start;
+  gap: 4px 6px;
+  direction: rtl;
+  unicode-bidi: isolate;
+  font-size: .86rem;
+  font-weight: 800;
+  line-height: 1.55;
+  color: var(--text);
+}
+
+.ref-goal-target,
+.ref-goal-reward,
+.ref-goal-arrow,
+.ref-goal-progress-label bdi {
+  unicode-bidi: isolate;
+}
+
+.ref-goal-reward {
+  color: var(--text);
+}
+
+.ref-goal-progress-label {
+  direction: ltr;
+  text-align: right;
+  unicode-bidi: isolate;
+  font-size: .74rem;
+  line-height: 1.4;
+}
+
+.ref-transparency-note span,
+.ref-how-text,
+.ref-level-desc,
+.ref-hero-sub {
+  line-height: 1.65;
+}
+
+.ref-code-row strong {
+  direction: ltr;
+  unicode-bidi: isolate;
+  display: inline-block;
+}
 
 /* ── VIP Modal (Bottom Sheet) ────────────────────────────── */
 .vip-modal-overlay, .vip-detail-overlay { position: fixed; inset: 0; z-index: 500; background: rgba(0,0,0,.65); display: none; align-items: flex-end; }
