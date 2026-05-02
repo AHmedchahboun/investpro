@@ -26,17 +26,18 @@ function isAdminChat(chatId) {
 }
 
 function normalizeText(text = '') {
-  return text
+  return String(text)
     .toLowerCase()
     .replace(/[إأآ]/g, 'ا')
     .replace(/ى/g, 'ي')
     .replace(/ة/g, 'ه')
+    .replace(/[ًٌٍَُِّْـ]/g, '')
     .trim();
 }
 
 function includesAny(text, words) {
-  const t = normalizeText(text);
-  return words.some(word => t.includes(normalizeText(word)));
+  const normalized = normalizeText(text);
+  return words.some((word) => normalized.includes(normalizeText(word)));
 }
 
 function autoReply(text, chatId) {
@@ -45,13 +46,13 @@ function autoReply(text, chatId) {
       handled: true,
       text:
         `تم استلام مرفقك.\n\n` +
-        `إذا كان هذا إثبات إيداع، تأكد من إرسال:\n` +
+        `إذا كان هذا إثبات إيداع، أرسل كذلك:\n` +
         `1. المبلغ\n2. الشبكة TRC20/BEP20/POLYGON\n3. Hash العملية\n\n` +
         `رقم محادثتك: ${chatId}`,
     };
   }
 
-  if (includesAny(text, ['/start', '/help', 'القائمه', 'menu'])) {
+  if (includesAny(text, ['/start', '/help', 'القائمة', 'قائمه', 'menu', 'ابدأ'])) {
     return {
       handled: true,
       text:
@@ -62,11 +63,11 @@ function autoReply(text, chatId) {
     };
   }
 
-  if (includesAny(text, ['/id', 'chat id', 'رقم المحادثه'])) {
+  if (includesAny(text, ['/id', 'chat id', 'رقم المحادثة', 'رقم المحادثه'])) {
     return { handled: true, text: `رقم محادثتك هو:\n${chatId}` };
   }
 
-  if (includesAny(text, ['ايداع', 'شحن', 'deposit', 'hash', 'txid', 'لم يظهر', 'ما وصل'])) {
+  if (includesAny(text, ['ايداع', 'إيداع', 'شحن', 'deposit', 'hash', 'txid', 'لم يظهر', 'ما وصل', 'مشكل ايداع', 'مشكلة إيداع'])) {
     return {
       handled: true,
       text:
@@ -80,7 +81,7 @@ function autoReply(text, chatId) {
     };
   }
 
-  if (includesAny(text, ['سحب', 'withdraw', 'usdt', 'محفظه السحب', 'لم يصل السحب'])) {
+  if (includesAny(text, ['سحب', 'withdraw', 'usdt', 'محفظه السحب', 'محفظة السحب', 'لم يصل السحب'])) {
     return {
       handled: true,
       text:
@@ -92,7 +93,7 @@ function autoReply(text, chatId) {
     };
   }
 
-  if (includesAny(text, ['vip', 'خطه', 'خطة', 'شراء', 'تفعيل', 'استثمار'])) {
+  if (includesAny(text, ['vip', 'خطة', 'خطه', 'شراء', 'تفعيل', 'استثمار'])) {
     return {
       handled: true,
       text:
@@ -143,7 +144,7 @@ function autoReply(text, chatId) {
     text:
       `وصلت رسالتك، وسيتم تحويلها لفريق الدعم.\n\n` +
       `لتسريع الحل، أرسل:\n` +
-      `1. بريد حسابك\n2. نوع المشكلة\n3. المبلغ أو اسم الخطة\n4. Hash العملية إن وجدت`,
+      `1. بريد حسابك\n2. نوع المشكلة\n3. المبلغ أو اسم الخطة\n4. Hash العملية إن وجد`,
   };
 }
 
@@ -179,11 +180,21 @@ async function handleAdminCommand(message) {
 
 router.get('/status', async (req, res) => {
   try {
-    const info = await getWebhookInfo();
+    const botConfigured = Boolean(process.env.TELEGRAM_BOT_TOKEN);
+    const siteUrl = (process.env.SITE_URL || '').replace(/\/$/, '');
+    const expectedWebhookUrl = siteUrl ? `${siteUrl}/api/telegram/webhook` : '';
+    const info = botConfigured ? await getWebhookInfo() : null;
     res.json({
       success: true,
-      botConfigured: Boolean(process.env.TELEGRAM_BOT_TOKEN),
+      canReply: botConfigured && Boolean(info?.url),
+      botConfigured,
       adminChatConfigured: Boolean(process.env.TELEGRAM_ADMIN_CHAT),
+      webhookSecretConfigured: Boolean(process.env.TELEGRAM_WEBHOOK_SECRET),
+      setupKeyConfigured: Boolean(process.env.TELEGRAM_SETUP_KEY || process.env.TELEGRAM_WEBHOOK_SECRET),
+      expectedWebhookUrl,
+      message: botConfigured
+        ? 'Telegram bot token is configured. Check webhook.url and last_error_message.'
+        : 'TELEGRAM_BOT_TOKEN is missing. Add it in Render environment variables, then set up the webhook.',
       webhook: info,
     });
   } catch (err) {
