@@ -40,6 +40,11 @@ function includesAny(text, words) {
   return words.some((word) => normalized.includes(normalizeText(word)));
 }
 
+function requestBaseUrl(req) {
+  const proto = req.get('x-forwarded-proto') || req.protocol || 'https';
+  return `${proto.split(',')[0]}://${req.get('host')}`.replace(/\/$/, '');
+}
+
 function autoReply(text, chatId) {
   if (!text) {
     return {
@@ -181,8 +186,9 @@ async function handleAdminCommand(message) {
 router.get('/status', async (req, res) => {
   try {
     const botConfigured = Boolean(process.env.TELEGRAM_BOT_TOKEN);
-    const siteUrl = (process.env.SITE_URL || '').replace(/\/$/, '');
-    const expectedWebhookUrl = siteUrl ? `${siteUrl}/api/telegram/webhook` : '';
+    const requestUrl = requestBaseUrl(req);
+    const configuredSiteUrl = (process.env.SITE_URL || '').replace(/\/$/, '');
+    const expectedWebhookUrl = `${requestUrl}/api/telegram/webhook`;
     const info = botConfigured ? await getWebhookInfo() : null;
     res.json({
       success: true,
@@ -192,6 +198,7 @@ router.get('/status', async (req, res) => {
       webhookSecretConfigured: Boolean(process.env.TELEGRAM_WEBHOOK_SECRET),
       setupKeyConfigured: Boolean(process.env.TELEGRAM_SETUP_KEY || process.env.TELEGRAM_WEBHOOK_SECRET),
       expectedWebhookUrl,
+      configuredSiteUrl,
       message: botConfigured
         ? 'Telegram bot token is configured. Check webhook.url and last_error_message.'
         : 'TELEGRAM_BOT_TOKEN is missing. Add it in Render environment variables, then set up the webhook.',
@@ -212,10 +219,7 @@ router.get('/setup-webhook', async (req, res) => {
       return res.status(403).json({ success: false, message: 'Invalid setup key' });
     }
 
-    const siteUrl = (process.env.SITE_URL || '').replace(/\/$/, '');
-    if (!siteUrl) return res.status(400).json({ success: false, message: 'SITE_URL is required' });
-
-    const webhookUrl = `${siteUrl}/api/telegram/webhook`;
+    const webhookUrl = `${requestBaseUrl(req)}/api/telegram/webhook`;
     const result = await setWebhook(webhookUrl);
     res.json({ success: true, webhookUrl, result });
   } catch (err) {
