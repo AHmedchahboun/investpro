@@ -4,10 +4,14 @@ const { Wallet, Transaction, HourlyProfit } = require('../models/Wallet');
 const { VIP_LEVELS, REFERRAL_RATES } = require('../config/vipConfig');
 
 const PROFIT_TZ = 'Africa/Casablanca';
-const HOUR_MS = 60 * 60 * 1000;
+const DAY_MS = 24 * 60 * 60 * 1000;
 
 function hourlyAmount(config) {
   return +(Number(config?.dailyTotal ?? config?.dailyProfit ?? 0) / 24).toFixed(6);
+}
+
+function dailyAmount(config) {
+  return +(Number(config?.dailyTotal ?? config?.dailyProfit ?? 0)).toFixed(6);
 }
 
 function planStatus(user, now = new Date()) {
@@ -23,7 +27,7 @@ async function createFrozenCycle(user, config, cycleStart) {
   const expiresAt = user.vipExpiresAt ? new Date(user.vipExpiresAt) : null;
   const start = new Date(cycleStart);
   if (expiresAt && start >= expiresAt) return null;
-  const eligibleAt = new Date(Math.min(start.getTime() + HOUR_MS, expiresAt ? expiresAt.getTime() : start.getTime() + HOUR_MS));
+  const eligibleAt = new Date(Math.min(start.getTime() + DAY_MS, expiresAt ? expiresAt.getTime() : start.getTime() + DAY_MS));
   if (eligibleAt <= start) return null;
 
   try {
@@ -32,7 +36,7 @@ async function createFrozenCycle(user, config, cycleStart) {
       userName: user.name,
       vipLevel: user.vipLevel,
       planName: config.name,
-      amount: hourlyAmount(config),
+      amount: dailyAmount(config),
       cycleStart: start,
       eligibleAt,
       status: 'frozen',
@@ -40,10 +44,33 @@ async function createFrozenCycle(user, config, cycleStart) {
     });
   } catch (err) {
     if (err.code === 11000) {
-      return HourlyProfit.findOne({ user: user._id, cycleStart: start });
+      const existing = await HourlyProfit.findOne({ user: user._id, cycleStart: start });
+      if (existing?.status === 'frozen') {
+        await normalizeDailyCycle(user, config, existing);
+      }
+      return existing;
     }
     throw err;
   }
+}
+
+async function normalizeDailyCycle(user, config, cycle) {
+  if (!cycle || cycle.status !== 'frozen') return cycle;
+  const start = new Date(cycle.cycleStart);
+  const expiresAt = user.vipExpiresAt ? new Date(user.vipExpiresAt) : null;
+  const expectedEligibleAt = new Date(Math.min(start.getTime() + DAY_MS, expiresAt ? expiresAt.getTime() : start.getTime() + DAY_MS));
+  const expectedAmount = dailyAmount(config);
+  const cycleMs = new Date(cycle.eligibleAt).getTime() - start.getTime();
+  const looksHourly = cycleMs > 0 && cycleMs < DAY_MS - 60000;
+  const tooLarge = Number(cycle.amount || 0) > expectedAmount + 0.000001;
+
+  if (looksHourly || tooLarge) {
+    if (tooLarge) cycle.amount = expectedAmount;
+    cycle.eligibleAt = expectedEligibleAt;
+    cycle.timezone = PROFIT_TZ;
+    await cycle.save();
+  }
+  return cycle;
 }
 
 async function ensureHourlyCycle(user, config) {
@@ -74,6 +101,8 @@ async function processUserHourlyRewards(userOrId, now = new Date()) {
       eligibleAt: { $lte: now },
     }).sort({ eligibleAt: 1 });
     if (!frozen) break;
+    await normalizeDailyCycle(user, config, frozen);
+    if (new Date(frozen.eligibleAt) > now) break;
 
     const claimed = await HourlyProfit.findOneAndUpdate(
       { _id: frozen._id, status: 'frozen' },
@@ -89,7 +118,7 @@ async function processUserHourlyRewards(userOrId, now = new Date()) {
       status: 'approved',
       amount: claimed.amount,
       netAmount: claimed.amount,
-      note: `ربح ساعة — ${claimed.planName}`,
+      note: `ربح 24 ساعة — ${claimed.planName}`,
       approvedBy: user._id,
       approvedAt: claimed.eligibleAt,
     });
@@ -128,6 +157,7 @@ async function getHourlyProfitStatus(userOrId) {
   const freshUser = await User.findById(user._id);
   const { active, config } = planStatus(freshUser);
   const frozen = await HourlyProfit.findOne({ user: freshUser._id, status: 'frozen' }).sort({ eligibleAt: 1 });
+  await normalizeDailyCycle(freshUser, config, frozen);
   const [availableResult, withdrawnResult, recent] = await Promise.all([
     HourlyProfit.aggregate([
       { $match: { user: freshUser._id, status: 'available' } },
@@ -152,6 +182,7 @@ async function getHourlyProfitStatus(userOrId) {
     vipLevel: freshUser.vipLevel,
     dailyProfit: config ? +(config.dailyTotal ?? config.dailyProfit ?? 0).toFixed(2) : 0,
     hourlyProfit: config ? hourlyAmount(config) : 0,
+    cycleProfit: config ? dailyAmount(config) : 0,
     nextEligibleAt,
     msRemaining,
     secondsRemaining: Math.ceil(msRemaining / 1000),
@@ -230,7 +261,11 @@ const addReferralCommissions = async (depositUserId, depositAmount) => {
 
     await Wallet.findOneAndUpdate(
       { user: userId },
-      { $inc: { balance: commission, totalEarned: commission } }
+      {
+        $setOnInsert: { user: userId },
+        $inc: { balance: commission, totalEarned: commission },
+      },
+      { upsert: true, setDefaultsOnInsert: true }
     );
     await Transaction.create({
       user: userId, type, status: 'approved',

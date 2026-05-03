@@ -1,9 +1,9 @@
-const router = require('express').Router();
+﻿const router = require('express').Router();
 const mongoose = require('mongoose');
 const User = require('../models/User');
 const { Wallet, Transaction, AuditLog, HourlyProfit } = require('../models/Wallet');
 const { protect, adminOnly } = require('../middleware');
-const { addReferralCommissions, runDailyRewards, notifyAdmin } = require('../jobs/rewards');
+const { addReferralCommissions, runHourlyRewards, getHourlyProfitStatus, notifyAdmin } = require('../jobs/rewards');
 
 router.use(protect, adminOnly);
 
@@ -36,6 +36,7 @@ router.get('/dashboard', async (req, res) => {
       totalDepositResult, totalWithdrawResult,
       totalTransactions, activeVips, trainingUsers,
       vipDistribution, refResult, rewardResult,
+      nextProfit, dueProfitCount, expiringPlans,
     ] = await Promise.all([
       User.countDocuments(),
       User.countDocuments({ isFrozen: true }),
@@ -50,6 +51,9 @@ router.get('/dashboard', async (req, res) => {
       User.aggregate([{ $group: { _id: '$vipLevel', count: { $sum: 1 } } }, { $sort: { _id: 1 } }]),
       Transaction.aggregate([{ $match: { type: { $in: ['referral_l1','referral_l2'] } } }, { $group: { _id: null, sum: { $sum: '$amount' } } }]),
       Transaction.aggregate([{ $match: { type: { $in: ['daily_profit','daily_bonus','training_reward'] } } }, { $group: { _id: null, sum: { $sum: '$amount' } } }]),
+      HourlyProfit.findOne({ status: 'frozen' }).sort({ eligibleAt: 1 }).select('eligibleAt amount userName planName timezone').lean(),
+      HourlyProfit.countDocuments({ status: 'frozen', eligibleAt: { $lte: new Date() } }),
+      User.countDocuments({ vipLevel: { $gte: 1 }, vipExpiresAt: { $gt: new Date(), $lte: new Date(Date.now() + 3 * 86400000) } }),
     ]);
 
     res.json({
@@ -63,6 +67,10 @@ router.get('/dashboard', async (req, res) => {
         vipDistribution,
         totalReferralCommissions: refResult[0]?.sum || 0,
         totalRewardsPaid: rewardResult[0]?.sum || 0,
+        nextProfit,
+        dueProfitCount,
+        expiringPlans,
+        timezone: 'Africa/Casablanca',
       },
     });
   } catch (err) {
@@ -108,9 +116,13 @@ router.post('/deposits/:id/approve', async (req, res) => {
     if (!tx) return res.status(400).json({ success: false, message: 'الإيداع غير موجود أو تم معالجته مسبقاً' });
 
     try {
-      await Wallet.findOneAndUpdate(
+      const wallet = await Wallet.findOneAndUpdate(
         { user: tx.user },
-        { $inc: { balance: tx.amount, totalDeposited: tx.amount } }
+        {
+          $setOnInsert: { user: tx.user },
+          $inc: { balance: tx.amount, totalDeposited: tx.amount },
+        },
+        { new: true, upsert: true, setDefaultsOnInsert: true }
       );
 
       await addReferralCommissions(tx.user, tx.amount);
@@ -118,7 +130,7 @@ router.post('/deposits/:id/approve', async (req, res) => {
       await log(req.user, 'APPROVE_DEPOSIT', tx.user, { txId: tx._id, amount: tx.amount }, req);
       notifyAdmin(`✅ إيداع معتمد\nالمبلغ: $${tx.amount}\nID: ${tx._id}`).catch(() => {});
 
-      res.json({ success: true, message: 'تم اعتماد الإيداع' });
+      res.json({ success: true, message: 'تم اعتماد الإيداع', wallet });
     } catch (err) {
       // Rollback transaction status if wallet update fails
       await Transaction.updateOne({ _id: tx._id }, { $set: { status: 'pending' } }).catch(() => {});
@@ -270,12 +282,67 @@ router.get('/users', async (req, res) => {
     const walletMap = {};
     wallets.forEach(w => { walletMap[w.user.toString()] = w; });
 
-    const result = users.map(u => ({
-      ...u.toObject(),
-      wallet: walletMap[u._id.toString()] || null,
+    const result = await Promise.all(users.map(async u => {
+      const [profitStatus, directReferrals] = await Promise.all([
+        getHourlyProfitStatus(u._id).catch(() => null),
+        User.countDocuments({ referredBy: u._id }).catch(() => 0),
+      ]);
+      return {
+        ...u.toObject(),
+        wallet: walletMap[u._id.toString()] || null,
+        vipDaysLeft: typeof u.vipDaysLeft === 'function' ? u.vipDaysLeft() : 0,
+        profitStatus,
+        directReferrals,
+      };
     }));
 
     res.json({ success: true, users: result, pagination: { total, page: pg, pages: Math.ceil(total / lim) } });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+router.get('/users/:id/summary', async (req, res) => {
+  if (!isValidId(req.params.id)) return res.status(400).json({ success: false, message: 'معرف غير صالح' });
+  try {
+    const target = await User.findById(req.params.id);
+    if (!target) return res.status(404).json({ success: false, message: 'المستخدم غير موجود' });
+
+    const [wallet, profitStatus, directReferrals, l2Referrals, txs, refEarnings] = await Promise.all([
+      Wallet.findOne({ user: target._id }),
+      getHourlyProfitStatus(target._id).catch(() => null),
+      User.countDocuments({ referredBy: target._id }),
+      User.countDocuments({ referredByL2: target._id }),
+      Transaction.find({ user: target._id }).sort({ createdAt: -1 }).limit(12).lean(),
+      Transaction.aggregate([
+        { $match: { user: target._id, type: { $in: ['referral_l1', 'referral_l2', 'referral_l3'] }, status: 'approved' } },
+        { $group: { _id: '$type', sum: { $sum: '$amount' } } },
+      ]),
+    ]);
+
+    const referralEarnings = {};
+    refEarnings.forEach(r => { referralEarnings[r._id] = r.sum; });
+
+    res.json({
+      success: true,
+      user: {
+        _id: target._id,
+        name: target.name,
+        email: target.email,
+        vipLevel: target.vipLevel,
+        vipExpiresAt: target.vipExpiresAt,
+        vipDaysLeft: target.vipDaysLeft(),
+        referralCode: target.referralCode,
+        isFrozen: target.isFrozen,
+        frozenReason: target.frozenReason,
+        createdAt: target.createdAt,
+      },
+      wallet,
+      profitStatus,
+      referrals: { direct: directReferrals, level2: l2Referrals, earnings: referralEarnings },
+      transactions: txs,
+      timezone: 'Africa/Casablanca',
+    });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
@@ -297,6 +364,29 @@ router.post('/users/:id/freeze', async (req, res) => {
     await log(req.user, action, target._id, { reason }, req, 'warn');
 
     res.json({ success: true, message: target.isFrozen ? 'تم تجميد الحساب' : 'تم إلغاء التجميد', isFrozen: target.isFrozen });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+router.post('/users/:id/password', async (req, res) => {
+  if (!isValidId(req.params.id)) return res.status(400).json({ success: false, message: 'معرف غير صالح' });
+  try {
+    const { newPassword } = req.body;
+    if (!newPassword || String(newPassword).length < 8) {
+      return res.status(400).json({ success: false, message: 'كلمة المرور الجديدة يجب أن تكون 8 أحرف على الأقل' });
+    }
+
+    const target = await User.findById(req.params.id).select('+password');
+    if (!target) return res.status(404).json({ success: false, message: 'المستخدم غير موجود' });
+    if (target.isAdmin && String(target._id) !== String(req.user._id)) {
+      return res.status(403).json({ success: false, message: 'لا يمكن تغيير كلمة مرور مشرف آخر' });
+    }
+
+    target.password = String(newPassword);
+    await target.save();
+    await log(req.user, 'RESET_USER_PASSWORD', target._id, { email: target.email }, req, 'critical');
+    res.json({ success: true, message: 'تم تحديث كلمة المرور. لا يتم عرض كلمات المرور داخل النظام.' });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
@@ -418,8 +508,8 @@ router.get('/audit-log', async (req, res) => {
 router.post('/run-rewards', async (req, res) => {
   try {
     await log(req.user, 'MANUAL_REWARDS_RUN', null, {}, req, 'warn');
-    runDailyRewards().catch(err => console.error('[Rewards] Manual run error:', err));
-    res.json({ success: true, message: 'تم بدء توزيع المكافآت في الخلفية' });
+    runHourlyRewards().catch(err => console.error('[Rewards] Manual run error:', err));
+    res.json({ success: true, message: 'تم فحص المكافآت. سيتم صرف الأرباح التي أكملت 24 ساعة فقط.' });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }

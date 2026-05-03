@@ -1457,6 +1457,21 @@ select.form-input {
     0 0 0 1px rgba(255,255,255,.1),
     0 0 60px rgba(34,197,94,.1);
 }
+.visa-card.card-silver {
+  background: linear-gradient(135deg, #111827 0%, #1f2937 42%, #64748b 135%);
+}
+.visa-card.card-gold {
+  background: linear-gradient(135deg, #12100b 0%, #2a1b07 38%, #8a6213 120%);
+}
+.visa-card.card-black {
+  background: linear-gradient(135deg, #04070d 0%, #101827 46%, #0f766e 130%);
+}
+.visa-card.card-training {
+  background: linear-gradient(135deg, #06202a 0%, #083344 42%, #164e63 120%);
+}
+.visa-card.card-expired {
+  filter: saturate(.78);
+}
 
 /* Decorative background circles */
 .visa-circle {
@@ -1483,6 +1498,30 @@ select.form-input {
   margin-bottom: 18px;
   position: relative;
   z-index: 1;
+}
+.visa-brand-side {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.visa-card-tier {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  line-height: 1.1;
+}
+.visa-card-tier span {
+  font-size: .52rem;
+  font-weight: 800;
+  color: rgba(255,255,255,.42);
+  letter-spacing: .12em;
+}
+.visa-card-tier strong {
+  font-size: .75rem;
+  color: #f8e7a0;
+  letter-spacing: 0;
+  white-space: nowrap;
 }
 
 /* Chip */
@@ -1575,6 +1614,37 @@ select.form-input {
   margin-bottom: 16px;
   position: relative; z-index: 1;
 }
+.visa-meta-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin: -4px 0 14px;
+  position: relative;
+  z-index: 1;
+}
+.visa-meta-row div {
+  min-width: 0;
+  padding: 7px 8px;
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 10px;
+  background: rgba(255,255,255,.035);
+}
+.visa-meta-row span {
+  display: block;
+  margin-bottom: 2px;
+  font-size: .52rem;
+  color: rgba(255,255,255,.42);
+  white-space: nowrap;
+}
+.visa-meta-row strong {
+  display: block;
+  font-size: .68rem;
+  font-weight: 800;
+  color: rgba(255,255,255,.86);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
 /* Bottom row */
 .visa-bottom-row {
@@ -1660,6 +1730,54 @@ select.form-input {
 
 /* ── Visa Card — frozen stat ─────────────────────────────── */
 .visa-stat-val.visa-frozen { color: #38bdf8; }
+
+.visa-upgrade-notice {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  padding: 12px;
+  border: 1px solid rgba(56,189,248,.18);
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(6,182,212,.10), rgba(15,23,42,.82));
+  box-shadow: 0 10px 28px rgba(0,0,0,.24);
+}
+.visa-upgrade-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #38bdf8;
+  background: rgba(56,189,248,.12);
+}
+.visa-upgrade-notice > div:nth-child(2) {
+  flex: 1;
+  min-width: 0;
+}
+.visa-upgrade-title {
+  font-size: .82rem;
+  font-weight: 800;
+  color: rgba(255,255,255,.92);
+  margin-bottom: 2px;
+}
+.visa-upgrade-text {
+  font-size: .68rem;
+  line-height: 1.55;
+  color: rgba(255,255,255,.58);
+}
+.visa-upgrade-btn {
+  border: 0;
+  border-radius: 12px;
+  padding: 9px 12px;
+  color: #04120c;
+  background: #22c55e;
+  font-size: .72rem;
+  font-weight: 900;
+  white-space: nowrap;
+}
 
 /* ── Visa Mini Cards ─────────────────────────────────────── */
 .visa-mini-cards {

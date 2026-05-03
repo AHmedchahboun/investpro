@@ -193,6 +193,8 @@
                   <th>المستخدم</th>
                   <th>VIP</th>
                   <th>الرصيد</th>
+                  <th class="hide-mobile">الربح القادم</th>
+                  <th class="hide-mobile">نهاية الخطة</th>
                   <th class="hide-mobile">إجمالي الإيداع</th>
                   <th class="hide-mobile">التسجيل</th>
                   <th>الحالة</th>
@@ -200,7 +202,7 @@
                 </tr>
               </thead>
               <tbody id="users-body">
-                <tr><td colspan="7" style="text-align:center;padding:30px;color:var(--text3)">جاري التحميل...</td></tr>
+                <tr><td colspan="9" style="text-align:center;padding:30px;color:var(--text3)">جاري التحميل...</td></tr>
               </tbody>
             </table>
           </div>
@@ -384,6 +386,31 @@
       </div>
     </div>
 
+    <div class="section-label">⏱ الأرباح والإحالات</div>
+    <div class="user-detail-grid">
+      <div class="user-detail-item">
+        <div class="user-detail-label">الربح القادم</div>
+        <div class="user-detail-value" id="um-next-profit">—</div>
+      </div>
+      <div class="user-detail-item">
+        <div class="user-detail-label">ربح متاح / مجمد</div>
+        <div class="user-detail-value" id="um-profit-state">—</div>
+      </div>
+      <div class="user-detail-item">
+        <div class="user-detail-label">إحالات مباشرة</div>
+        <div class="user-detail-value" id="um-ref-direct">—</div>
+      </div>
+      <div class="user-detail-item">
+        <div class="user-detail-label">أرباح الإحالة</div>
+        <div class="user-detail-value" id="um-ref-earnings">—</div>
+      </div>
+    </div>
+
+    <div class="section-label">📋 كشف آخر العمليات</div>
+    <div id="um-statement" class="mini-statement">
+      <div style="color:var(--text3);font-size:.8rem">اضغط على المستخدم لتحميل الكشف...</div>
+    </div>
+
     <div class="section-label">📅 معلومات الحساب</div>
     <div class="user-detail-grid">
       <div class="user-detail-item">
@@ -399,6 +426,7 @@
     <div class="modal-footer">
       <button class="btn btn-ghost btn-sm" onclick="closeUserModal()">إغلاق</button>
       <button class="btn btn-ghost btn-sm" id="um-adj-btn" onclick="">تعديل الرصيد</button>
+      <button class="btn btn-ghost btn-sm" id="um-pass-btn" onclick="">كلمة المرور</button>
       <button class="btn btn-sm" id="um-freeze-btn" onclick="">تجميد / رفع</button>
       <button class="btn btn-red btn-sm" id="um-delete-btn" onclick="">🗑 حذف</button>
     </div>
@@ -420,6 +448,25 @@ const VIP_COLORS = { '-1':'#334155','0':'#64748b','1':'#d97706','2':'#94a3b8','3
 
 let _vipChart = null, _searchTimer = null, _currentModalUser = null;
 const _usersCache = new Map(); // safe user data store — avoids inline JSON in HTML
+
+function fmtMs(ms) {
+  const total = Math.max(0, Math.ceil((Number(ms) || 0) / 1000));
+  const d = Math.floor(total / 86400);
+  const h = Math.floor((total % 86400) / 3600);
+  const m = Math.floor((total % 3600) / 60);
+  if (d > 0) return `${d} يوم ${h} ساعة`;
+  if (h > 0) return `${h} ساعة ${m} دقيقة`;
+  return `${m} دقيقة`;
+}
+
+function fmtCasa(iso) {
+  if (!iso) return '—';
+  return new Date(iso).toLocaleString('ar-MA', {
+    timeZone: 'Africa/Casablanca',
+    year: 'numeric', month: 'short', day: 'numeric',
+    hour: '2-digit', minute: '2-digit',
+  });
+}
 
 /* ════════════════════════════════════════
    Init
@@ -474,6 +521,9 @@ function renderAdminStats(s) {
     { label:'سحوبات معلقة',        value: s.pendingWithdraws,            icon:'⏳', color:'var(--orange)' },
     { label:'أعضاء VIP نشطون',     value: s.activeVips,                  icon:'👑', color:'var(--purple)' },
     { label:'إجمالي المكافآت',     value: fmt.usd(s.totalRewardsPaid),   icon:'⭐', color:'var(--teal2)'  },
+    { label:'أرباح جاهزة للصرف',   value: s.dueProfitCount || 0,          icon:'✅', color:'var(--green)'  },
+    { label:'خطط تنتهي خلال 3 أيام',value: s.expiringPlans || 0,          icon:'⏰', color:'var(--gold)'   },
+    { label:'توقيت النظام',        value: 'المغرب',                      icon:'🇲🇦', color:'var(--blue)'   },
   ];
   document.getElementById('admin-stats-grid').innerHTML = cards.map(c => `
     <div class="stat-card" style="--stat-color:${c.color}">
@@ -485,7 +535,7 @@ function renderAdminStats(s) {
 
 function renderPendingAlerts(s) {
   const el = document.getElementById('pending-alerts');
-  if (!s.pendingDeposits && !s.pendingWithdraws) {
+  if (!s.pendingDeposits && !s.pendingWithdraws && !s.nextProfit) {
     el.innerHTML = '<div class="info-box">✅ لا توجد طلبات معلقة — كل شيء تمام!</div>'; return;
   }
   let html = '';
@@ -505,6 +555,17 @@ function renderPendingAlerts(s) {
       </div>
       <button class="btn btn-gold btn-sm" onclick="go('pg-wd')">مراجعة ←</button>
     </div>`;
+  if (s.nextProfit) {
+    const ms = Math.max(0, new Date(s.nextProfit.eligibleAt).getTime() - Date.now());
+    html += `
+    <div class="pending-alert" style="border-right-color:var(--teal)">
+      <div>
+        <div class="pending-alert-num" style="color:var(--teal)">${fmt.usd(s.nextProfit.amount || 0)}</div>
+        <div class="pending-alert-text">أقرب ربح: ${esc(s.nextProfit.userName || '—')} • ${fmtMs(ms)} • ${fmtCasa(s.nextProfit.eligibleAt)}</div>
+      </div>
+      <button class="btn btn-ghost btn-sm" onclick="runRewards()">فحص 24h</button>
+    </div>`;
+  }
   el.innerHTML = html;
 }
 
@@ -539,10 +600,11 @@ function updateBadges(deps, wds) {
 }
 
 async function runRewards() {
-  if (!confirm('تشغيل توزيع المكافآت اليومية الآن؟')) return;
+  if (!confirm('فحص المكافآت الآن؟ سيتم صرف الأرباح التي أكملت 24 ساعة فقط بتوقيت المغرب.')) return;
   try {
     await http.post('/admin/run-rewards');
-    toast('تم بدء توزيع المكافآت في الخلفية', 's');
+    toast('تم فحص المكافآت المستحقة فقط', 's');
+    loadDashboard();
   } catch (e) { toast(e.message, 'e'); }
 }
 
@@ -678,7 +740,7 @@ async function loadUsers(page = 1) {
   const vipLevel = document.getElementById('user-vip-f').value;
   const isFrozen = document.getElementById('user-frozen-f').value;
   const body = document.getElementById('users-body');
-  body.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--text3)">جاري التحميل...</td></tr>';
+  body.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:30px;color:var(--text3)">جاري التحميل...</td></tr>';
   try {
     let url = `/admin/users?page=${page}&limit=20`;
     if (search)   url += `&search=${encodeURIComponent(search)}`;
@@ -686,7 +748,7 @@ async function loadUsers(page = 1) {
     if (isFrozen !== '') url += `&isFrozen=${isFrozen}`;
     const data = await http.get(url);
     if (!data.users.length) {
-      body.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--text3)">لا توجد نتائج</td></tr>'; return;
+      body.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:30px;color:var(--text3)">لا توجد نتائج</td></tr>'; return;
     }
     // Cache user objects safely — avoids embedding JSON in HTML attributes
     data.users.forEach(u => _usersCache.set(String(u._id), u));
@@ -710,6 +772,12 @@ async function loadUsers(page = 1) {
         </td>
         <td style="color:var(--teal);font-weight:700">
           ${u.wallet ? fmt.usd(u.wallet.balance) : '—'}
+        </td>
+        <td class="hide-mobile" style="font-size:.78rem;color:var(--text2)">
+          ${u.profitStatus?.nextEligibleAt ? `${fmtMs(u.profitStatus.msRemaining)}<br><span style="color:var(--text3)">${fmtCasa(u.profitStatus.nextEligibleAt)}</span>` : '—'}
+        </td>
+        <td class="hide-mobile" style="font-size:.78rem;color:var(--text2)">
+          ${u.vipExpiresAt ? `${u.vipDaysLeft || 0} يوم<br><span style="color:var(--text3)">${fmtCasa(u.vipExpiresAt)}</span>` : '—'}
         </td>
         <td class="hide-mobile" style="color:var(--green);font-size:.84rem">
           ${u.wallet ? fmt.usd(u.wallet.totalDeposited) : '—'}
@@ -791,15 +859,21 @@ function openUserModal(uid) {
   document.getElementById('um-earned').textContent    = fmt.usd(w.totalEarned   || 0);
 
   document.getElementById('um-vip').textContent = vName;
-  document.getElementById('um-vip-exp').textContent = u.vipExpiresAt ? fmt.date(u.vipExpiresAt) : '—';
+  document.getElementById('um-vip-exp').textContent = u.vipExpiresAt ? `${u.vipDaysLeft || 0} يوم • ${fmtCasa(u.vipExpiresAt)}` : '—';
   document.getElementById('um-created').textContent = fmt.date(u.createdAt);
   document.getElementById('um-ref').textContent     = u.referralCode || '—';
+  document.getElementById('um-next-profit').textContent = u.profitStatus?.nextEligibleAt ? `${fmtMs(u.profitStatus.msRemaining)} • ${fmtCasa(u.profitStatus.nextEligibleAt)}` : '—';
+  document.getElementById('um-profit-state').textContent = u.profitStatus ? `${fmt.usd(u.profitStatus.availableProfit || 0)} / ${fmt.usd(u.profitStatus.frozenProfit || 0)}` : '—';
+  document.getElementById('um-ref-direct').textContent = u.directReferrals ?? '—';
+  document.getElementById('um-ref-earnings').textContent = 'جاري التحميل...';
+  document.getElementById('um-statement').innerHTML = '<div style="color:var(--text3);font-size:.8rem">جاري تحميل كشف الحساب...</div>';
 
   // Wire footer buttons
   document.getElementById('um-adj-btn').onclick = () => {
     document.getElementById('adj-uid').value = u._id;
     closeUserModal(); go('pg-adj');
   };
+  document.getElementById('um-pass-btn').onclick = () => resetUserPassword(u._id, u.name);
   const freezeBtn = document.getElementById('um-freeze-btn');
   freezeBtn.textContent = u.isFrozen ? '🔓 رفع التجميد' : '🔒 تجميد';
   freezeBtn.className = `btn ${u.isFrozen ? 'btn-green' : 'btn-ghost'} btn-sm`;
@@ -810,11 +884,54 @@ function openUserModal(uid) {
   else document.getElementById('um-delete-btn').style.display = '';
 
   document.getElementById('user-modal').classList.add('show');
+  loadUserSummary(u._id);
 }
 
 function closeUserModal() {
   document.getElementById('user-modal').classList.remove('show');
   _currentModalUser = null;
+}
+
+async function loadUserSummary(uid) {
+  try {
+    const data = await http.get(`/admin/users/${uid}/summary`);
+    if (!_currentModalUser || String(_currentModalUser._id) !== String(uid)) return;
+
+    const p = data.profitStatus || {};
+    const r = data.referrals || {};
+    const earnings = r.earnings || {};
+    document.getElementById('um-next-profit').textContent = p.nextEligibleAt ? `${fmtMs(p.msRemaining)} • ${fmtCasa(p.nextEligibleAt)}` : '—';
+    document.getElementById('um-profit-state').textContent = `${fmt.usd(p.availableProfit || 0)} / ${fmt.usd(p.frozenProfit || 0)}`;
+    document.getElementById('um-ref-direct').textContent = `${r.direct || 0} مباشر • ${r.level2 || 0} مستوى ثاني`;
+    document.getElementById('um-ref-earnings').textContent = fmt.usd((earnings.referral_l1 || 0) + (earnings.referral_l2 || 0) + (earnings.referral_l3 || 0));
+
+    const txs = data.transactions || [];
+    document.getElementById('um-statement').innerHTML = txs.length ? txs.map(tx => {
+      const l = txLabel[tx.type] || { icon:'•', lbl: tx.type, sign:'' };
+      const positive = ['deposit','daily_profit','daily_bonus','training_reward','referral_l1','referral_l2','referral_l3','admin_credit'].includes(tx.type);
+      return `
+        <div class="mini-statement-row">
+          <div class="mini-statement-main">
+            <div class="mini-statement-title">${l.icon} ${esc(l.lbl || tx.type)}</div>
+            <div class="mini-statement-sub">${fmtCasa(tx.createdAt)} • ${esc(tx.note || tx.status || '')}</div>
+          </div>
+          <div class="mini-statement-amount" style="color:${positive ? 'var(--green)' : 'var(--red)'}">${positive ? '+' : '-'}${fmt.usd(tx.amount || 0)}</div>
+        </div>`;
+    }).join('') : '<div style="color:var(--text3);font-size:.8rem">لا توجد عمليات بعد</div>';
+  } catch (e) {
+    document.getElementById('um-statement').innerHTML = `<div class="err-box">${esc(e.message)}</div>`;
+  }
+}
+
+async function resetUserPassword(uid, name) {
+  const newPassword = prompt(`كلمة مرور جديدة للمستخدم "${name}"\nلن يتم عرض كلمة المرور الحالية لأسباب أمنية.`);
+  if (newPassword === null) return;
+  if (newPassword.length < 8) return toast('كلمة المرور يجب أن تكون 8 أحرف على الأقل', 'w');
+  if (!confirm('تأكيد تغيير كلمة المرور؟ سيتم تسجيل العملية في سجل المشرف.')) return;
+  try {
+    const data = await http.post(`/admin/users/${uid}/password`, { newPassword });
+    toast(data.message, 's');
+  } catch (e) { toast(e.message, 'e'); }
 }
 
 // Close modal on overlay click

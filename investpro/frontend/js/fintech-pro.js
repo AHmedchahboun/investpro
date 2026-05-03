@@ -28,6 +28,15 @@ Object.assign(VIP_CONFIG, {
 /* ────────────────────────────────────────────────────────────
    STATE — single source of truth, set once from API
 ──────────────────────────────────────────────────────────── */
+const CARD_LEVELS = {
+  '-1': { name: 'Starter',  className: '',              boost: 0,  perks: '+0%',  next: 'فعّل خطة VIP لفتح بطاقة خاصة وزيادة أرباح الإحالة.' },
+  '0':  { name: 'Training', className: 'card-training', boost: 2,  perks: '+2%',  next: 'أكمل التدريب أو فعّل خطة شهرية لتحصل على بطاقة VIP كاملة.' },
+  '1':  { name: 'Bronze',   className: 'card-training', boost: 5,  perks: '+5%',  next: 'بعد نهاية الشهر يمكنك ترقية البطاقة ورفع أرباح الإحالة.' },
+  '2':  { name: 'Silver',   className: 'card-silver',   boost: 8,  perks: '+8%',  next: 'بطاقة Silver نشطة مع حدود ومميزات إحالة أفضل.' },
+  '3':  { name: 'Gold',     className: 'card-gold',     boost: 12, perks: '+12%', next: 'بطاقة Gold تفتح مستويات أعلى وربح إحالة أقوى.' },
+  '4':  { name: 'Black',    className: 'card-black',    boost: 18, perks: '+18%', next: 'أعلى بطاقة VIP: أولوية ومميزات إحالة قصوى.' },
+};
+
 const _state = {
   wallet:       null,   // { balance, totalDeposited, totalWithdrawn, totalEarned }
   vip:          null,   // { vipLevel, dailyProfit, dailyBonus, isActive, daysLeft }
@@ -107,6 +116,7 @@ function _tryFromCache() {
 function _applyAllCalculations() {
   _state.wallet = _normalizeWallet(_state.wallet, _state.transactions);
   _syncWalletSummary();
+  _renderVisaCardStatus();
   _buildProfitStrip();
   _renderHourlyProfitCard();
   _buildNotificationsFromTx();
@@ -132,6 +142,65 @@ function _syncWalletSummary() {
   setText('wallet-card-balance', w.balance || 0);
   setText('wallet-card-earned', w.totalEarned || 0);
   setText('wallet-card-deposited', w.totalDeposited || 0);
+}
+
+function _formatCardValidThru(dateValue) {
+  const d = dateValue ? new Date(dateValue) : null;
+  if (!d || Number.isNaN(d.getTime())) return '--/--';
+  return `${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getFullYear()).slice(-2)}`;
+}
+
+function _renderVisaCardStatus(userOverride = null) {
+  const user = userOverride || store.get('user') || {};
+  const vip = _state.vip || user || {};
+  const level = String(vip.vipLevel ?? user.vipLevel ?? -1);
+  const card = document.getElementById('visa-card');
+  const cfg = CARD_LEVELS[level] || CARD_LEVELS['-1'];
+  const expiresAt = vip.vipExpiresAt || user.vipExpiresAt;
+  const daysLeft = Number(vip.daysLeft ?? user.daysLeft ?? 0);
+  const isPaidVip = Number(level) >= 1;
+  const isTraining = level === '0';
+  const inferredActive = isTraining || (isPaidVip && expiresAt && new Date(expiresAt) > new Date());
+  const isActive = Boolean(vip.isActive ?? inferredActive);
+  const isExpiring = isPaidVip && isActive && daysLeft > 0 && daysLeft <= 3;
+
+  if (card) {
+    card.classList.remove('card-training', 'card-silver', 'card-gold', 'card-black', 'card-expired');
+    if (cfg.className) card.classList.add(cfg.className);
+    card.classList.toggle('card-expired', isPaidVip && !isActive);
+  }
+
+  const set = (id, value) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = value;
+  };
+
+  set('visa-card-level', cfg.name);
+  set('visa-valid-thru', _formatCardValidThru(expiresAt));
+  set('visa-ref-boost', `+${cfg.boost}%`);
+  set('visa-card-state', isActive ? 'نشطة' : (isPaidVip ? 'انتهت' : 'جاهزة'));
+  set('d-frozen', cfg.perks);
+
+  const title = document.getElementById('visa-upgrade-title');
+  const text = document.getElementById('visa-upgrade-text');
+  const btn = document.querySelector('.visa-upgrade-btn');
+
+  if (title && text) {
+    if (isExpiring) {
+      title.textContent = 'خطتك قريبة تنتهي';
+      text.textContent = `متبقي ${daysLeft} يوم. جدّد الخطة للحفاظ على بطاقة ${cfg.name} ومميزات الإحالة.`;
+    } else if (isPaidVip && !isActive) {
+      title.textContent = 'انتهت صلاحية البطاقة';
+      text.textContent = 'جدّد أو رقّي خطتك لإعادة تفعيل البطاقة وفتح مستويات أعلى وزيادة أرباح الإحالة.';
+    } else if (isActive) {
+      title.textContent = `بطاقة ${cfg.name} مفعّلة`;
+      text.textContent = cfg.next;
+    } else {
+      title.textContent = 'بطاقتك الخاصة جاهزة';
+      text.textContent = cfg.next;
+    }
+  }
+  if (btn) btn.textContent = isActive && !isExpiring ? 'المستويات' : 'تفعيل';
 }
 
 function _fmtCountdown(ms) {
@@ -160,7 +229,7 @@ function _renderHourlyProfitCard() {
   const statusEl = document.getElementById('hp-status');
   set('hp-plan', hp.planName || '—');
   set('hp-daily', fmt.usd(hp.dailyProfit || 0));
-  set('hp-hourly', '$' + Number(hp.hourlyProfit || 0).toFixed(4));
+  set('hp-hourly', '$' + Number(hp.cycleProfit || hp.dailyProfit || 0).toFixed(4));
   set('hp-countdown', _fmtCountdown(hp.msRemaining));
   set('hp-frozen', '$' + Number(hp.frozenProfit || 0).toFixed(4));
   set('hp-available', '$' + Number(hp.availableProfit || 0).toFixed(4));

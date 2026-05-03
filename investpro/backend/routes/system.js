@@ -55,8 +55,9 @@ router.get('/dashboard', protect, async (req, res) => {
       vip: {
         vipLevel:        vipStatus?.vipLevel ?? -1,
         vipExpiresAt:    vipStatus?.vipExpiresAt,
+        daysLeft:        typeof vipStatus?.vipDaysLeft === 'function' ? vipStatus.vipDaysLeft() : 0,
         trainingDaysLeft: vipStatus?.trainingDaysLeft ?? 0,
-        isActive:        vipStatus?.isActive ?? false,
+        isActive:        typeof vipStatus?.isVipActive === 'function' ? vipStatus.isVipActive() : false,
         hourlyProfit,
       },
       hourlyProfit,

@@ -493,6 +493,40 @@ hr.divider { border: none; border-top: 1px solid var(--border); margin: 16px 0; 
   margin-bottom: 10px; margin-top: 16px;
 }
 
+.mini-statement {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.mini-statement-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 9px 11px;
+  background: var(--bg-3);
+  border: 1px solid var(--border-2);
+  border-radius: 8px;
+}
+.mini-statement-main {
+  min-width: 0;
+}
+.mini-statement-title {
+  font-size: .8rem;
+  font-weight: 700;
+}
+.mini-statement-sub {
+  margin-top: 2px;
+  font-size: .7rem;
+  color: var(--text2);
+}
+.mini-statement-amount {
+  font-size: .82rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
 /* ── Responsive ──────────────────────────────────────── */
 @media (max-width: 1100px) {
   .stats-grid { grid-template-columns: repeat(2, 1fr); }

@@ -82,7 +82,13 @@
 
         <!-- Top row: Chip + Live -->
         <div class="visa-top-row">
-          <div class="visa-chip"><div class="visa-chip-inner"></div></div>
+          <div class="visa-brand-side">
+            <div class="visa-chip"><div class="visa-chip-inner"></div></div>
+            <div class="visa-card-tier">
+              <span>VIP CARD</span>
+              <strong id="visa-card-level">غير نشط</strong>
+            </div>
+          </div>
           <div class="visa-live">
             <span class="visa-live-dot"></span>
             متصل مباشرة
@@ -95,6 +101,21 @@
 
         <!-- Card number (derived from referral code — unique per user) -->
         <div class="visa-number" id="visa-number">**** &nbsp;**** &nbsp;**** &nbsp;****</div>
+
+        <div class="visa-meta-row">
+          <div>
+            <span>الصلاحية</span>
+            <strong id="visa-valid-thru">--/--</strong>
+          </div>
+          <div>
+            <span>Boost الإحالة</span>
+            <strong id="visa-ref-boost">+0%</strong>
+          </div>
+          <div>
+            <span>الحالة</span>
+            <strong id="visa-card-state">معلق</strong>
+          </div>
+        </div>
 
         <!-- Bottom row: holder + VISA logo -->
         <div class="visa-bottom-row">
@@ -118,11 +139,20 @@
           </div>
           <div class="visa-stat-divider"></div>
           <div class="visa-stat">
-            <div class="visa-stat-lbl">مجمّد ❄️</div>
+            <div class="visa-stat-lbl">مميزات البطاقة</div>
             <div class="visa-stat-val visa-frozen" id="d-frozen">$0.00</div>
           </div>
         </div>
 
+      </div>
+
+      <div class="visa-upgrade-notice" id="visa-upgrade-notice">
+        <div class="visa-upgrade-icon"><i class="fas fa-credit-card"></i></div>
+        <div>
+          <div class="visa-upgrade-title" id="visa-upgrade-title">بطاقتك الخاصة جاهزة</div>
+          <div class="visa-upgrade-text" id="visa-upgrade-text">فعّل خطة VIP لفتح مستويات أعلى وزيادة أرباح الإحالة.</div>
+        </div>
+        <button type="button" class="visa-upgrade-btn" onclick="go('pg-vip')">ترقية</button>
       </div>
 
       <!-- Mini info cards below the visa card -->
@@ -153,7 +183,7 @@
           <div class="vmc-icon">📈</div>
           <div class="vmc-body">
             <div class="vmc-title" id="vmc-profit-val">$0.00</div>
-            <div class="vmc-sub">ربح الساعة</div>
+            <div class="vmc-sub">ربح 24 ساعة</div>
           </div>
           <div class="vmc-badge vmc-badge-green" id="vmc-profit-next">—</div>
         </div>
@@ -252,7 +282,7 @@
       </div>
       <div class="hourly-profit-grid">
         <div><span>ربح اليوم</span><strong id="hp-daily">$0.00</strong></div>
-        <div><span>ربح الساعة</span><strong id="hp-hourly">$0.0000</strong></div>
+        <div><span>ربح 24 ساعة</span><strong id="hp-hourly">$0.0000</strong></div>
         <div><span>الوقت المتبقي</span><strong id="hp-countdown">—</strong></div>
         <div><span>ربح مجمد</span><strong id="hp-frozen">$0.0000</strong></div>
         <div><span>قابل للسحب</span><strong id="hp-available">$0.0000</strong></div>
@@ -1325,6 +1355,10 @@ function applyUserToUI(user, wallet) {
   // Referral link
   const refLink = `${window.location.origin}/?ref=${user.referralCode}`;
   document.getElementById('set-refcode').value = refLink;
+
+  if (typeof _renderVisaCardStatus === 'function') {
+    _renderVisaCardStatus(user);
+  }
 }
 
 /* ════════════════════════════════════════════════════════════
@@ -1375,7 +1409,7 @@ async function _updateVisaMiniCards() {
       const hp = vipRes.hourlyProfit;
       const profitEl = document.getElementById('vmc-profit-val');
       const nextEl   = document.getElementById('vmc-profit-next');
-      if (profitEl) profitEl.textContent = `$${(hp.hourlyProfit || 0).toFixed(4)}`;
+      if (profitEl) profitEl.textContent = `$${Number(hp.cycleProfit || hp.dailyProfit || 0).toFixed(4)}`;
       if (nextEl) {
         const sec = hp.secondsRemaining || 0;
         if (sec > 0) {
