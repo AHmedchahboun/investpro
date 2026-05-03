@@ -719,13 +719,7 @@ function _renderNotifList(targetId = 'notif-list') {
 function toggleNotifications() {
   const dd = document.getElementById('notif-dropdown');
   if (!dd) return;
-  const isPhoneViewport = window.matchMedia('(max-width: 767px) and (pointer: coarse)').matches;
-  if (!isPhoneViewport) {
-    openNotificationWindow();
-    return;
-  }
-  dd.classList.toggle('show');
-  if (dd.classList.contains('show')) _renderNotifList();
+  openNotificationWindow();
 }
 
 function initNotificationBell() {
