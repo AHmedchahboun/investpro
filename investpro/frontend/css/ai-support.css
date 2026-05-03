@@ -1,7 +1,7 @@
 .ai-chat-fab{
   position:fixed;
   left:18px;
-  bottom:18px;
+  bottom:88px;
   z-index:1200;
   min-width:46px;
   height:46px;
@@ -21,7 +21,7 @@
 .ai-chat-panel{
   position:fixed;
   left:18px;
-  bottom:74px;
+  bottom:144px;
   z-index:1201;
   width:min(370px,calc(100vw - 32px));
   height:min(560px,calc(100vh - 110px));
@@ -181,8 +181,8 @@
 }
 .ai-chat-send:disabled,.ai-chat-tool:disabled{opacity:.55;cursor:not-allowed}
 @media(max-width:520px){
-  .ai-chat-panel{left:8px;right:8px;bottom:72px;width:auto;height:min(520px,calc(100vh - 116px));border-radius:14px}
-  .ai-chat-fab{left:12px;bottom:12px}
+  .ai-chat-panel{left:8px;right:8px;bottom:142px;width:auto;height:min(470px,calc(100vh - 182px));border-radius:14px}
+  .ai-chat-fab{left:12px;bottom:88px;min-width:48px;height:44px;padding:0 12px;font-size:.76rem}
   .ai-chat-actions{padding-top:8px}
   .ai-chip{font-size:.68rem;padding:6px 9px}
 }
