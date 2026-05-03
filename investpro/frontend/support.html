@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>InvestPro - الدعم والمساعد الذكي</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="icon" type="image/png" href="favicon.png" sizes="32x32">
+  <meta name="theme-color" content="#060d1a">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/support-page.css">
+</head>
+<body>
+  <header class="support-topbar">
+    <a class="support-back" href="dashboard.html" aria-label="الرجوع">
+      <i class="fas fa-arrow-right"></i>
+    </a>
+    <div>
+      <h1>الدعم والمساعد الذكي</h1>
+      <p>اسأل عن الشحن، السحب، VIP، الإحالة أو أرسل مشكلة للدعم.</p>
+    </div>
+  </header>
+
+  <main class="support-shell">
+    <section class="support-chat-card">
+      <div class="support-chat-head">
+        <div class="support-bot-avatar"><i class="fas fa-headset"></i></div>
+        <div>
+          <div class="support-bot-title">مساعد InvestPro</div>
+          <div class="support-bot-sub">يرد ببساطة، ويرسل طلبات الدعم للإدارة</div>
+        </div>
+      </div>
+
+      <div class="support-messages" id="support-messages"></div>
+
+      <div class="support-quick-actions">
+        <button type="button" data-question="اشرح لي طريقة الشحن في InvestPro">الشحن</button>
+        <button type="button" data-question="اشرح لي طريقة السحب في InvestPro">السحب</button>
+        <button type="button" data-question="كيف يعمل نظام VIP والإحالة؟">VIP والإحالة</button>
+        <button type="button" id="support-ticket-mode">إرسال مشكلة</button>
+      </div>
+
+      <div class="support-attachment" id="support-attachment" hidden>
+        <span><i class="fas fa-image"></i> <b id="support-attachment-name"></b></span>
+        <button type="button" id="support-remove-image" aria-label="حذف الصورة"><i class="fas fa-times"></i></button>
+      </div>
+
+      <form class="support-form" id="support-form">
+        <input type="file" id="support-image-input" accept="image/png,image/jpeg,image/webp" hidden>
+        <button class="support-tool-btn" type="button" id="support-attach-image" title="إرفاق صورة">
+          <i class="fas fa-paperclip"></i>
+        </button>
+        <input id="support-input" maxlength="1500" autocomplete="off" placeholder="اكتب سؤالك أو مشكلتك...">
+        <button class="support-send-btn" id="support-send" type="submit" aria-label="إرسال">
+          <i class="fas fa-paper-plane"></i>
+        </button>
+      </form>
+    </section>
+
+    <section class="support-guide">
+      <div class="guide-card">
+        <i class="fas fa-wallet"></i>
+        <h2>الشحن</h2>
+        <p>افتح المحفظة، اختر إيداع، حدد شبكة USDT، انسخ العنوان، ثم أرسل Hash العملية أو إثبات الدفع.</p>
+      </div>
+      <div class="guide-card">
+        <i class="fas fa-money-bill-transfer"></i>
+        <h2>السحب</h2>
+        <p>افتح المحفظة، اختر سحب، أدخل المبلغ والعنوان والشبكة الصحيحة، ثم انتظر مراجعة الطلب.</p>
+      </div>
+      <div class="guide-card">
+        <i class="fas fa-crown"></i>
+        <h2>VIP</h2>
+        <p>بعد اعتماد الشحن، افتح VIP، اختر الخطة، أكد التفعيل، وتابع الرصيد والأرباح من لوحة التحكم.</p>
+      </div>
+      <div class="guide-card">
+        <i class="fas fa-circle-info"></i>
+        <h2>حل المشاكل</h2>
+        <p>اكتب بريد الحساب، رقم العملية، المبلغ، الشبكة، Hash التحويل، وأرفق صورة إن وجدت.</p>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/support-page.js"></script>
+</body>
+</html>
