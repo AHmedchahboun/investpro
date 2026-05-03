@@ -19,6 +19,7 @@
   <link rel="stylesheet" href="css/fintech-pro.css">
   <link rel="stylesheet" href="css/mobile.css?v=desktop-notifications-20260503">
   <link rel="stylesheet" href="css/entry-modal.css">
+  <link rel="stylesheet" href="css/ai-support.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 <body>
@@ -912,14 +913,68 @@
     <!-- Support Card -->
     <div class="section-title">الدعم الفني</div>
     <div class="support-card mb-6">
-      <div class="support-card-icon"><i class="fab fa-telegram-plane"></i></div>
+      <div class="support-card-icon"><i class="fas fa-headset"></i></div>
       <div class="support-card-body">
-        <div class="support-card-title">دعم InvestPro الرسمي</div>
-        <div class="support-card-text">للمساعدة في الإيداع، السحب، الحساب وخطط VIP.</div>
+        <div class="support-card-title">مساعد InvestPro والدعم الرسمي</div>
+        <div class="support-card-text">اسأل المساعد الذكي من الزر العائم أو تواصل مع الدعم البشري عبر Telegram.</div>
       </div>
       <a class="support-card-btn" href="https://t.me/InvestProSupportBot" target="_blank" rel="noopener">
-        تواصل الآن
+        Telegram
       </a>
+    </div>
+
+    <div class="support-guide-grid mb-6">
+      <div class="support-guide-card">
+        <div class="support-guide-icon"><i class="fas fa-wallet"></i></div>
+        <div class="support-guide-title">طريقة الشحن</div>
+        <ol class="support-guide-list">
+          <li>افتح صفحة المحفظة ثم اختر إيداع.</li>
+          <li>حدد الشبكة المناسبة: TRC20 أو BEP20 أو Polygon.</li>
+          <li>انسخ عنوان المحفظة وأرسل مبلغ USDT بدقة.</li>
+          <li>ارفع إثبات الدفع أو اكتب Hash العملية ثم انتظر مراجعة الإدارة.</li>
+        </ol>
+      </div>
+
+      <div class="support-guide-card">
+        <div class="support-guide-icon"><i class="fas fa-money-bill-transfer"></i></div>
+        <div class="support-guide-title">طريقة السحب</div>
+        <ol class="support-guide-list">
+          <li>افتح صفحة المحفظة ثم اختر سحب.</li>
+          <li>اكتب المبلغ وعنوان محفظتك واختر نفس الشبكة.</li>
+          <li>تأكد من العنوان قبل التأكيد لأن التحويلات لا يمكن عكسها.</li>
+          <li>طلبات السحب تمر بمراجعة أمنية قبل الإرسال.</li>
+        </ol>
+      </div>
+
+      <div class="support-guide-card">
+        <div class="support-guide-icon"><i class="fas fa-crown"></i></div>
+        <div class="support-guide-title">كيف يعمل VIP</div>
+        <ol class="support-guide-list">
+          <li>اشحن رصيدك وانتظر اعتماد الإيداع.</li>
+          <li>افتح صفحة VIP واختر الخطة المناسبة.</li>
+          <li>أكد التفعيل وسيتم تسجيل العملية في سجل العمليات.</li>
+          <li>تابع الرصيد والأرباح من الصفحة الرئيسية والمحفظة.</li>
+        </ol>
+      </div>
+
+      <div class="support-guide-card">
+        <div class="support-guide-icon"><i class="fas fa-users"></i></div>
+        <div class="support-guide-title">نظام الإحالة</div>
+        <ol class="support-guide-list">
+          <li>انسخ رابط الإحالة الخاص بك من صفحة حسابي.</li>
+          <li>شاركه مع المستخدمين الجدد.</li>
+          <li>عند إيداع المستخدم المدعو، تظهر عمولة الإحالة في حسابك حسب نظام المنصة.</li>
+          <li>يمكن متابعة الإحصائيات من قسم إحصائيات الإحالة.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="support-info-box mb-6">
+      <div class="support-info-title"><i class="fas fa-circle-info"></i> لتسريع حل أي مشكلة</div>
+      <div class="support-info-text">
+        أرسل بريد حسابك، نوع المشكلة، رقم العملية، المبلغ، الشبكة المستخدمة، و Hash التحويل إن وجد.
+        لا ترسل كلمة المرور أو رموز التحقق أو المفاتيح الخاصة لأي شخص.
+      </div>
     </div>
 
     <!-- Referrals Stats -->
@@ -1112,12 +1167,6 @@
 
   </div>
 
-<!-- Telegram Support Floating Button -->
-<a class="telegram-support-fab" href="https://t.me/InvestProSupportBot" target="_blank" rel="noopener" aria-label="تواصل مع الدعم">
-  <i class="fab fa-telegram-plane"></i>
-  <span>الدعم</span>
-</a>
-
 <!-- Bottom Navigation -->
 <nav class="bottom-nav">
   <div class="nav-item active" data-nav="pg-dash" data-go="pg-dash">
@@ -1185,6 +1234,7 @@
 <script src="js/api.js?v=globals-20260503"></script>
 <script src="js/fintech-pro.js?v=desktop-notifications-20260503"></script>
 <script src="js/entry-modal.js"></script>
+<script src="js/ai-support.js"></script>
 <script>
 /* ════════════════════════════════════════════════════════════
    Global state

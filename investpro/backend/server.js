@@ -37,6 +37,7 @@ app.use('/api/vip',    require('./routes/vip'));
 app.use('/api/admin',  require('./routes/admin'));
 app.use('/api/system', require('./routes/system'));
 app.use('/api/telegram', require('./routes/telegram'));
+app.use('/api/ai-support', require('./routes/aiSupport'));
 
 /* ── Serve Frontend ──────────────────────────────────────────────────────── */
 const frontendPath = path.resolve(__dirname, '..', 'frontend');
