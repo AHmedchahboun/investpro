@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const User = require('../models/User');
-const { Wallet, Transaction } = require('../models/Wallet');
+const { Wallet, Transaction, Notification } = require('../models/Wallet');
 const { PLATFORM_WALLETS, PAYMENT_METHODS } = require('../config/vipConfig');
 const { generalLimit, protect } = require('../middleware');
 const { getHourlyProfitStatus } = require('../jobs/rewards');
@@ -36,6 +36,34 @@ function buildWalletSummary(wallet, txs = []) {
 /* GET /api/health — lightweight connection check (no DB) */
 router.get('/health', (req, res) => {
   res.json({ success: true, status: 'ok', ts: Date.now() });
+});
+
+router.get('/notifications', protect, async (req, res) => {
+  try {
+    const notifications = await Notification.find({ user: req.user._id })
+      .sort({ createdAt: -1 })
+      .limit(30)
+      .lean();
+    const unreadCount = await Notification.countDocuments({ user: req.user._id, readAt: null });
+    res.json({ success: true, notifications, unreadCount });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+router.post('/notifications/read', protect, async (req, res) => {
+  try {
+    const { id, all } = req.body || {};
+    const filter = { user: req.user._id, readAt: null };
+    if (!all) {
+      if (!id) return res.status(400).json({ success: false, message: 'معرف الإشعار مطلوب' });
+      filter._id = id;
+    }
+    await Notification.updateMany(filter, { $set: { readAt: new Date() } });
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
 });
 
 /* GET /api/system/dashboard — unified dashboard data (reduces 4 requests → 1) */

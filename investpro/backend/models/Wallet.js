@@ -82,9 +82,28 @@ const hourlyProfitSchema = new mongoose.Schema({
 hourlyProfitSchema.index({ user: 1, cycleStart: 1 }, { unique: true });
 hourlyProfitSchema.index({ user: 1, status: 1, eligibleAt: -1 });
 
+const notificationSchema = new mongoose.Schema({
+  user:       { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, index: true },
+  createdBy:  { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  title:      { type: String, required: true, trim: true, maxlength: 120 },
+  message:    { type: String, required: true, trim: true, maxlength: 800 },
+  category:   {
+    type: String,
+    enum: ['system', 'profit', 'deposit', 'withdraw', 'referral', 'vip', 'support'],
+    default: 'system',
+  },
+  priority:   { type: String, enum: ['info', 'success', 'warning', 'danger'], default: 'info' },
+  audience:   { type: String, default: 'custom' },
+  readAt:     { type: Date },
+}, { timestamps: true });
+
+notificationSchema.index({ user: 1, readAt: 1, createdAt: -1 });
+notificationSchema.index({ createdAt: -1 });
+
 const Wallet      = mongoose.model('Wallet',      walletSchema);
 const Transaction = mongoose.model('Transaction', transactionSchema);
 const AuditLog    = mongoose.model('AuditLog',    auditLogSchema);
 const HourlyProfit = mongoose.model('HourlyProfit', hourlyProfitSchema);
+const Notification = mongoose.model('Notification', notificationSchema);
 
-module.exports = { Wallet, Transaction, AuditLog, HourlyProfit };
+module.exports = { Wallet, Transaction, AuditLog, HourlyProfit, Notification };

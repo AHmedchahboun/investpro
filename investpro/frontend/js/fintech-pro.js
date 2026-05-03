@@ -120,6 +120,7 @@ function _applyAllCalculations() {
   _buildProfitStrip();
   _renderHourlyProfitCard();
   _buildNotificationsFromTx();
+  _loadServerNotifications();
   _renderNotifBadge();
   _renderDashStateBanner();
   if (typeof Chart !== 'undefined') {
@@ -604,6 +605,12 @@ function refreshCharts(period) {
 ──────────────────────────────────────────────────────────── */
 let _notifs = [];
 
+function _notifEscape(value) {
+  return String(value ?? '').replace(/[&<>"']/g, ch => ({
+    '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#039;'
+  }[ch]));
+}
+
 const TX_NOTIF_MAP = {
   deposit:          { type: 'success', icon: '✅', title: 'إيداع معتمد'      },
   withdraw:         { type: 'warning', icon: '💸', title: 'سحب معتمد'        },
@@ -646,6 +653,42 @@ function _buildNotificationsFromTx() {
   _renderNotifBadge();
 }
 
+const SERVER_NOTIF_MAP = {
+  system:   { icon: '⚙️', type: 'info' },
+  profit:   { icon: '📈', type: 'info' },
+  deposit:  { icon: '💳', type: 'success' },
+  withdraw: { icon: '💸', type: 'warning' },
+  referral: { icon: '👥', type: 'success' },
+  vip:      { icon: '👑', type: 'success' },
+  support:  { icon: '💬', type: 'info' },
+};
+
+async function _loadServerNotifications() {
+  if (!store.get('token')) return;
+  try {
+    const data = await http.get('/system/notifications');
+    const serverNotifs = (data.notifications || []).map(n => {
+      const meta = SERVER_NOTIF_MAP[n.category] || SERVER_NOTIF_MAP.system;
+      return {
+        id: `srv-${n._id}`,
+        serverId: n._id,
+        type: n.priority === 'danger' ? 'danger' : (n.priority === 'warning' ? 'warning' : meta.type),
+        icon: meta.icon,
+        title: n.title,
+        msg: n.message,
+        time: fmt.ago(n.createdAt),
+        unread: !n.readAt,
+      };
+    });
+    _notifs = [...serverNotifs, ..._notifs].slice(0, 30);
+    _renderNotifBadge();
+    const dd = document.getElementById('notif-dropdown');
+    if (dd?.classList.contains('show')) _renderNotifList();
+  } catch (e) {
+    console.warn('[Notifications] failed:', e.message);
+  }
+}
+
 function _unreadCount() { return _notifs.filter(n => n.unread).length; }
 
 function _renderNotifBadge() {
@@ -667,9 +710,9 @@ function _renderNotifList() {
     <div class="notif-item ${n.unread ? 'unread' : ''}" onclick="markNotifRead(${n.id})">
       <div class="notif-icon ${n.type}">${n.icon}</div>
       <div class="notif-content">
-        <div class="notif-title">${n.title}</div>
-        <div class="notif-msg">${n.msg}</div>
-        <div class="notif-time">${n.time}</div>
+        <div class="notif-title">${_notifEscape(n.title)}</div>
+        <div class="notif-msg">${_notifEscape(n.msg)}</div>
+        <div class="notif-time">${_notifEscape(n.time)}</div>
       </div>
     </div>`).join('');
 }
@@ -684,12 +727,14 @@ function toggleNotifications() {
 function markNotifRead(id) {
   const n = _notifs.find(x => x.id === id);
   if (n) n.unread = false;
+  if (n?.serverId) http.post('/system/notifications/read', { id: n.serverId }).catch(() => {});
   _renderNotifBadge();
   _renderNotifList();
 }
 
 function markAllRead() {
   _notifs.forEach(n => n.unread = false);
+  http.post('/system/notifications/read', { all: true }).catch(() => {});
   _renderNotifBadge();
   _renderNotifList();
 }

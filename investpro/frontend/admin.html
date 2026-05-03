@@ -54,6 +54,9 @@
     <div class="nav-item" data-nav="pg-adj" onclick="go('pg-adj')">
       <span class="nav-icon">⚖</span> تعديل الرصيد
     </div>
+    <div class="nav-item" data-nav="pg-comms" onclick="go('pg-comms')">
+      <span class="nav-icon">💬</span> التواصل والتنبيهات
+    </div>
     <div class="nav-item" data-nav="pg-log" onclick="go('pg-log')">
       <span class="nav-icon">🔍</span> سجل المشرف
     </div>
@@ -322,6 +325,95 @@
       </div>
     </div>
 
+    <!-- ══════════════════ COMMUNICATIONS ══════════════════ -->
+    <div id="pg-comms" data-page style="display:none">
+      <div class="admin-pro-grid">
+        <div class="card">
+          <div class="card-head">💬 إرسال تنبيه للمستخدمين</div>
+          <div class="card-body">
+            <div class="info-box" style="margin-bottom:14px">
+              الرسائل تظهر داخل جرس الإشعارات عند المستخدم. استعملها للتنبيه حول الأرباح، الشحن، الإحالة، الدعم أو النظام.
+            </div>
+            <div class="form-group">
+              <label class="form-label">الجمهور</label>
+              <select class="form-input" id="msg-audience" onchange="toggleSingleUserInput()">
+                <option value="all">كل المستخدمين</option>
+                <option value="active_vip">أعضاء VIP النشطون</option>
+                <option value="expiring">خطط قريبة من الانتهاء</option>
+                <option value="no_vip">بدون خطة VIP</option>
+                <option value="frozen">الحسابات المجمدة</option>
+                <option value="single">مستخدم محدد</option>
+              </select>
+            </div>
+            <div class="form-group" id="msg-user-wrap" style="display:none">
+              <label class="form-label">User ID</label>
+              <input class="form-input" id="msg-user-id" placeholder="معرف المستخدم">
+            </div>
+            <div class="form-group">
+              <label class="form-label">نوع الرسالة</label>
+              <select class="form-input" id="msg-category">
+                <option value="system">النظام</option>
+                <option value="profit">الأرباح</option>
+                <option value="deposit">الشحن</option>
+                <option value="withdraw">السحب</option>
+                <option value="referral">الإحالة</option>
+                <option value="vip">VIP</option>
+                <option value="support">الدعم</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">الأولوية</label>
+              <select class="form-input" id="msg-priority">
+                <option value="info">معلومة</option>
+                <option value="success">نجاح</option>
+                <option value="warning">تنبيه</option>
+                <option value="danger">مهم</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">العنوان</label>
+              <input class="form-input" id="msg-title" maxlength="120" placeholder="مثال: ربحك قريب يصبح متاحاً">
+            </div>
+            <div class="form-group">
+              <label class="form-label">نص الرسالة</label>
+              <textarea class="form-input" id="msg-body" maxlength="800" rows="5" placeholder="اكتب رسالة واضحة ومطمئنة للمستخدم..."></textarea>
+            </div>
+            <button class="btn btn-teal btn-lg btn-fw" id="msg-send-btn" onclick="sendAdminNotification()">إرسال التنبيه</button>
+          </div>
+        </div>
+
+        <div>
+          <div class="card">
+            <div class="card-head">⚡ قوالب جاهزة</div>
+            <div class="card-body admin-template-list">
+              <button class="template-btn" onclick="fillMsgTemplate('profit')">أرباح مجمدة / متاحة</button>
+              <button class="template-btn" onclick="fillMsgTemplate('deposit')">تأكيد شحن</button>
+              <button class="template-btn" onclick="fillMsgTemplate('referral')">تشجيع الإحالة</button>
+              <button class="template-btn" onclick="fillMsgTemplate('support')">الدعم والثقة</button>
+              <button class="template-btn" onclick="fillMsgTemplate('system')">تحديث نظام</button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head">❓ أسئلة وأجوبة للدعم</div>
+            <div class="card-body faq-list">
+              <div><b>متى يصبح الربح قابل للسحب؟</b><span>بعد 24 ساعة من وقت تفعيل الخطة حسب توقيت المغرب.</span></div>
+              <div><b>لماذا الربح مجمد؟</b><span>لأنه ظاهر في الحساب لكنه لم يكمل وقت الاستحقاق بعد.</span></div>
+              <div><b>كيف نراجع الشحن؟</b><span>من صفحة الإيداعات، تحقق من الشبكة و TXID ثم اعتمد أو ارفض.</span></div>
+              <div><b>كيف نزيد الثقة؟</b><span>جاوب برسالة قصيرة، واضحة، واذكر الوقت المتبقي أو حالة العملية.</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">📨 آخر التنبيهات المرسلة</div>
+        <div class="card-body" id="admin-msg-list">
+          <div style="text-align:center;padding:20px;color:var(--text3)">جاري التحميل...</div>
+        </div>
+        <div id="admin-msg-pag" style="padding:12px 16px"></div>
+      </div>
+    </div>
+
   </div><!-- /content -->
 </div><!-- /main -->
 
@@ -331,7 +423,7 @@
   <div class="bn-item" data-nav="pg-dep"   onclick="go('pg-dep')"><span class="bn-icon">⬇</span>إيداع</div>
   <div class="bn-item" data-nav="pg-wd"    onclick="go('pg-wd')"><span class="bn-icon">⬆</span>سحب</div>
   <div class="bn-item" data-nav="pg-users" onclick="go('pg-users')"><span class="bn-icon">👤</span>مستخدمون</div>
-  <div class="bn-item" data-nav="pg-log"   onclick="go('pg-log')"><span class="bn-icon">🔍</span>سجل</div>
+  <div class="bn-item" data-nav="pg-comms" onclick="go('pg-comms')"><span class="bn-icon">💬</span>رسائل</div>
 </nav>
 
 <!-- ══════════════════ USER DETAIL MODAL ══════════════════ -->
@@ -441,7 +533,7 @@
    ════════════════════════════════════════ */
 const PAGE_TITLES = {
   'pg-dash':'لوحة التحكم','pg-dep':'الإيداعات','pg-wd':'السحوبات',
-  'pg-users':'المستخدمون','pg-tx':'العمليات','pg-adj':'تعديل الرصيد','pg-log':'سجل المشرف',
+  'pg-users':'المستخدمون','pg-tx':'العمليات','pg-adj':'تعديل الرصيد','pg-comms':'التواصل والتنبيهات','pg-log':'سجل المشرف',
 };
 const VIP_NAMES  = { '-1':'غير نشط','0':'تدريب','1':'برونزي','2':'فضي','3':'ذهبي','4':'ماسي' };
 const VIP_COLORS = { '-1':'#334155','0':'#64748b','1':'#d97706','2':'#94a3b8','3':'#f59e0b','4':'#38bdf8' };
@@ -494,6 +586,7 @@ function go(pageId) {
   if (pageId === 'pg-users') loadUsers();
   if (pageId === 'pg-tx')    loadAdminTx();
   if (pageId === 'pg-adj')   loadAdjLog();
+  if (pageId === 'pg-comms') loadAdminNotifications();
   if (pageId === 'pg-log')   loadLog();
 }
 
@@ -524,6 +617,7 @@ function renderAdminStats(s) {
     { label:'أرباح جاهزة للصرف',   value: s.dueProfitCount || 0,          icon:'✅', color:'var(--green)'  },
     { label:'خطط تنتهي خلال 3 أيام',value: s.expiringPlans || 0,          icon:'⏰', color:'var(--gold)'   },
     { label:'توقيت النظام',        value: 'المغرب',                      icon:'🇲🇦', color:'var(--blue)'   },
+    { label:'رسائل اليوم',          value: s.notificationCount || 0,       icon:'💬', color:'var(--purple)' },
   ];
   document.getElementById('admin-stats-grid').innerHTML = cards.map(c => `
     <div class="stat-card" style="--stat-color:${c.color}">
@@ -1057,6 +1151,100 @@ async function loadLog(page = 1) {
       </div>`).join('');
     renderAdminPag('log-pag', data.pagination, loadLog);
   } catch (e) { toast(e.message, 'e'); }
+}
+
+function toggleSingleUserInput() {
+  const audience = document.getElementById('msg-audience').value;
+  document.getElementById('msg-user-wrap').style.display = audience === 'single' ? 'block' : 'none';
+}
+
+function fillMsgTemplate(type) {
+  const templates = {
+    profit: {
+      category: 'profit',
+      priority: 'info',
+      title: 'ربحك ظاهر في الحساب',
+      body: 'الربح المجمد ظاهر عندك الآن، وسيصبح قابل للسحب مباشرة بعد اكتمال 24 ساعة حسب وقت تفعيل خطتك بتوقيت المغرب.',
+    },
+    deposit: {
+      category: 'deposit',
+      priority: 'success',
+      title: 'تمت مراجعة الشحن',
+      body: 'تمت مراجعة عملية الشحن الخاصة بك. إذا احتجت أي مساعدة، تواصل مع الدعم من داخل حسابك.',
+    },
+    referral: {
+      category: 'referral',
+      priority: 'success',
+      title: 'ارفع أرباحك عبر الإحالة',
+      body: 'شارك رابط الإحالة الخاص بك. كل إحالة نشطة تساعدك على زيادة أرباحك وفتح مزايا أفضل داخل المنصة.',
+    },
+    support: {
+      category: 'support',
+      priority: 'info',
+      title: 'فريق الدعم معك',
+      body: 'إذا كان لديك سؤال حول الشحن، السحب، الأرباح أو VIP، افتح صفحة الدعم وسنساعدك خطوة بخطوة.',
+    },
+    system: {
+      category: 'system',
+      priority: 'warning',
+      title: 'تحديث مهم في النظام',
+      body: 'تم تحسين نظام الأرباح والتنبيهات. الأرباح تصبح متاحة بعد اكتمال وقتها، وكل العمليات تراجع بتوقيت المغرب.',
+    },
+  };
+  const t = templates[type];
+  document.getElementById('msg-category').value = t.category;
+  document.getElementById('msg-priority').value = t.priority;
+  document.getElementById('msg-title').value = t.title;
+  document.getElementById('msg-body').value = t.body;
+}
+
+async function sendAdminNotification() {
+  const btn = document.getElementById('msg-send-btn');
+  const payload = {
+    audience: document.getElementById('msg-audience').value,
+    userId: document.getElementById('msg-user-id').value.trim(),
+    category: document.getElementById('msg-category').value,
+    priority: document.getElementById('msg-priority').value,
+    title: document.getElementById('msg-title').value.trim(),
+    message: document.getElementById('msg-body').value.trim(),
+  };
+  if (!payload.title || !payload.message) return toast('العنوان والرسالة مطلوبان', 'w');
+  if (payload.audience === 'single' && !payload.userId) return toast('أدخل User ID للمستخدم المحدد', 'w');
+  if (!confirm('تأكيد إرسال هذا التنبيه للمستخدمين المحددين؟')) return;
+
+  btnLoad(btn, true);
+  try {
+    const data = await http.post('/admin/notifications', payload);
+    toast(data.message, 's');
+    document.getElementById('msg-title').value = '';
+    document.getElementById('msg-body').value = '';
+    loadAdminNotifications();
+    loadDashboard();
+  } catch (e) { toast(e.message, 'e'); }
+  btnLoad(btn, false);
+}
+
+async function loadAdminNotifications(page = 1) {
+  const el = document.getElementById('admin-msg-list');
+  if (!el) return;
+  el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text3)">جاري التحميل...</div>';
+  try {
+    const data = await http.get(`/admin/notifications?page=${page}&limit=20`);
+    if (!data.notifications.length) {
+      el.innerHTML = '<div class="info-box">لم يتم إرسال أي تنبيه بعد.</div>';
+      return;
+    }
+    el.innerHTML = data.notifications.map(n => `
+      <div class="admin-message-row">
+        <div>
+          <div class="admin-message-title">${esc(n.title)} <span class="badge badge-blue">${esc(n.category)}</span></div>
+          <div class="admin-message-body">${esc(n.message)}</div>
+          <div class="admin-message-meta">إلى: ${esc(n.user?.name || '—')} • بواسطة: ${esc(n.createdBy?.name || '—')} • ${fmtCasa(n.createdAt)}</div>
+        </div>
+        <span class="badge ${n.readAt ? 'badge-green' : 'badge-gold'}">${n.readAt ? 'مقروء' : 'غير مقروء'}</span>
+      </div>`).join('');
+    renderAdminPag('admin-msg-pag', data.pagination, loadAdminNotifications);
+  } catch (e) { el.innerHTML = `<div class="err-box">${esc(e.message)}</div>`; }
 }
 
 /* ════════════════════════════════════════

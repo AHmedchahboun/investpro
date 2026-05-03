@@ -1,7 +1,7 @@
 ﻿const router = require('express').Router();
 const mongoose = require('mongoose');
 const User = require('../models/User');
-const { Wallet, Transaction, AuditLog, HourlyProfit } = require('../models/Wallet');
+const { Wallet, Transaction, AuditLog, HourlyProfit, Notification } = require('../models/Wallet');
 const { protect, adminOnly } = require('../middleware');
 const { addReferralCommissions, runHourlyRewards, getHourlyProfitStatus, notifyAdmin } = require('../jobs/rewards');
 
@@ -37,6 +37,7 @@ router.get('/dashboard', async (req, res) => {
       totalTransactions, activeVips, trainingUsers,
       vipDistribution, refResult, rewardResult,
       nextProfit, dueProfitCount, expiringPlans,
+      notificationCount,
     ] = await Promise.all([
       User.countDocuments(),
       User.countDocuments({ isFrozen: true }),
@@ -54,6 +55,7 @@ router.get('/dashboard', async (req, res) => {
       HourlyProfit.findOne({ status: 'frozen' }).sort({ eligibleAt: 1 }).select('eligibleAt amount userName planName timezone').lean(),
       HourlyProfit.countDocuments({ status: 'frozen', eligibleAt: { $lte: new Date() } }),
       User.countDocuments({ vipLevel: { $gte: 1 }, vipExpiresAt: { $gt: new Date(), $lte: new Date(Date.now() + 3 * 86400000) } }),
+      Notification.countDocuments({ createdAt: { $gte: today } }),
     ]);
 
     res.json({
@@ -70,6 +72,7 @@ router.get('/dashboard', async (req, res) => {
         nextProfit,
         dueProfitCount,
         expiringPlans,
+        notificationCount,
         timezone: 'Africa/Casablanca',
       },
     });
@@ -510,6 +513,66 @@ router.post('/run-rewards', async (req, res) => {
     await log(req.user, 'MANUAL_REWARDS_RUN', null, {}, req, 'warn');
     runHourlyRewards().catch(err => console.error('[Rewards] Manual run error:', err));
     res.json({ success: true, message: 'تم فحص المكافآت. سيتم صرف الأرباح التي أكملت 24 ساعة فقط.' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+function notificationFilterForAudience(audience, userId) {
+  const now = new Date();
+  if (audience === 'all') return {};
+  if (audience === 'active_vip') return { vipLevel: { $gte: 1 }, vipExpiresAt: { $gt: now }, isFrozen: false };
+  if (audience === 'expiring') return { vipLevel: { $gte: 1 }, vipExpiresAt: { $gt: now, $lte: new Date(Date.now() + 3 * 86400000) }, isFrozen: false };
+  if (audience === 'no_vip') return { vipLevel: { $lt: 1 }, isFrozen: false };
+  if (audience === 'frozen') return { isFrozen: true };
+  if (audience === 'single' && userId && isValidId(userId)) return { _id: userId };
+  return null;
+}
+
+router.get('/notifications', async (req, res) => {
+  try {
+    const { page = 1, limit = 20 } = req.query;
+    const lim = safeLimit(limit);
+    const pg = Math.max(parseInt(page) || 1, 1);
+    const total = await Notification.countDocuments();
+    const notifications = await Notification.find()
+      .populate('user', 'name email')
+      .populate('createdBy', 'name')
+      .sort({ createdAt: -1 })
+      .skip((pg - 1) * lim)
+      .limit(lim);
+    res.json({ success: true, notifications, pagination: { total, page: pg, pages: Math.ceil(total / lim) } });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+router.post('/notifications', async (req, res) => {
+  try {
+    const { audience = 'all', userId, title, message, category = 'system', priority = 'info' } = req.body;
+    if (!title || !message) return res.status(400).json({ success: false, message: 'العنوان والرسالة مطلوبان' });
+    if (String(title).trim().length > 120 || String(message).trim().length > 800) {
+      return res.status(400).json({ success: false, message: 'الرسالة طويلة جداً' });
+    }
+
+    const filter = notificationFilterForAudience(audience, userId);
+    if (!filter) return res.status(400).json({ success: false, message: 'اختيار الجمهور غير صالح' });
+
+    const users = await User.find(filter).select('_id').limit(5000);
+    if (!users.length) return res.status(400).json({ success: false, message: 'لا يوجد مستخدمون مطابقون لهذا الاختيار' });
+
+    const docs = users.map(u => ({
+      user: u._id,
+      createdBy: req.user._id,
+      title: String(title).trim(),
+      message: String(message).trim(),
+      category,
+      priority,
+      audience,
+    }));
+    await Notification.insertMany(docs, { ordered: false });
+    await log(req.user, 'SEND_NOTIFICATION', null, { audience, count: docs.length, title }, req, 'info');
+    res.status(201).json({ success: true, message: `تم إرسال التنبيه إلى ${docs.length} مستخدم`, sent: docs.length });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
