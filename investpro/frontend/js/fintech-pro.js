@@ -891,6 +891,7 @@ function _updateTicker() {
 }
 
 function initTicker() {
+  if (!document.getElementById('ticker-track')) return;
   _buildTicker();
   if (window._investproTickerTimer) clearInterval(window._investproTickerTimer);
   window._investproTickerTimer = setInterval(_updateTicker, 3500);

@@ -1036,6 +1036,7 @@ select.form-input {
   /* Hide heavy ticker on very small phones to save space */
   .ticker-wrap { height: 30px; }
   .ticker-item { padding: 0 12px; font-size: .66rem; }
+  .platform-news-track span { font-size: .64rem; padding: 0 10px; }
 
   /* Balance: slightly smaller font */
   .balance-amount { font-size: 1.75rem; }

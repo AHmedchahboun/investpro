@@ -44,6 +44,10 @@ img{max-width:100%}
 .t-item{display:inline-flex;align-items:center;gap:5px;padding:0 18px;font-size:.7rem;font-weight:600;border-right:1px solid var(--border)}
 .t-sym{color:var(--text3);font-size:.62rem;font-weight:700}
 .t-up{color:var(--green)}.t-down{color:var(--red)}
+.platform-news-wrap{background:linear-gradient(90deg,#030810,#081020,#030810)}
+.platform-news-track{flex:1;min-width:0;height:100%;display:flex;align-items:center;gap:12px;overflow-x:auto;scrollbar-width:none;padding:0 10px}
+.platform-news-track::-webkit-scrollbar{display:none}
+.platform-news-track span{flex:0 0 auto;display:inline-flex;align-items:center;min-height:24px;padding:0 12px;border-radius:999px;border:1px solid rgba(56,189,248,.14);background:rgba(14,165,233,.08);color:#dbeafe;font-size:.7rem;font-weight:800;white-space:nowrap}
 
 /* ═══════════════════════════════════════════
    NAVBAR
@@ -234,10 +238,14 @@ img{max-width:100%}
 </head>
 <body>
 
-<!-- ═══════════════ TICKER ═══════════════ -->
-<div class="ticker-bar">
-  <div class="ticker-label">📈 Live</div>
-  <div class="ticker-track" id="ticker-track"></div>
+<!-- ═══════════════ PLATFORM NEWS ═══════════════ -->
+<div class="ticker-bar platform-news-wrap">
+  <div class="ticker-label">أخبار المنصة</div>
+  <div class="platform-news-track">
+    <span>منصة InvestPro تتطور باستمرار لخدمة المستخدمين بشكل أفضل.</span>
+    <span>مع زيادة الإقبال، سنفتح مستويات جديدة ومزايا إضافية للمستخدمين النشطين.</span>
+    <span>تابع التحديثات القادمة داخل لوحة التحكم ومركز الإشعارات.</span>
+  </div>
 </div>
 
 <!-- ═══════════════ NAVBAR ═══════════════ -->
@@ -782,10 +790,10 @@ document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
    BOOT
 ═══════════════════════════════════════ */
 document.addEventListener('DOMContentLoaded', () => {
-  _buildTicker();
+  if (document.getElementById('ticker-track')) _buildTicker();
   _buildMarket();
   buildLandingCharts();
-  setInterval(_updatePrices, 3000);
+  if (document.getElementById('ticker-track')) setInterval(_updatePrices, 3000);
 });
 </script>
 </body>
