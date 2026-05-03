@@ -653,6 +653,20 @@
         <div class="wd-balance-val" id="w-balance">$0.00</div>
       </div>
 
+      <div class="withdraw-profit-grid">
+        <div class="withdraw-profit-box available">
+          <span>متاح للسحب الآن</span>
+          <strong id="wd-available-profit">$0.00</strong>
+        </div>
+        <div class="withdraw-profit-box frozen">
+          <span>ربح مجمد حتى يكمل الوقت</span>
+          <strong id="wd-frozen-profit">$0.00</strong>
+        </div>
+      </div>
+      <div class="withdraw-lock-note" id="wd-lock-note">
+        الربح المجمد يظهر في حسابك، ولكن لا يمكن سحبه حتى يكمل 24 ساعة حسب وقت شراء خطتك.
+      </div>
+
       <div class="card mb-4">
         <div class="info-box danger mb-4">
           <i class="fas fa-exclamation-triangle"></i>
@@ -1347,7 +1361,12 @@ function applyUserToUI(user, wallet) {
   if (frozenEl) frozenEl.textContent = fmt.usd(w.frozenProfit || 0);
 
   // Wallet
-  document.getElementById('w-balance').textContent   = fmt.usd(balance);
+  const availableProfit = w.availableProfit || 0;
+  document.getElementById('w-balance').textContent   = fmt.usd(availableProfit);
+  const wdAvailEl = document.getElementById('wd-available-profit');
+  const wdFrozenEl = document.getElementById('wd-frozen-profit');
+  if (wdAvailEl) wdAvailEl.textContent = fmt.usd(availableProfit);
+  if (wdFrozenEl) wdFrozenEl.textContent = fmt.usd(w.frozenProfit || 0);
   document.getElementById('wallet-card-balance').textContent    = fmt.usd(balance);
   document.getElementById('wallet-card-earned').textContent     = fmt.usd(earned);
   document.getElementById('wallet-card-deposited').textContent  = fmt.usd(deposited);
@@ -1700,6 +1719,11 @@ async function submitWithdraw() {
 
   if (isNaN(amount) || amount < _walletRules.minWithdraw) return toast(`الحد الأدنى للسحب $${_walletRules.minWithdraw}`, 'w');
   if (!toAddress) return toast('أدخل عنوان محفظة صحيح', 'w');
+  const availableText = (document.getElementById('wd-available-profit')?.textContent || '$0').replace(/[^0-9.]/g, '');
+  const availableProfit = parseFloat(availableText) || 0;
+  if (amount > availableProfit + 0.000001) {
+    return toast('هذا المبلغ مازال مجمد أو غير متاح للسحب. انتظر حتى يكمل وقت الربح.', 'w');
+  }
 
   btnLoad(btn, true);
   try {

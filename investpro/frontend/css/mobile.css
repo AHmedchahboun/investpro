@@ -1779,6 +1779,44 @@ select.form-input {
   white-space: nowrap;
 }
 
+.withdraw-profit-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 10px 0 12px;
+}
+.withdraw-profit-box {
+  padding: 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,.08);
+  background: var(--card, rgba(15,23,42,.8));
+}
+.withdraw-profit-box span {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--text-secondary, rgba(255,255,255,.58));
+  font-size: .68rem;
+  line-height: 1.35;
+}
+.withdraw-profit-box strong {
+  display: block;
+  font-size: 1rem;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.withdraw-profit-box.available strong { color: #22c55e; }
+.withdraw-profit-box.frozen strong { color: #38bdf8; }
+.withdraw-lock-note {
+  margin-bottom: 14px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(56,189,248,.08);
+  border: 1px solid rgba(56,189,248,.18);
+  color: var(--text-secondary, rgba(255,255,255,.62));
+  font-size: .72rem;
+  line-height: 1.55;
+}
+
 /* ── Visa Mini Cards ─────────────────────────────────────── */
 .visa-mini-cards {
   display: grid;

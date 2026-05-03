@@ -138,7 +138,9 @@ function _syncWalletSummary() {
   setText('d-balance', w.balance || 0);
   setText('d-deposited', w.totalDeposited || 0);
   setText('d-earned', w.totalEarned || 0);
-  setText('w-balance', w.balance || 0);
+  setText('w-balance', w.availableProfit || 0);
+  setText('wd-available-profit', w.availableProfit || 0);
+  setText('wd-frozen-profit', w.frozenProfit || 0);
   setText('wallet-card-balance', w.balance || 0);
   setText('wallet-card-earned', w.totalEarned || 0);
   setText('wallet-card-deposited', w.totalDeposited || 0);
@@ -239,6 +241,12 @@ function _renderHourlyProfitCard() {
   }
   const wdBtn = document.getElementById('wd-btn');
   if (wdBtn) wdBtn.disabled = !hp.canWithdraw;
+  const wdAvail = document.getElementById('wd-available-profit');
+  const wdFrozen = document.getElementById('wd-frozen-profit');
+  const wdBalance = document.getElementById('w-balance');
+  if (wdAvail) wdAvail.textContent = '$' + Number(hp.availableProfit || 0).toFixed(4);
+  if (wdFrozen) wdFrozen.textContent = '$' + Number(hp.frozenProfit || 0).toFixed(4);
+  if (wdBalance) wdBalance.textContent = '$' + Number(hp.availableProfit || 0).toFixed(4);
 }
 
 setInterval(() => {
