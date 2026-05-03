@@ -3,6 +3,7 @@ const rateLimit = require('express-rate-limit');
 const fetch = require('node-fetch');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const { notifyAdminWithPhoto } = require('../utils/telegram');
 
 const aiLimit = rateLimit({
   windowMs: 60 * 1000,
@@ -29,6 +30,7 @@ async function optionalUser(req, res, next) {
 function supportInstructions(userContext) {
   return (
     'أنت مساعد دعم داخل موقع InvestPro. أجب بالعربية الفصحى البسيطة أو الدارجة الخفيفة حسب لغة المستخدم. ' +
+    'اجعل الرد واضحا وبسيطا ولطيفا. استخدم جمل قصيرة وخطوات مرقمة عند الشرح. لا تستخدم Markdown مثل ** أو عناوين طويلة. ' +
     'ساعد في التسجيل، تسجيل الدخول، الإيداع، السحب، خطط VIP، الإحالات، واستخدام لوحة التحكم. ' +
     'معلومات المنصة: ' +
     'الشحن يتم من صفحة المحفظة عبر اختيار إيداع، تحديد شبكة USDT المناسبة TRC20 أو BEP20 أو Polygon، نسخ عنوان المحفظة، إرسال المبلغ، ثم إرسال Hash العملية أو إثبات الدفع وانتظار اعتماد الإدارة. ' +
@@ -40,6 +42,34 @@ function supportInstructions(userContext) {
     'إذا كانت المشكلة تحتاج مراجعة بشرية، اطلب من المستخدم إرسال التفاصيل إلى دعم Telegram الرسمي. ' +
     `سياق المستخدم: ${userContext}`
   );
+}
+
+function dataUrlToImageBuffer(imageData) {
+  if (!imageData) return null;
+  const match = String(imageData).match(/^data:image\/(png|jpe?g|webp);base64,([A-Za-z0-9+/=]+)$/);
+  if (!match) {
+    const err = new Error('صيغة الصورة غير مدعومة. استخدم PNG أو JPG أو WEBP.');
+    err.status = 400;
+    throw err;
+  }
+
+  const buffer = Buffer.from(match[2], 'base64');
+  if (!buffer.length || buffer.length > 2 * 1024 * 1024) {
+    const err = new Error('حجم الصورة كبير. الحد الأقصى 2MB.');
+    err.status = 400;
+    throw err;
+  }
+  const ext = match[1] === 'jpg' ? 'jpeg' : match[1];
+  return { buffer, contentType: `image/${ext}` };
+}
+
+function userLabel(user) {
+  if (!user) return 'زائر غير مسجل';
+  return [
+    `الاسم: ${user.name || 'غير محدد'}`,
+    `البريد: ${user.email || 'غير محدد'}`,
+    `User ID: ${user._id}`,
+  ].join('\n');
 }
 
 function openaiText(data) {
@@ -156,6 +186,52 @@ router.post('/chat', aiLimit, optionalUser, async (req, res) => {
   } catch (err) {
     console.error('[AI Support]', err.message);
     res.status(502).json({ success: false, message: 'تعذر تشغيل المساعد الآن. حاول بعد قليل.' });
+  }
+});
+
+router.post('/ticket', aiLimit, optionalUser, async (req, res) => {
+  try {
+    const message = String(req.body?.message || '').trim();
+    const image = dataUrlToImageBuffer(req.body?.image);
+
+    if (!message && !image) {
+      return res.status(400).json({ success: false, message: 'اكتب المشكلة أو أرفق صورة.' });
+    }
+
+    if (message.length > 1500) {
+      return res.status(400).json({ success: false, message: 'الرسالة طويلة جداً. اختصرها قليلاً.' });
+    }
+
+    const details = [
+      'طلب دعم جديد من مساعد الموقع',
+      '',
+      userLabel(req.user),
+      '',
+      `وقت الإرسال: ${new Date().toISOString()}`,
+      '',
+      'رسالة المستخدم:',
+      message || '[صورة بدون نص]',
+      '',
+      'ملاحظة: للرد على المستخدم من تيليجرام يحتاج المستخدم يرسل للبوت أولاً أو أضف له إشعارا من لوحة الإدارة.',
+    ].join('\n');
+
+    const sent = await notifyAdminWithPhoto(details, image?.buffer, image?.contentType);
+    if (!sent) {
+      return res.status(503).json({
+        success: false,
+        message: 'الدعم البشري غير متصل حالياً. تأكد من إعداد TELEGRAM_BOT_TOKEN و TELEGRAM_ADMIN_CHAT.',
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'تم إرسال طلبك للدعم. سنراجعه في أقرب وقت، ويمكنك إضافة بريد حسابك ورقم العملية لتسريع الحل.',
+    });
+  } catch (err) {
+    res.status(err.status || 500).json({
+      success: false,
+      message: err.message || 'تعذر إرسال طلب الدعم الآن.',
+    });
   }
 });
 

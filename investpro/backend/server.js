@@ -18,7 +18,7 @@ app.use(cors({
   origin: process.env.NODE_ENV === 'production' ? process.env.SITE_URL : true,
   credentials: true,
 }));
-app.use(express.json({ limit: '10kb' }));
+app.use(express.json({ limit: '3mb' }));
 
 // Request logger — dev only
 if (process.env.NODE_ENV !== 'production') {

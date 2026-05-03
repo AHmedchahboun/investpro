@@ -45,7 +45,16 @@
   border-bottom:1px solid rgba(255,255,255,.08);
 }
 .ai-chat-title{display:flex;align-items:center;gap:10px;font-weight:800;font-size:.92rem}
-.ai-chat-title i{color:#38bdf8}
+.ai-chat-logo{
+  width:34px;
+  height:34px;
+  border-radius:12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:rgba(14,165,233,.16);
+  color:#38bdf8;
+}
 .ai-chat-sub{font-size:.68rem;color:#94a3b8;margin-top:2px;font-weight:600}
 .ai-chat-close{
   width:32px;
@@ -65,11 +74,11 @@
   background:linear-gradient(180deg,#0b1424,#08111f);
 }
 .ai-msg{
-  max-width:88%;
+  max-width:92%;
   padding:10px 12px;
   border-radius:14px;
-  font-size:.84rem;
-  line-height:1.6;
+  font-size:.82rem;
+  line-height:1.7;
   white-space:pre-wrap;
   overflow-wrap:anywhere;
 }
@@ -102,6 +111,32 @@
   font-weight:700;
 }
 .ai-chip:hover{background:rgba(14,165,233,.16);color:#fff}
+.ai-chip-alert{
+  background:rgba(245,158,11,.12);
+  border-color:rgba(245,158,11,.25);
+  color:#fbbf24;
+}
+.ai-attachment{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin:10px 12px 0;
+  padding:8px 10px;
+  border-radius:12px;
+  background:rgba(14,165,233,.11);
+  border:1px solid rgba(14,165,233,.2);
+  color:#bae6fd;
+  font-size:.72rem;
+}
+.ai-attachment[hidden]{display:none}
+.ai-attachment button{
+  width:24px;
+  height:24px;
+  border-radius:50%;
+  background:rgba(255,255,255,.1);
+  color:#e0f2fe;
+}
 .ai-chat-form{
   display:flex;
   gap:8px;
@@ -109,6 +144,17 @@
   background:#08111f;
   border-top:1px solid rgba(255,255,255,.08);
 }
+.ai-chat-tool{
+  width:42px;
+  height:42px;
+  border-radius:12px;
+  background:rgba(255,255,255,.08);
+  color:#cbd5e1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.ai-chat-tool:hover{background:rgba(255,255,255,.14);color:#fff}
 .ai-chat-input{
   flex:1;
   min-width:0;
@@ -133,8 +179,10 @@
   align-items:center;
   justify-content:center;
 }
-.ai-chat-send:disabled{opacity:.55;cursor:not-allowed}
+.ai-chat-send:disabled,.ai-chat-tool:disabled{opacity:.55;cursor:not-allowed}
 @media(max-width:520px){
-  .ai-chat-panel{left:12px;right:12px;bottom:70px;width:auto;height:min(560px,calc(100vh - 96px))}
+  .ai-chat-panel{left:8px;right:8px;bottom:72px;width:auto;height:min(520px,calc(100vh - 116px));border-radius:14px}
   .ai-chat-fab{left:12px;bottom:12px}
+  .ai-chat-actions{padding-top:8px}
+  .ai-chip{font-size:.68rem;padding:6px 9px}
 }
