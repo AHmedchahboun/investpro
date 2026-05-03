@@ -682,8 +682,7 @@ async function _loadServerNotifications() {
     });
     _notifs = [...serverNotifs, ..._notifs].slice(0, 30);
     _renderNotifBadge();
-    const dd = document.getElementById('notif-dropdown');
-    if (dd?.classList.contains('show')) _renderNotifList();
+    _renderOpenNotificationViews();
   } catch (e) {
     console.warn('[Notifications] failed:', e.message);
   }
@@ -699,15 +698,15 @@ function _renderNotifBadge() {
   badge.style.display = count > 0 ? 'flex' : 'none';
 }
 
-function _renderNotifList() {
-  const list = document.getElementById('notif-list');
+function _renderNotifList(targetId = 'notif-list') {
+  const list = document.getElementById(targetId);
   if (!list) return;
   if (!_notifs.length) {
     list.innerHTML = '<div class="notif-empty">🔔 لا توجد إشعارات</div>';
     return;
   }
   list.innerHTML = _notifs.map(n => `
-    <div class="notif-item ${n.unread ? 'unread' : ''}" onclick="markNotifRead(${n.id})">
+    <div class="notif-item ${n.unread ? 'unread' : ''}" onclick="markNotifRead('${n.id}')">
       <div class="notif-icon ${n.type}">${n.icon}</div>
       <div class="notif-content">
         <div class="notif-title">${_notifEscape(n.title)}</div>
@@ -720,23 +719,63 @@ function _renderNotifList() {
 function toggleNotifications() {
   const dd = document.getElementById('notif-dropdown');
   if (!dd) return;
+  const isPhoneViewport = window.matchMedia('(max-width: 767px) and (pointer: coarse)').matches;
+  if (!isPhoneViewport) {
+    openNotificationWindow();
+    return;
+  }
   dd.classList.toggle('show');
   if (dd.classList.contains('show')) _renderNotifList();
 }
 
+function initNotificationBell() {
+  const bell = document.getElementById('notif-bell');
+  if (!bell || bell.dataset.bound === '1') return;
+  bell.dataset.bound = '1';
+  bell.addEventListener('click', event => {
+    event.preventDefault();
+    event.stopPropagation();
+    toggleNotifications();
+  });
+}
+
+function openNotificationWindow() {
+  const overlay = document.getElementById('notif-modal-overlay');
+  const dd = document.getElementById('notif-dropdown');
+  if (!overlay) return;
+  dd?.classList.remove('show');
+  _renderNotifList('notif-modal-list');
+  overlay.classList.add('show');
+  document.body.classList.add('notif-modal-open');
+}
+
+function closeNotificationWindow(event) {
+  if (event && event.target !== event.currentTarget) return;
+  const overlay = document.getElementById('notif-modal-overlay');
+  overlay?.classList.remove('show');
+  document.body.classList.remove('notif-modal-open');
+}
+
+function _renderOpenNotificationViews() {
+  const dd = document.getElementById('notif-dropdown');
+  const overlay = document.getElementById('notif-modal-overlay');
+  if (dd?.classList.contains('show')) _renderNotifList();
+  if (overlay?.classList.contains('show')) _renderNotifList('notif-modal-list');
+}
+
 function markNotifRead(id) {
-  const n = _notifs.find(x => x.id === id);
+  const n = _notifs.find(x => String(x.id) === String(id));
   if (n) n.unread = false;
   if (n?.serverId) http.post('/system/notifications/read', { id: n.serverId }).catch(() => {});
   _renderNotifBadge();
-  _renderNotifList();
+  _renderOpenNotificationViews();
 }
 
 function markAllRead() {
   _notifs.forEach(n => n.unread = false);
   http.post('/system/notifications/read', { all: true }).catch(() => {});
   _renderNotifBadge();
-  _renderNotifList();
+  _renderOpenNotificationViews();
 }
 
 function pushNotif(type, title, msg) {
@@ -750,6 +789,12 @@ document.addEventListener('click', e => {
   const dd = document.getElementById('notif-dropdown');
   if (dd && wrapper && !wrapper.contains(e.target)) dd.classList.remove('show');
 });
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initNotificationBell);
+} else {
+  initNotificationBell();
+}
 
 /* ────────────────────────────────────────────────────────────
    6. LIVE PRICE TICKER — 6 assets, clean display

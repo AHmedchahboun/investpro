@@ -17,7 +17,7 @@
   <link rel="stylesheet" href="css/how-it-works.css">
   <link rel="stylesheet" href="css/welcome-modal.css">
   <link rel="stylesheet" href="css/fintech-pro.css">
-  <link rel="stylesheet" href="css/mobile.css">
+  <link rel="stylesheet" href="css/mobile.css?v=desktop-notifications-20260503">
   <link rel="stylesheet" href="css/entry-modal.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
@@ -41,7 +41,7 @@
   <div class="flex gap-2" style="align-items:center">
     <!-- Notification Bell -->
     <div class="notif-wrapper" id="notif-wrapper">
-      <button class="notif-bell" onclick="toggleNotifications()">
+      <button type="button" class="notif-bell" id="notif-bell">
         🔔
         <span class="notif-badge" id="notif-badge" style="display:none">0</span>
       </button>
@@ -63,6 +63,25 @@
     <button class="btn-icon" style="width: 40px; height: 40px; font-size: 1rem; border-radius: 50%;" onclick="auth.logout()">
       <i class="fas fa-sign-out-alt text-danger"></i>
     </button>
+  </div>
+</div>
+
+<!-- Desktop Notification Reader -->
+<div class="notif-modal-overlay" id="notif-modal-overlay" onclick="closeNotificationWindow(event)">
+  <div class="notif-modal" role="dialog" aria-modal="true" aria-labelledby="notif-modal-title">
+    <div class="notif-modal-head">
+      <div>
+        <div class="notif-modal-kicker">مركز الرسائل</div>
+        <h3 id="notif-modal-title">الإشعارات والتنبيهات</h3>
+      </div>
+      <div class="notif-modal-actions">
+        <button type="button" class="notif-modal-mark" onclick="markAllRead()">تحديد كمقروء</button>
+        <button type="button" class="notif-modal-close" onclick="closeNotificationWindow()" aria-label="إغلاق">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+    </div>
+    <div class="notif-modal-list" id="notif-modal-list"></div>
   </div>
 </div>
 
@@ -1163,8 +1182,8 @@
 
 <!-- Scripts -->
 <script src="js/config.js"></script>
-<script src="js/api.js"></script>
-<script src="js/fintech-pro.js"></script>
+<script src="js/api.js?v=globals-20260503"></script>
+<script src="js/fintech-pro.js?v=desktop-notifications-20260503"></script>
 <script src="js/entry-modal.js"></script>
 <script>
 /* ════════════════════════════════════════════════════════════

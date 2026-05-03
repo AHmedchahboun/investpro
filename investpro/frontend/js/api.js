@@ -298,6 +298,27 @@ async function requestWithRetry(fn, retries = 2) {
   }
 }
 
+Object.assign(window, {
+  store,
+  http,
+  auth,
+  toast,
+  copyText,
+  fmt,
+  val,
+  statusBadge,
+  txLabel,
+  esc,
+  txRow,
+  navGo,
+  openSidebar,
+  closeSidebar,
+  btnLoad,
+  delay,
+  checkConnection,
+  requestWithRetry,
+});
+
 /* ---- Offline / Online detection (real check, not navigator.onLine) ---- */
 window.addEventListener('offline', async () => {
   const online = await checkConnection();

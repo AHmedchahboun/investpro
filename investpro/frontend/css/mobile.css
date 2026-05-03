@@ -1959,3 +1959,245 @@ select.form-input {
 @media (min-width: 1024px) {
   .visa-mini-cards { grid-template-columns: repeat(3, 1fr); }
 }
+
+/* Desktop/tablet baseline: remove the old 480px phone shell outside phones. */
+@media (min-width: 768px) {
+  html,
+  body {
+    width: 100%;
+    max-width: none !important;
+    margin: 0 !important;
+    border: 0 !important;
+    overflow-x: hidden;
+  }
+
+  body {
+    background:
+      radial-gradient(circle at 18% 22%, rgba(14, 165, 233, .10), transparent 28%),
+      radial-gradient(circle at 86% 12%, rgba(34, 197, 94, .08), transparent 26%),
+      #070e1b;
+  }
+
+  .ticker-wrap,
+  .top-bar {
+    width: 100%;
+    max-width: none;
+  }
+
+  .top-bar {
+    padding: 0 clamp(28px, 5vw, 72px);
+  }
+
+  .main-content {
+    width: min(100%, 1240px);
+    max-width: 1240px !important;
+    margin: 0 auto;
+    padding: 18px 32px 56px !important;
+  }
+
+  .bottom-nav {
+    display: none !important;
+  }
+}
+
+/* Desktop workspace polish: keep phone UI untouched, use the computer width properly. */
+@media (min-width: 1024px) {
+
+  #pg-dash.page-content.active {
+    display: grid;
+    grid-template-columns: minmax(360px, 420px) minmax(0, 1fr);
+    gap: 18px 24px;
+    align-items: start;
+  }
+
+  #pg-dash > .visa-card-wrap {
+    grid-column: 1;
+    grid-row: 1 / span 7;
+    padding: 0 !important;
+    position: sticky;
+    top: 86px;
+    z-index: 1;
+  }
+
+  #pg-dash > .visa-card-wrap .visa-card {
+    max-width: none !important;
+    min-height: 368px;
+  }
+
+  #pg-dash > .quick-actions {
+    grid-column: 1;
+    padding: 0 !important;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  #pg-dash > .quick-actions .action-btn {
+    min-height: 118px;
+  }
+
+  #pg-dash > .dash-state-banner,
+  #pg-dash > .section-title,
+  #pg-dash > .stats-grid,
+  #pg-dash > .today-stats-wrap,
+  #pg-dash > .tx-list,
+  #pg-dash > .profit-strip,
+  #pg-dash > .hourly-profit-card,
+  #pg-dash > .charts-section {
+    grid-column: 2;
+  }
+
+  #pg-dash > .section-title {
+    padding: 0 2px 0 !important;
+  }
+
+  #pg-dash > .stats-grid,
+  #pg-dash > .tx-list,
+  #pg-dash > .profit-strip,
+  #pg-dash > .charts-section,
+  #pg-dash > .trust-badges {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  #pg-dash > .today-stats-wrap,
+  #pg-dash > .hourly-profit-card {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  #pg-dash > .stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  #pg-dash > .charts-section {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    margin: 0 !important;
+  }
+
+  #pg-dash > .trust-badges,
+  #pg-dash > .hiw-section {
+    grid-column: 1 / -1;
+  }
+
+  #pg-dash > .hiw-section {
+    padding: 0 !important;
+  }
+
+  #pg-dash .chart-card,
+  #pg-dash .tx-item,
+  #pg-dash .stat-box,
+  #pg-dash .hourly-profit-card,
+  #pg-dash .today-stats-wrap,
+  #pg-dash .profit-strip {
+    box-shadow: 0 18px 45px rgba(0, 0, 0, .18);
+  }
+}
+
+.notif-modal-overlay {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(2, 8, 20, .68);
+  backdrop-filter: blur(12px);
+  z-index: 2500;
+}
+
+.notif-modal-overlay.show {
+  display: flex;
+}
+
+.notif-modal-open {
+  overflow: hidden;
+}
+
+.notif-modal {
+  width: min(94vw, 620px);
+  max-height: min(78vh, 720px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid rgba(148, 163, 184, .22);
+  border-radius: 22px;
+  background: linear-gradient(180deg, rgba(15, 23, 42, .98), rgba(8, 16, 31, .98));
+  box-shadow: 0 28px 80px rgba(0, 0, 0, .48);
+}
+
+.notif-modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 20px;
+  border-bottom: 1px solid rgba(148, 163, 184, .14);
+}
+
+.notif-modal-kicker {
+  color: #38bdf8;
+  font-size: .72rem;
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+
+.notif-modal-head h3 {
+  margin: 0;
+  color: #f8fafc;
+  font-size: 1.05rem;
+}
+
+.notif-modal-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.notif-modal-mark,
+.notif-modal-close {
+  border: 1px solid rgba(148, 163, 184, .18);
+  background: rgba(15, 23, 42, .72);
+  color: #e2e8f0;
+  cursor: pointer;
+}
+
+.notif-modal-mark {
+  height: 34px;
+  padding: 0 12px;
+  border-radius: 12px;
+  font-size: .76rem;
+  font-weight: 800;
+}
+
+.notif-modal-close {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+}
+
+.notif-modal-list {
+  padding: 12px;
+  overflow-y: auto;
+}
+
+.notif-modal-list .notif-item {
+  border-radius: 16px;
+  margin-bottom: 10px;
+  border: 1px solid rgba(148, 163, 184, .12);
+  background: rgba(15, 23, 42, .55);
+}
+
+.notif-modal-list .notif-empty {
+  min-height: 180px;
+  display: grid;
+  place-items: center;
+}
+
+@media (max-width: 767px) and (pointer: coarse) {
+  .notif-modal-overlay.show {
+    display: none;
+  }
+}
