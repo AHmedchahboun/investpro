@@ -72,6 +72,107 @@ function userLabel(user) {
   ].join('\n');
 }
 
+function normalizeArabic(text = '') {
+  return String(text)
+    .toLowerCase()
+    .replace(/[إأآ]/g, 'ا')
+    .replace(/ى/g, 'ي')
+    .replace(/ة/g, 'ه')
+    .replace(/[ًٌٍَُِّْـ]/g, '')
+    .trim();
+}
+
+function includesAny(text, words) {
+  const value = normalizeArabic(text);
+  return words.some((word) => value.includes(normalizeArabic(word)));
+}
+
+function localSupportReply(message) {
+  if (includesAny(message, ['شحن', 'ايداع', 'إيداع', 'deposit', 'hash', 'txid'])) {
+    return [
+      'طريقة الشحن في InvestPro بسيطة:',
+      '',
+      '1. افتح صفحة المحفظة.',
+      '2. اختر إيداع.',
+      '3. اختر شبكة USDT المناسبة: TRC20 أو BEP20 أو Polygon.',
+      '4. انسخ عنوان المحفظة وأرسل المبلغ.',
+      '5. أرسل Hash العملية أو صورة إثبات الدفع.',
+      '6. انتظر مراجعة الإدارة واعتماد الإيداع.',
+      '',
+      'مهم: استخدم نفس الشبكة المختارة داخل الموقع حتى لا يتأخر الإيداع.',
+    ].join('\n');
+  }
+
+  if (includesAny(message, ['سحب', 'withdraw', 'محفظة السحب', 'لم يصل السحب'])) {
+    return [
+      'طريقة السحب:',
+      '',
+      '1. افتح صفحة المحفظة.',
+      '2. اختر سحب.',
+      '3. اكتب المبلغ المطلوب.',
+      '4. أدخل عنوان محفظتك واختر الشبكة الصحيحة.',
+      '5. راجع البيانات جيداً ثم أكد الطلب.',
+      '',
+      'طلبات السحب تمر بمراجعة أمنية. تأكد من العنوان لأن التحويل لا يمكن عكسه إذا كان خاطئاً.',
+    ].join('\n');
+  }
+
+  if (includesAny(message, ['ربح', 'ارباح', 'نظام ربح', 'profit', 'كيف اربح', 'مستويات', 'vip'])) {
+    return [
+      'نظام الربح داخل InvestPro يعمل عبر مستويات VIP:',
+      '',
+      '1. تشحن رصيدك أولاً.',
+      '2. بعد اعتماد الإيداع تختار مستوى VIP.',
+      '3. كل مستوى له مدة وربح يومي مختلف.',
+      '4. يمكنك متابعة الرصيد والأرباح من لوحة التحكم وسجل العمليات.',
+      '',
+      'إذا زاد الإقبال على المستويات الحالية، قد تفتح المنصة مستويات جديدة بميزات أقوى.',
+      '',
+      'تنبيه مهم: لا تعتبر هذه نصيحة مالية، ولا يوجد ربح مضمون. راجع مستوى المخاطر قبل أي قرار.',
+    ].join('\n');
+  }
+
+  if (includesAny(message, ['احالة', 'إحالة', 'referral', 'دعوة', 'رابط'])) {
+    return [
+      'نظام الإحالة:',
+      '',
+      '1. افتح صفحة حسابي.',
+      '2. انسخ رابط الإحالة الخاص بك.',
+      '3. شاركه مع شخص جديد.',
+      '4. عند تسجيله وإيداعه، تظهر عمولة الإحالة حسب نظام المنصة.',
+      '',
+      'يمكنك متابعة عدد المدعوين وأرباح الإحالة من قسم الإحالات.',
+    ].join('\n');
+  }
+
+  if (includesAny(message, ['مشكلة', 'دعم', 'خطا', 'خطأ', 'لا يعمل', 'مساعدة'])) {
+    return [
+      'أكيد، أرسل التفاصيل التالية حتى نساعدك بسرعة:',
+      '',
+      '1. بريد حسابك.',
+      '2. نوع المشكلة.',
+      '3. رقم العملية إن وجد.',
+      '4. المبلغ والشبكة.',
+      '5. Hash التحويل أو صورة الإثبات.',
+      '',
+      'لا ترسل كلمة المرور أو رموز التحقق لأي شخص.',
+    ].join('\n');
+  }
+
+  return [
+    'مرحباً بك في مساعد InvestPro.',
+    '',
+    'أقدر أساعدك في:',
+    '1. طريقة الشحن.',
+    '2. طريقة السحب.',
+    '3. نظام VIP والربح.',
+    '4. نظام الإحالة.',
+    '5. إرسال مشكلة للدعم مع صورة.',
+    '',
+    'اكتب سؤالك بشكل بسيط وسأرشدك خطوة بخطوة.',
+  ].join('\n');
+}
+
 function openaiText(data) {
   if (typeof data.output_text === 'string' && data.output_text.trim()) {
     return data.output_text.trim();
@@ -153,19 +254,16 @@ async function askGemini(message, instructions) {
 router.post('/chat', aiLimit, optionalUser, async (req, res) => {
   try {
     const provider = process.env.OPENAI_API_KEY ? 'openai' : process.env.GEMINI_API_KEY ? 'gemini' : null;
-    if (!provider) {
-      return res.status(503).json({
-        success: false,
-        message: 'المساعد الذكي غير مفعل حالياً. أضف OPENAI_API_KEY أو GEMINI_API_KEY في إعدادات السيرفر.',
-      });
-    }
-
     const message = String(req.body?.message || '').trim();
     if (!message) {
       return res.status(400).json({ success: false, message: 'اكتب سؤالك أولاً.' });
     }
     if (message.length > 1200) {
       return res.status(400).json({ success: false, message: 'الرسالة طويلة جداً. اختصرها قليلاً.' });
+    }
+
+    if (!provider) {
+      return res.json({ success: true, provider: 'local', reply: localSupportReply(message) });
     }
 
     const user = req.user;
@@ -185,7 +283,8 @@ router.post('/chat', aiLimit, optionalUser, async (req, res) => {
     });
   } catch (err) {
     console.error('[AI Support]', err.message);
-    res.status(502).json({ success: false, message: 'تعذر تشغيل المساعد الآن. حاول بعد قليل.' });
+    const message = String(req.body?.message || '').trim();
+    res.json({ success: true, provider: 'local', reply: localSupportReply(message) });
   }
 });
 
