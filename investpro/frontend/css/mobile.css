@@ -2258,3 +2258,125 @@ select.form-input {
     display: none;
   }
 }
+
+.notif-detail-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2700;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(2, 8, 20, .72);
+  backdrop-filter: blur(12px);
+}
+
+.notif-detail-overlay.show {
+  display: flex;
+}
+
+.notif-detail-open {
+  overflow: hidden;
+}
+
+.notif-detail {
+  width: min(94vw, 520px);
+  max-height: min(78vh, 680px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(148, 163, 184, .22);
+  border-radius: 22px;
+  background: linear-gradient(180deg, rgba(15, 23, 42, .98), rgba(8, 16, 31, .98));
+  box-shadow: 0 28px 80px rgba(0, 0, 0, .5);
+}
+
+.notif-detail-head {
+  display: grid;
+  grid-template-columns: 44px 1fr 38px;
+  gap: 12px;
+  align-items: center;
+  padding: 18px;
+  border-bottom: 1px solid rgba(148, 163, 184, .14);
+}
+
+.notif-detail-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(56,189,248,.14);
+  font-size: 1.1rem;
+}
+
+.notif-detail-icon.success { background: rgba(34,197,94,.14); }
+.notif-detail-icon.warning { background: rgba(245,158,11,.14); }
+.notif-detail-icon.danger  { background: rgba(239,68,68,.14); }
+.notif-detail-icon.info    { background: rgba(56,189,248,.14); }
+
+.notif-detail-kicker {
+  color: #38bdf8;
+  font-size: .7rem;
+  font-weight: 900;
+  margin-bottom: 4px;
+}
+
+.notif-detail h3 {
+  margin: 0;
+  color: #f8fafc;
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+.notif-detail-close {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(148, 163, 184, .18);
+  background: rgba(15, 23, 42, .72);
+  color: #e2e8f0;
+  cursor: pointer;
+}
+
+.notif-detail-body {
+  padding: 18px;
+  overflow-y: auto;
+  color: #dbeafe;
+  font-size: .88rem;
+  line-height: 1.85;
+  white-space: pre-wrap;
+}
+
+.notif-detail-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 18px;
+  border-top: 1px solid rgba(148, 163, 184, .14);
+  color: #94a3b8;
+  font-size: .74rem;
+}
+
+.notif-detail-foot button {
+  height: 36px;
+  min-width: 74px;
+  border-radius: 12px;
+  background: #0ea5e9;
+  color: #fff;
+  font-weight: 900;
+}
+
+@media (max-width: 520px) {
+  .notif-detail-overlay {
+    padding: 10px;
+    align-items: flex-end;
+  }
+  .notif-detail {
+    width: 100%;
+    max-height: 82vh;
+    border-radius: 22px 22px 0 0;
+  }
+}

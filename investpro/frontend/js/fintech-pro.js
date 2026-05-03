@@ -706,7 +706,7 @@ function _renderNotifList(targetId = 'notif-list') {
     return;
   }
   list.innerHTML = _notifs.map(n => `
-    <div class="notif-item ${n.unread ? 'unread' : ''}" onclick="markNotifRead('${n.id}')">
+    <div class="notif-item ${n.unread ? 'unread' : ''}" onclick="openNotifDetail('${n.id}')">
       <div class="notif-icon ${n.type}">${n.icon}</div>
       <div class="notif-content">
         <div class="notif-title">${_notifEscape(n.title)}</div>
@@ -754,6 +754,35 @@ function closeNotificationWindow(event) {
   const overlay = document.getElementById('notif-modal-overlay');
   overlay?.classList.remove('show');
   document.body.classList.remove('notif-modal-open');
+}
+
+function openNotifDetail(id) {
+  const n = _notifs.find(x => String(x.id) === String(id));
+  if (!n) return;
+  const wasUnread = Boolean(n.unread);
+  n.unread = false;
+  if (n.serverId) http.post('/system/notifications/read', { id: n.serverId }).catch(() => {});
+
+  const detail = document.getElementById('notif-detail-overlay');
+  if (!detail) return;
+  document.getElementById('notif-detail-icon').textContent = n.icon || '🔔';
+  document.getElementById('notif-detail-icon').className = `notif-detail-icon ${n.type || 'info'}`;
+  document.getElementById('notif-detail-kicker').textContent = wasUnread ? 'إشعار جديد' : 'إشعار';
+  document.getElementById('notif-detail-title').textContent = n.title || 'تفاصيل الإشعار';
+  document.getElementById('notif-detail-body').textContent = n.msg || '';
+  document.getElementById('notif-detail-time').textContent = n.time || 'الآن';
+
+  document.getElementById('notif-dropdown')?.classList.remove('show');
+  detail.classList.add('show');
+  document.body.classList.add('notif-detail-open');
+  _renderNotifBadge();
+  _renderOpenNotificationViews();
+}
+
+function closeNotifDetail(event) {
+  if (event && event.target !== event.currentTarget) return;
+  document.getElementById('notif-detail-overlay')?.classList.remove('show');
+  document.body.classList.remove('notif-detail-open');
 }
 
 function _renderOpenNotificationViews() {

@@ -85,6 +85,27 @@
   </div>
 </div>
 
+<!-- Notification Detail Reader -->
+<div class="notif-detail-overlay" id="notif-detail-overlay" onclick="closeNotifDetail(event)">
+  <div class="notif-detail" role="dialog" aria-modal="true" aria-labelledby="notif-detail-title">
+    <div class="notif-detail-head">
+      <div class="notif-detail-icon" id="notif-detail-icon">🔔</div>
+      <div>
+        <div class="notif-detail-kicker" id="notif-detail-kicker">إشعار</div>
+        <h3 id="notif-detail-title">تفاصيل الإشعار</h3>
+      </div>
+      <button type="button" class="notif-detail-close" onclick="closeNotifDetail()" aria-label="إغلاق">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="notif-detail-body" id="notif-detail-body"></div>
+    <div class="notif-detail-foot">
+      <span id="notif-detail-time">الآن</span>
+      <button type="button" onclick="closeNotifDetail()">تم</button>
+    </div>
+  </div>
+</div>
+
 <!-- Main Content Area -->
 <div class="main-content">
 
