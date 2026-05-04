@@ -193,6 +193,25 @@ img{max-width:100%}
 .footer-links a{font-size:.78rem;color:var(--text3);transition:color .2s}
 .footer-links a:hover{color:var(--text2)}
 .footer-copy{font-size:.72rem;color:var(--text3)}
+.footer-telegram{max-width:620px;margin:0 auto 22px;padding:18px;border:1px solid rgba(0,136,204,.28);border-radius:20px;background:linear-gradient(135deg,rgba(8,20,38,.96),rgba(8,30,46,.9));box-shadow:0 18px 42px rgba(0,0,0,.28)}
+.footer-telegram-title{font-size:1rem;font-weight:900;margin-bottom:6px;color:var(--text)}
+.footer-telegram-text{font-size:.8rem;color:var(--text2);line-height:1.7;margin-bottom:14px}
+.telegram-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:42px;padding:0 16px;border-radius:13px;background:#0088cc;color:#fff;font-size:.82rem;font-weight:900;box-shadow:0 10px 24px rgba(0,136,204,.28);transition:transform .2s ease,box-shadow .2s ease,filter .2s ease}
+.telegram-btn:hover{transform:translateY(-1px) scale(1.02);filter:brightness(1.08);box-shadow:0 0 24px rgba(0,136,204,.48)}
+.telegram-nav-btn{background:#0088cc;color:#fff;border-color:rgba(0,136,204,.55);box-shadow:0 8px 22px rgba(0,136,204,.22)}
+.telegram-nav-btn:hover{box-shadow:0 0 22px rgba(0,136,204,.42);background:#0099e6}
+.telegram-hero-card{max-width:980px;margin:0 auto;padding:24px;border:1px solid rgba(0,136,204,.28);border-radius:24px;background:radial-gradient(circle at top right,rgba(0,136,204,.22),transparent 36%),linear-gradient(135deg,#09172a,#0b2034);box-shadow:0 18px 55px rgba(0,0,0,.34)}
+.telegram-hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:20px;align-items:center}
+.telegram-kicker{display:inline-flex;align-items:center;gap:6px;margin-bottom:10px;padding:5px 12px;border-radius:999px;background:rgba(0,136,204,.14);color:#7dd3fc;font-size:.72rem;font-weight:900}
+.telegram-hero-title{font-size:clamp(1.25rem,3vw,2rem);font-weight:900;line-height:1.25;margin-bottom:10px}
+.telegram-hero-text{color:var(--text2);font-size:.9rem;line-height:1.8;margin-bottom:18px}
+.telegram-list{display:grid;gap:9px}
+.telegram-list div{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:14px;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.07);font-size:.82rem;color:var(--text2)}
+.telegram-list i{color:#38bdf8}
+.telegram-tips{margin-top:18px;padding:15px;border-radius:18px;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.16)}
+.telegram-tips-title{font-size:.88rem;font-weight:900;color:#86efac;margin-bottom:8px}
+.telegram-tips ul{list-style:none;display:grid;gap:7px;color:var(--text2);font-size:.8rem;line-height:1.7}
+.telegram-tips li::before{content:'✓';color:#22c55e;font-weight:900;margin-left:7px}
 
 /* ═══════════════════════════════════════════
    AUTH MODAL
@@ -228,11 +247,18 @@ img{max-width:100%}
 ═══════════════════════════════════════════ */
 @media(max-width:640px){
   .nav-links{display:none}
+  .nav{padding:0 14px}
+  .nav-btns{gap:7px}
+  .nav-btns .btn{padding:8px 10px;font-size:.74rem}
+  .nav-btns .telegram-nav-btn{display:none}
   .hero{padding:60px 20px 40px}
   .hero-stats{gap:20px}
   .hs-sep{display:none}
   .stats-inner{grid-template-columns:1fr 1fr}
   .section{padding:48px 20px}
+  .telegram-hero-grid{grid-template-columns:1fr}
+  .telegram-hero-card{padding:18px}
+  .telegram-btn{width:100%}
 }
 </style>
 </head>
@@ -256,8 +282,10 @@ img{max-width:100%}
     <a href="#plans">الخطط</a>
     <a href="#stats">الإحصائيات</a>
     <a href="#how">كيف يعمل</a>
+    <a href="#telegram">Telegram</a>
   </div>
   <div class="nav-btns">
+    <button class="btn btn-ghost telegram-nav-btn" onclick="window.open('https://t.me/InvestProai','_blank')"><i class="fab fa-telegram-plane"></i> Telegram</button>
     <button class="btn btn-ghost" onclick="openAuth('login')">دخول</button>
     <button class="btn btn-primary" onclick="openAuth('register')">ابدأ مجاناً</button>
   </div>
@@ -272,6 +300,7 @@ img{max-width:100%}
   <div class="hero-btns">
     <button class="btn btn-primary btn-lg" onclick="openAuth('register')"><i class="fas fa-rocket"></i> ابدأ مجاناً</button>
     <button class="btn btn-ghost btn-lg" onclick="openAuth('login')"><i class="fas fa-sign-in-alt"></i> تسجيل الدخول</button>
+    <button class="btn btn-ghost btn-lg telegram-nav-btn" onclick="window.open('https://t.me/InvestProai','_blank')"><i class="fab fa-telegram-plane"></i> انضم إلى Telegram</button>
   </div>
   <div class="hero-stats">
     <div class="hs-item"><div class="hs-val" id="hs-users">1,200+</div><div class="hs-lbl">مستثمر نشط</div></div>
@@ -281,6 +310,42 @@ img{max-width:100%}
     <div class="hs-item"><div class="hs-val" id="hs-profits">$89K+</div><div class="hs-lbl">أرباح موزّعة</div></div>
     <div class="hs-sep"></div>
     <div class="hs-item"><div class="hs-val">12+</div><div class="hs-lbl">دولة</div></div>
+  </div>
+</section>
+
+<!-- ═══════════════ TELEGRAM COMMUNITY ═══════════════ -->
+<section class="section" id="telegram">
+  <div class="telegram-hero-card reveal">
+    <div class="telegram-hero-grid">
+      <div>
+        <div class="telegram-kicker"><i class="fab fa-telegram-plane"></i> مجتمع InvestPro الرسمي</div>
+        <div class="telegram-hero-title">📢 تابع آخر الأخبار عبر Telegram</div>
+        <div class="telegram-hero-text">
+          انضم إلى كروب InvestPro باش توصلك تحديثات المنصة، أخبار السوق، تنبيهات الأرباح، وفرص الاستثمار الجديدة في الوقت المناسب.
+        </div>
+        <button type="button" class="telegram-btn" onclick="window.open('https://t.me/InvestProai','_blank')">
+          <i class="fab fa-telegram-plane"></i>
+          انضم الآن إلى Telegram
+        </button>
+      </div>
+      <div>
+        <div class="telegram-list">
+          <div><i class="fas fa-bell"></i><span>آخر تحديثات المنصة والتنبيهات المهمة</span></div>
+          <div><i class="fas fa-chart-line"></i><span>أخبار السوق Crypto / Gold / Stocks</span></div>
+          <div><i class="fas fa-wallet"></i><span>شرح الإيداع، السحب، والمحفظة خطوة بخطوة</span></div>
+          <div><i class="fas fa-users"></i><span>متابعة الإحالة ونصائح استخدام المنصة</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="telegram-tips">
+      <div class="telegram-tips-title">نصائح عند دخول الكروب</div>
+      <ul>
+        <li>اقرأ الرسائل المثبتة أولاً لمعرفة آخر التحديثات والقواعد.</li>
+        <li>لا ترسل كلمة المرور أو رموز التحقق لأي شخص داخل أو خارج الكروب.</li>
+        <li>اعتمد فقط على الروابط الرسمية التي تنشرها إدارة InvestPro.</li>
+        <li>إذا احتجت مساعدة، اكتب مشكلتك بوضوح مع رقم العملية إن وجد.</li>
+      </ul>
+    </div>
   </div>
 </section>
 
@@ -510,6 +575,16 @@ img{max-width:100%}
 <!-- ═══════════════ FOOTER ═══════════════ -->
 <footer class="footer">
   <div class="footer-logo">💎 <span>InvestPro</span></div>
+  <div class="footer-telegram">
+    <div class="footer-telegram-title">📢 تابع آخر الأخبار عبر Telegram</div>
+    <div class="footer-telegram-text">
+      انضم إلى مجموعتنا للحصول على آخر تحديثات المنصة، إشعارات الأرباح، فرص استثمار جديدة، وأخبار السوق Crypto / Gold / Stocks.
+    </div>
+    <button type="button" class="telegram-btn" onclick="window.open('https://t.me/InvestProai','_blank')">
+      <i class="fab fa-telegram-plane"></i>
+      انضم الآن إلى Telegram
+    </button>
+  </div>
   <div class="footer-links">
     <a href="terms.html">الشروط والأحكام</a>
     <a href="privacy.html">الخصوصية</a>

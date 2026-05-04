@@ -929,3 +929,32 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }, 600);
 });
+
+const TELEGRAM_GROUP_URL = 'https://t.me/InvestProai';
+
+function openTelegramGroup() {
+  window.open(TELEGRAM_GROUP_URL, '_blank');
+  try { localStorage.setItem('investpro_telegram_popup_seen', '1'); } catch (_) {}
+  closeTelegramPopup();
+}
+
+function closeTelegramPopup(event) {
+  if (event && event.target !== event.currentTarget) return;
+  document.getElementById('telegram-popup')?.classList.remove('show');
+}
+
+function maybeShowTelegramPopup() {
+  const popup = document.getElementById('telegram-popup');
+  if (!popup) return;
+  try {
+    if (localStorage.getItem('investpro_telegram_popup_seen') === '1') return;
+    localStorage.setItem('investpro_telegram_popup_seen', '1');
+  } catch (_) {}
+  setTimeout(() => popup.classList.add('show'), 1800);
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', maybeShowTelegramPopup);
+} else {
+  maybeShowTelegramPopup();
+}

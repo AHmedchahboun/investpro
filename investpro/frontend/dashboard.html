@@ -85,6 +85,14 @@
         </button>
       </div>
     </div>
+    <div class="telegram-card telegram-card-notif">
+      <div class="telegram-icon"><i class="fab fa-telegram-plane"></i></div>
+      <div class="telegram-body">
+        <div class="telegram-title">📢 تابع آخر الأخبار عبر Telegram</div>
+        <div class="telegram-text">تحديثات المنصة، تنبيهات الأرباح، فرص جديدة، وأخبار السوق في مكان واحد.</div>
+      </div>
+      <button type="button" class="telegram-btn telegram-btn-small" onclick="openTelegramGroup()">انضم الآن</button>
+    </div>
     <div class="notif-modal-list" id="notif-modal-list"></div>
   </div>
 </div>
@@ -257,6 +265,22 @@
 
     <!-- Smart State Banner -->
     <div id="dash-state-banner" class="dash-state-banner new-user" style="display:none"></div>
+
+    <!-- Telegram Community -->
+    <div class="telegram-card telegram-card-dashboard mb-6">
+      <div class="telegram-icon"><i class="fab fa-telegram-plane"></i></div>
+      <div class="telegram-body">
+        <div class="telegram-badge">انضم الآن وابقَ على اطلاع</div>
+        <div class="telegram-title">📢 تابع آخر الأخبار عبر Telegram</div>
+        <div class="telegram-text">
+          انضم إلى مجموعتنا للحصول على آخر تحديثات المنصة، إشعارات الأرباح، فرص استثمار جديدة، وأخبار السوق Crypto / Gold / Stocks.
+        </div>
+      </div>
+      <button type="button" class="telegram-btn" onclick="openTelegramGroup()">
+        <i class="fab fa-telegram-plane"></i>
+        <span>انضم الآن إلى Telegram</span>
+      </button>
+    </div>
 
     <!-- Platform Stats -->
     <div class="section-title">إحصائيات المنصة</div>
@@ -1001,6 +1025,23 @@
       </div>
     </div>
 
+    <!-- About Platform / Telegram -->
+    <div class="section-title">حول المنصة</div>
+    <div class="telegram-card telegram-card-about mb-6">
+      <div class="telegram-icon"><i class="fab fa-telegram-plane"></i></div>
+      <div class="telegram-body">
+        <div class="telegram-badge">مجتمع InvestPro الرسمي</div>
+        <div class="telegram-title">📢 تابع آخر الأخبار عبر Telegram</div>
+        <div class="telegram-text">
+          ننشر في المجموعة أخبار المنصة، تحديثات النظام، فرص الاستثمار الجديدة، وتنبيهات السوق Crypto / Gold / Stocks حتى تبقى قريباً من كل جديد.
+        </div>
+      </div>
+      <button type="button" class="telegram-btn" onclick="openTelegramGroup()">
+        <i class="fab fa-telegram-plane"></i>
+        <span>انضم الآن إلى Telegram</span>
+      </button>
+    </div>
+
     <!-- Referrals Stats -->
     <div class="section-title">إحصائيات الإحالة</div>
     <div class="stats-grid mb-6">
@@ -1214,6 +1255,25 @@
     <span class="nav-label">حسابي</span>
   </div>
 </nav>
+
+<!-- Telegram Join Popup -->
+<div class="telegram-popup-overlay" id="telegram-popup" onclick="closeTelegramPopup(event)">
+  <div class="telegram-popup" role="dialog" aria-modal="true" aria-labelledby="telegram-popup-title">
+    <button type="button" class="telegram-popup-close" onclick="closeTelegramPopup()" aria-label="إغلاق">
+      <i class="fas fa-times"></i>
+    </button>
+    <div class="telegram-popup-icon"><i class="fab fa-telegram-plane"></i></div>
+    <div class="telegram-badge">انضم الآن وابقَ على اطلاع</div>
+    <h3 id="telegram-popup-title">📢 تابع آخر الأخبار عبر Telegram</h3>
+    <p>
+      احصل على آخر تحديثات المنصة، إشعارات الأرباح، فرص استثمار جديدة، وأخبار السوق Crypto / Gold / Stocks مباشرة من مجتمع InvestPro.
+    </p>
+    <button type="button" class="telegram-btn telegram-popup-btn" onclick="openTelegramGroup()">
+      <i class="fab fa-telegram-plane"></i>
+      <span>انضم الآن إلى Telegram</span>
+    </button>
+  </div>
+</div>
 
 <!-- VIP Purchase Modal -->
 <div class="vip-modal-overlay" id="vip-modal">
