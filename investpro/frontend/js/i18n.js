@@ -234,14 +234,21 @@
     const style = document.createElement('style');
     style.id = 'investpro-i18n-style';
     style.textContent = `
-      .lang-switcher{display:inline-flex;align-items:center;gap:4px;padding:3px;border:1px solid rgba(255,255,255,.08);border-radius:999px;background:rgba(255,255,255,.055)}
+      .lang-switcher{display:inline-flex;align-items:center;gap:4px;padding:3px;border:1px solid rgba(255,255,255,.08);border-radius:999px;background:rgba(255,255,255,.055);flex:0 0 auto}
       .lang-switcher button{min-width:34px;height:30px;border-radius:999px;background:transparent;color:#94a3b8;font-size:.72rem;font-weight:800;transition:all .2s ease}
       .lang-switcher button.active{background:#0088cc;color:#fff;box-shadow:0 8px 18px rgba(0,136,204,.28)}
+      .top-lang-slot{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:2}
+      html[dir="rtl"] .top-lang-slot{left:50%;right:auto}
+      .top-lang-slot .lang-switcher{background:rgba(15,23,42,.92);box-shadow:0 10px 26px rgba(0,0,0,.24)}
       html[dir="ltr"] body{direction:ltr}
       html[dir="ltr"] .nav,html[dir="ltr"] .top-bar,html[dir="ltr"] .hero,html[dir="ltr"] .section,html[dir="ltr"] .footer{text-align:left}
       html[dir="ltr"] .hero,html[dir="ltr"] .footer{text-align:center}
       html[dir="ltr"] .telegram-list div,html[dir="ltr"] .hiw-step,html[dir="ltr"] .trust-card{text-align:left}
-      @media(max-width:640px){.lang-switcher button{min-width:30px;height:28px;font-size:.68rem}}
+      @media(max-width:640px){
+        .top-lang-slot{top:43px;left:50%;transform:translateX(-50%)}
+        .top-lang-slot .lang-switcher{padding:2px;gap:2px}
+        .lang-switcher button{min-width:30px;height:26px;font-size:.65rem}
+      }
     `;
     document.head.appendChild(style);
   }
@@ -267,9 +274,10 @@
       setLanguage(btn.dataset.lang);
     });
 
+    const slot = document.getElementById('dashboard-lang-slot');
     const nav = document.querySelector('.nav-btns');
     const top = document.querySelector('.top-bar .flex');
-    const target = nav || top || document.body;
+    const target = slot || nav || top || document.body;
     target.prepend(wrap);
   }
 
