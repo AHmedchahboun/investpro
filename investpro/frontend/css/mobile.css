@@ -54,22 +54,6 @@ body {
   height: 60px;
 }
 
-.top-lang-slot {
-  pointer-events: auto;
-}
-
-@media (max-width: 640px) {
-  .top-bar {
-    height: 76px;
-    align-items: flex-start;
-    padding-top: 10px;
-  }
-
-  .top-bar > div:last-child {
-    margin-top: 0;
-  }
-}
-
 .user-profile {
   display: flex;
   align-items: center;
