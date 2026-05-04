@@ -1,138 +1,126 @@
-# 💎 InvestPro — منصة الاستثمار الرقمي
+# InvestPro
 
-منصة استثمار رقمية متكاملة تتيح للمستخدمين إيداع USDT، اختيار خطط VIP، ومتابعة الأرباح اليومية مع نظام إحالة متعدد المستويات.
+InvestPro is a Node.js + static frontend platform with:
 
----
+- User registration and login.
+- Wallet, deposit, withdraw, VIP plans, and referral flow.
+- Admin dashboard.
+- Telegram support bot.
+- AI support assistant with Gemini/OpenAI support and local fallback replies.
+- Static frontend that can be hosted on Netlify, Hostinger, InfinityFree, or any basic web hosting.
 
-## 🛠 التقنيات المستخدمة
+## Recommended Production Setup
 
-| الطبقة | التقنية |
-|--------|---------|
-| Frontend | HTML5 · CSS3 · Vanilla JS · PWA |
-| Backend | Node.js · Express.js |
-| Database | MongoDB (Mongoose) |
-| Auth | JWT (jsonwebtoken) |
-| Hosting | Render (backend) · Netlify (frontend) |
+Use this split:
 
----
+- Backend: Render
+- Database: MongoDB Atlas
+- Frontend: Netlify, Hostinger, InfinityFree, or Cloudflare Pages
+- Telegram bot webhook: Render backend
 
-## 📁 هيكل المشروع
+## Project Structure
 
-```
+```text
 investpro/
-├── backend/
-│   ├── config/          # DB connection, VIP config, seed
-│   ├── jobs/            # Cron jobs (hourly rewards, referral commissions)
-│   ├── middleware/       # Auth, rate limiting, validation
-│   ├── models/          # User, Wallet, Transaction (Mongoose)
-│   ├── routes/          # auth, wallet, vip, admin, system
-│   ├── utils/           # Validation helpers
-│   ├── server.js        # Express entry point
-│   ├── .env.example     # Environment variables template
-│   └── package.json
-├── frontend/
-│   ├── css/             # Modular stylesheets
-│   ├── js/              # api.js, fintech-pro.js, config.js
-│   ├── index.html       # Landing page
-│   ├── dashboard.html   # Main app (SPA-style)
-│   ├── admin.html       # Admin panel
-│   ├── sw.js            # Service Worker (PWA)
-│   └── manifest.json    # PWA manifest
-├── netlify.toml         # Netlify frontend config
-├── render.yaml          # Render backend config
-├── .gitignore
-└── README.md
+  backend/                  Node.js Express API
+    config/                 Database and platform configuration
+    jobs/                   Scheduled reward jobs
+    middleware/             Auth, validation, rate limiting
+    models/                 Mongoose models
+    routes/                 API routes
+    scripts/                Local helper scripts
+    utils/                  Shared backend helpers
+    server.js               API entrypoint
+    .env.example            Backend environment template
+
+  frontend/                 Static website files
+    css/                    Stylesheets
+    js/                     Browser scripts and API client
+    index.html              Landing page
+    dashboard.html          User dashboard
+    admin.html              Admin panel
+    support.html            AI/support page
+    .htaccess               Apache hosting fallback
+
+  docs/                     Deployment and maintenance docs
+  scripts/                  Project packaging scripts
+  render.yaml               Render backend blueprint
+  netlify.toml              Netlify static frontend config
+  package.json              Convenience commands
 ```
 
----
+## Local Development
 
-## ⚡ التشغيل المحلي
+Requirements:
 
-### المتطلبات
 - Node.js 18+
-- MongoDB (local أو Atlas)
+- MongoDB local or Atlas
 
-### 1. استنساخ المشروع
-```bash
-git clone https://github.com/YOUR_USERNAME/investpro.git
-cd investpro
-```
-
-### 2. إعداد Backend
 ```bash
 cd backend
 cp .env.example .env
-# عدّل .env بقيمك الحقيقية
 npm install
 npm run dev
 ```
 
-### 3. إنشاء حساب Admin (مرة واحدة)
-```bash
-npm run seed
-```
+Open:
 
-### 4. فتح الموقع
-```
+```text
 http://localhost:5000
 ```
 
----
+## Production Backend
 
-## 🚀 النشر على الاستضافة
+Render settings:
 
-### Backend → Render
+```text
+Root Directory: backend
+Build Command: npm install
+Start Command: npm start
+Health Check Path: /api/health
+```
 
-1. أنشئ Web Service جديد على [render.com](https://render.com)
-2. اربطه بـ GitHub repo
-3. اضبط:
-   - **Root Directory:** `backend`
-   - **Build Command:** `npm install`
-   - **Start Command:** `npm start`
-4. أضف متغيرات البيئة من `.env.example`
+Required environment variables are documented in:
 
-### Frontend → Netlify
+```text
+docs/deployment/ENVIRONMENT.md
+```
 
-1. اربط الـ repo على [netlify.com](https://netlify.com)
-2. اضبط:
-   - **Base directory:** `investpro`
-   - **Publish directory:** `frontend`
-3. عدّل `frontend/js/config.js`:
-   ```js
-   window._BACKEND_URL = 'https://your-render-app.onrender.com';
-   ```
+## Static Frontend Hosting
 
----
+The frontend is static. To create a clean upload package:
 
-## 🔐 متغيرات البيئة المطلوبة
+```powershell
+npm run package:frontend
+```
 
-انظر [`backend/.env.example`](backend/.env.example) للقائمة الكاملة.
+Output:
 
-المتغيرات الأساسية:
+```text
+outputs/hosting-public_html/
+outputs/hosting-public_html.zip
+```
 
-| المتغير | الوصف |
-|---------|-------|
-| `MONGODB_URI` | رابط قاعدة البيانات |
-| `JWT_SECRET` | مفتاح تشفير 64 حرف عشوائي |
-| `ADMIN_EMAIL` | إيميل حساب الأدمن |
-| `ADMIN_PASSWORD` | كلمة مرور الأدمن |
-| `SITE_URL` | رابط الموقع الكامل |
+Upload the contents of `hosting-public_html` to:
 
----
+- `public_html` on Hostinger.
+- `htdocs` on InfinityFree.
+- Publish directory on any static host.
 
-## 📊 الميزات الرئيسية
+Important: `index.html` must be directly inside the hosting root.
 
-- ✅ تسجيل / دخول بـ JWT
-- ✅ خطط VIP (تدريب / برونزي / فضي / ذهبي / ماسي)
-- ✅ أرباح ساعية تلقائية (Cron)
-- ✅ نظام إحالة 3 مستويات (15% / 10% / 5%)
-- ✅ إيداع وسحب USDT (TRC20 / BEP20 / Polygon)
-- ✅ لوحة أدمن كاملة
-- ✅ PWA (قابل للتثبيت على الهاتف)
-- ✅ Dark Mode
+## Documentation
 
----
+- `docs/PROJECT_STRUCTURE.md`
+- `docs/deployment/DEPLOYMENT.md`
+- `docs/deployment/ENVIRONMENT.md`
+- `docs/deployment/STATIC_HOSTING.md`
+- `docs/deployment/TELEGRAM_SUPPORT_BOT.md`
 
-## 📄 الترخيص
+## Security Notes
 
-© 2026 InvestPro. جميع الحقوق محفوظة.
+- Never commit `.env`.
+- Never expose Telegram, Gemini, OpenAI, MongoDB, or JWT secrets in frontend files.
+- Put secrets only in Render environment variables.
+- If any secret was shared publicly, revoke it and create a new one.
+

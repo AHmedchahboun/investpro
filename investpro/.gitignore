@@ -45,3 +45,8 @@ coverage/
 .cache/
 .parcel-cache/
 *.tgz
+
+# Deployment packages generated locally
+deploy/
+release/
+hosting-public_html/
