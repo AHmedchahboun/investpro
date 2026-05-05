@@ -303,7 +303,7 @@ function _renderDashStateBanner() {
     // New user — no deposit yet
     el.className = 'dash-state-banner new-user';
     el.innerHTML = `
-      <div class="dash-state-banner-icon">🚀</div>
+      <div class="dash-state-banner-icon"><i class="fas fa-rocket"></i></div>
       <div class="dash-state-banner-text">
         <div class="dash-state-banner-title">ابدأ رحلتك الاستثمارية</div>
         <div class="dash-state-banner-sub">أودع أول مبلغ لتفعيل حسابك</div>
@@ -313,7 +313,7 @@ function _renderDashStateBanner() {
     // Has balance but no VIP
     el.className = 'dash-state-banner has-balance';
     el.innerHTML = `
-      <div class="dash-state-banner-icon">👑</div>
+      <div class="dash-state-banner-icon"><i class="fas fa-crown"></i></div>
       <div class="dash-state-banner-text">
         <div class="dash-state-banner-title">فعّل خطة VIP</div>
         <div class="dash-state-banner-sub">رصيدك جاهز — ابدأ تحقيق أرباح يومية</div>
@@ -324,7 +324,7 @@ function _renderDashStateBanner() {
     const daily = _dailyProfit();
     el.className = 'dash-state-banner active-vip';
     el.innerHTML = `
-      <div class="dash-state-banner-icon">📈</div>
+      <div class="dash-state-banner-icon"><i class="fas fa-chart-line"></i></div>
       <div class="dash-state-banner-text">
         <div class="dash-state-banner-title">حسابك نشط</div>
         <div class="dash-state-banner-sub">ربح يومي متوقع: +$${daily.toFixed(2)}</div>
@@ -612,23 +612,23 @@ function _notifEscape(value) {
 }
 
 const TX_NOTIF_MAP = {
-  deposit:          { type: 'success', icon: '✅', title: 'إيداع معتمد'      },
-  withdraw:         { type: 'warning', icon: '💸', title: 'سحب معتمد'        },
-  daily_profit:     { type: 'info',    icon: '⭐', title: 'ربح يومي'          },
-  daily_bonus:      { type: 'info',    icon: '🎁', title: 'مكافأة يومية'      },
-  training_reward:  { type: 'info',    icon: '📚', title: 'مكافأة تدريب'      },
-  vip_purchase:     { type: 'success', icon: '👑', title: 'تفعيل VIP'         },
-  referral_l1:      { type: 'success', icon: '👥', title: 'عمولة إحالة L1'    },
-  referral_l2:      { type: 'success', icon: '🔗', title: 'عمولة إحالة L2'    },
-  signup_bonus:     { type: 'success', icon: '🎉', title: 'مكافأة تسجيل'      },
-  admin_credit:     { type: 'success', icon: '💰', title: 'إضافة إدارية'      },
-  admin_debit:      { type: 'danger',  icon: '⚠️', title: 'خصم إداري'        },
+  deposit:          { type: 'success', icon: '<i class="fas fa-circle-check"></i>', title: 'إيداع معتمد'      },
+  withdraw:         { type: 'warning', icon: '<i class="fas fa-money-bill-transfer"></i>', title: 'سحب معتمد'        },
+  daily_profit:     { type: 'info',    icon: '<i class="fas fa-star"></i>', title: 'ربح يومي'          },
+  daily_bonus:      { type: 'info',    icon: '<i class="fas fa-gift"></i>', title: 'مكافأة يومية'      },
+  training_reward:  { type: 'info',    icon: '<i class="fas fa-book-open"></i>', title: 'مكافأة تدريب'      },
+  vip_purchase:     { type: 'success', icon: '<i class="fas fa-crown"></i>', title: 'تفعيل VIP'         },
+  referral_l1:      { type: 'success', icon: '<i class="fas fa-users"></i>', title: 'عمولة إحالة L1'    },
+  referral_l2:      { type: 'success', icon: '<i class="fas fa-link"></i>', title: 'عمولة إحالة L2'    },
+  signup_bonus:     { type: 'success', icon: '<i class="fas fa-circle-check"></i>', title: 'مكافأة تسجيل'      },
+  admin_credit:     { type: 'success', icon: '<i class="fas fa-sack-dollar"></i>', title: 'إضافة إدارية'      },
+  admin_debit:      { type: 'danger',  icon: '<i class="fas fa-triangle-exclamation"></i>', title: 'خصم إداري'        },
 };
 
 function _buildNotificationsFromTx() {
   const recent = _state.transactions.slice(0, 8);
   _notifs = recent.map((tx, i) => {
-    const map  = TX_NOTIF_MAP[tx.type] || { type:'info', icon:'🔔', title: tx.type };
+    const map  = TX_NOTIF_MAP[tx.type] || { type:'info', icon:'<i class="fas fa-bell"></i>', title: tx.type };
     const sign = ['deposit','daily_profit','daily_bonus','training_reward',
                   'referral_l1','referral_l2','signup_bonus','admin_credit'].includes(tx.type) ? '+' : '-';
     return {
@@ -644,7 +644,7 @@ function _buildNotificationsFromTx() {
 
   if (!_notifs.length) {
     _notifs = [{
-      id: 1, type: 'info', icon: '👋', title: 'مرحباً بك!',
+      id: 1, type: 'info', icon: '<i class="fas fa-hand"></i>', title: 'مرحباً بك!',
       msg: 'قم بإيداع أول مبلغ لبدء رحلتك الاستثمارية',
       time: 'الآن', unread: true,
     }];
@@ -654,13 +654,13 @@ function _buildNotificationsFromTx() {
 }
 
 const SERVER_NOTIF_MAP = {
-  system:   { icon: '⚙️', type: 'info' },
-  profit:   { icon: '📈', type: 'info' },
-  deposit:  { icon: '💳', type: 'success' },
-  withdraw: { icon: '💸', type: 'warning' },
-  referral: { icon: '👥', type: 'success' },
-  vip:      { icon: '👑', type: 'success' },
-  support:  { icon: '💬', type: 'info' },
+  system:   { icon: '<i class="fas fa-gear"></i>', type: 'info' },
+  profit:   { icon: '<i class="fas fa-chart-line"></i>', type: 'info' },
+  deposit:  { icon: '<i class="fas fa-credit-card"></i>', type: 'success' },
+  withdraw: { icon: '<i class="fas fa-money-bill-transfer"></i>', type: 'warning' },
+  referral: { icon: '<i class="fas fa-users"></i>', type: 'success' },
+  vip:      { icon: '<i class="fas fa-crown"></i>', type: 'success' },
+  support:  { icon: '<i class="fas fa-comments"></i>', type: 'info' },
 };
 
 async function _loadServerNotifications() {
@@ -702,7 +702,7 @@ function _renderNotifList(targetId = 'notif-list') {
   const list = document.getElementById(targetId);
   if (!list) return;
   if (!_notifs.length) {
-    list.innerHTML = '<div class="notif-empty">🔔 لا توجد إشعارات</div>';
+    list.innerHTML = '<div class="notif-empty"><i class="fas fa-bell"></i> لا توجد إشعارات</div>';
     return;
   }
   list.innerHTML = _notifs.map(n => `
@@ -759,7 +759,7 @@ function openNotifDetail(id) {
 
   const detail = document.getElementById('notif-detail-overlay');
   if (!detail) return;
-  document.getElementById('notif-detail-icon').textContent = n.icon || '🔔';
+  document.getElementById('notif-detail-icon').innerHTML = n.icon || '<i class="fas fa-bell"></i>';
   document.getElementById('notif-detail-icon').className = `notif-detail-icon ${n.type || 'info'}`;
   document.getElementById('notif-detail-kicker').textContent = wasUnread ? 'إشعار جديد' : 'إشعار';
   document.getElementById('notif-detail-title').textContent = n.title || 'تفاصيل الإشعار';
@@ -802,8 +802,8 @@ function markAllRead() {
 }
 
 function pushNotif(type, title, msg) {
-  const icons = { success:'✅', warning:'⚠️', danger:'❌', info:'ℹ️' };
-  _notifs.unshift({ id: Date.now(), type, icon: icons[type]||'🔔', title, msg, time: 'الآن', unread: true });
+  const icons = { success:'<i class="fas fa-circle-check"></i>', warning:'<i class="fas fa-triangle-exclamation"></i>', danger:'<i class="fas fa-xmark"></i>', info:'<i class="fas fa-circle-info"></i>' };
+  _notifs.unshift({ id: Date.now(), type, icon: icons[type]||'<i class="fas fa-bell"></i>', title, msg, time: 'الآن', unread: true });
   _renderNotifBadge();
 }
 
@@ -907,7 +907,7 @@ function initTheme() {
 function applyTheme(theme) {
   document.body.classList.toggle('dark-mode', theme === 'dark');
   const icon = document.getElementById('theme-icon');
-  if (icon) icon.textContent = theme === 'dark' ? '☀️' : '🌙';
+  if (icon) icon.innerHTML = theme === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
   localStorage.setItem('theme', theme);
 }
 

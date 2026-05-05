@@ -1,52 +1,49 @@
-# ── Dependencies ──────────────────────────────
+# Dependencies
 node_modules/
 **/node_modules/
 
-# ── Environment secrets ────────────────────────
+# Environment secrets
 .env
 **/.env
+!.env.example
 !**/.env.example
 
-# ── Build output ───────────────────────────────
+# Runtime files
+*.log
+*.pid
+pids/
+logs/
+
+# Build output
 dist/
 build/
 .next/
 out/
 
-# ── OS files ───────────────────────────────────
+# Local deployment packages
+deploy/
+release/
+hosting-public_html/
+*-Hosting-Ready/
+*-Full-Hosting-PHP/
+*.zip
+
+# OS files
 .DS_Store
 Thumbs.db
 desktop.ini
 
-# ── Editor / IDE ───────────────────────────────
-.vscode/settings.json
+# Editors
 .idea/
+.vscode/settings.json
 *.swp
 *.swo
 *.suo
 
-# ── Logs ───────────────────────────────────────
-logs/
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# ── Runtime ────────────────────────────────────
-pids/
-*.pid
-*.seed
-
-# ── Coverage ───────────────────────────────────
+# Test / coverage
 coverage/
 .nyc_output/
 
-# ── Misc ───────────────────────────────────────
+# Tool caches
 .cache/
 .parcel-cache/
-*.tgz
-
-# Deployment packages generated locally
-deploy/
-release/
-hosting-public_html/

@@ -140,7 +140,12 @@ const _toastWrap = (() => {
 
 function toast(msg, type = 'i', duration = 3500) {
   const typeMap = { s: 'toast-s', e: 'toast-e', i: 'toast-i', w: 'toast-w' };
-  const icons   = { s: '✓', e: '✕', i: 'ℹ', w: '⚠' };
+  const icons   = {
+    s: '<i class="fas fa-check"></i>',
+    e: '<i class="fas fa-xmark"></i>',
+    i: '<i class="fas fa-circle-info"></i>',
+    w: '<i class="fas fa-triangle-exclamation"></i>',
+  };
   const el = document.createElement('div');
   el.className = `toast ${typeMap[type] || 'toast-i'}`;
   el.innerHTML = `<span>${icons[type] || 'ℹ'}</span><span>${String(msg || '').substring(0, 200)}</span>`;
@@ -196,18 +201,18 @@ const statusBadge = {
 
 /* ---- Transaction type labels ---- */
 const txLabel = {
-  deposit:         { icon: '⬇', lbl: 'إيداع',          color: 'var(--green)',  sign: '+' },
-  withdraw:        { icon: '⬆', lbl: 'سحب',             color: 'var(--red)',    sign: '-' },
-  daily_profit:    { icon: '⭐', lbl: 'ربح يومي',        color: 'var(--gold)',   sign: '+' },
-  daily_bonus:     { icon: '🎁', lbl: 'مكافأة يومية',    color: 'var(--teal)',   sign: '+' },
-  training_reward: { icon: '📚', lbl: 'مكافأة تدريب',    color: 'var(--teal)',   sign: '+' },
-  vip_purchase:    { icon: '👑', lbl: 'شراء VIP',        color: 'var(--purple)', sign: '-' },
-  referral_l1:     { icon: '👥', lbl: 'عمولة إحالة L1',  color: 'var(--blue)',   sign: '+' },
-  referral_l2:     { icon: '👥', lbl: 'عمولة إحالة L2',  color: 'var(--blue)',   sign: '+' },
-  referral_l3:     { icon: '👥', lbl: 'عمولة إحالة L3',  color: 'var(--blue)',   sign: '+' },
-  signup_bonus:    { icon: '🎁', lbl: 'مكافأة تسجيل',   color: 'var(--green)',  sign: '+' },
-  admin_credit:    { icon: '💰', lbl: 'إضافة إدارية',   color: 'var(--green)',  sign: '+' },
-  admin_debit:     { icon: '💸', lbl: 'خصم إداري',      color: 'var(--red)',    sign: '-' },
+  deposit:         { icon: '<i class="fas fa-arrow-down"></i>', lbl: 'إيداع',          color: 'var(--green)',  sign: '+' },
+  withdraw:        { icon: '<i class="fas fa-arrow-up"></i>', lbl: 'سحب',             color: 'var(--red)',    sign: '-' },
+  daily_profit:    { icon: '<i class="fas fa-star"></i>', lbl: 'ربح يومي',        color: 'var(--gold)',   sign: '+' },
+  daily_bonus:     { icon: '<i class="fas fa-gift"></i>', lbl: 'مكافأة يومية',    color: 'var(--teal)',   sign: '+' },
+  training_reward: { icon: '<i class="fas fa-book-open"></i>', lbl: 'مكافأة تدريب',    color: 'var(--teal)',   sign: '+' },
+  vip_purchase:    { icon: '<i class="fas fa-crown"></i>', lbl: 'شراء VIP',        color: 'var(--purple)', sign: '-' },
+  referral_l1:     { icon: '<i class="fas fa-users"></i>', lbl: 'عمولة إحالة L1',  color: 'var(--blue)',   sign: '+' },
+  referral_l2:     { icon: '<i class="fas fa-users"></i>', lbl: 'عمولة إحالة L2',  color: 'var(--blue)',   sign: '+' },
+  referral_l3:     { icon: '<i class="fas fa-users"></i>', lbl: 'عمولة إحالة L3',  color: 'var(--blue)',   sign: '+' },
+  signup_bonus:    { icon: '<i class="fas fa-gift"></i>', lbl: 'مكافأة تسجيل',   color: 'var(--green)',  sign: '+' },
+  admin_credit:    { icon: '<i class="fas fa-sack-dollar"></i>', lbl: 'إضافة إدارية',   color: 'var(--green)',  sign: '+' },
+  admin_debit:     { icon: '<i class="fas fa-money-bill-transfer"></i>', lbl: 'خصم إداري',      color: 'var(--red)',    sign: '-' },
 };
 
 /* ---- XSS-safe HTML escaper ---- */

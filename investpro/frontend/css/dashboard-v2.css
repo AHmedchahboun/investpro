@@ -274,7 +274,7 @@
   display: flex; align-items: flex-start; gap: 8px;
 }
 .dep-danger-list li::before {
-  content: '⚠'; font-size: 0.7rem; margin-top: 1px; flex-shrink: 0;
+  content: '!'; font-size: 0.7rem; margin-top: 1px; flex-shrink: 0;
 }
 
 /* ── Address Display Box ─────────────────────────────────── */

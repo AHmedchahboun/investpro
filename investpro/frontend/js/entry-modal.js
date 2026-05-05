@@ -35,7 +35,7 @@
     overlay.innerHTML = `
       <div class="entry-modal-box">
         <div class="entry-modal-header">
-          <h2 class="entry-modal-title" id="entry-modal-title">👋 مرحباً بك في ${PLATFORM_NAME}</h2>
+          <h2 class="entry-modal-title" id="entry-modal-title"><i class="fas fa-hand"></i> مرحباً بك في ${PLATFORM_NAME}</h2>
           <p class="entry-modal-subtitle">نظام استثمار رقمي ذكي يعتمد على تقنيات متقدمة لتحليل الأسواق وإدارة المحافظ المالية بكفاءة عالية.</p>
         </div>
         <div class="entry-modal-body">
@@ -62,10 +62,10 @@
             <h3>الشروط</h3>
             <ul>
               <li>⚖️ استخدام المنصة يعني الموافقة على جميع الشروط</li>
-              <li>🔐 جميع العمليات تتم ضمن نظام آمن ومراقب</li>
-              <li>💰 الأرباح تعتمد على أداء النظام والخطة المختارة</li>
-              <li>❌ يمنع إنشاء حسابات مزيفة</li>
-              <li>🚫 أي تلاعب يؤدي إلى إيقاف الحساب فوراً</li>
+              <li><i class="fas fa-user-shield"></i> جميع العمليات تتم ضمن نظام آمن ومراقب</li>
+              <li><i class="fas fa-sack-dollar"></i> الأرباح تعتمد على أداء النظام والخطة المختارة</li>
+              <li><i class="fas fa-xmark"></i> يمنع إنشاء حسابات مزيفة</li>
+              <li><i class="fas fa-ban"></i> أي تلاعب يؤدي إلى إيقاف الحساب فوراً</li>
             </ul>
           </section>
 

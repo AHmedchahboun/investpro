@@ -21,7 +21,7 @@
 <!-- ═══════════════ SIDEBAR ═══════════════ -->
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-brand">
-    <span>🛡</span>
+    <span><i class="fas fa-shield-halved"></i></span>
     <span>Admin Panel <span style="background:var(--red);color:#fff;border-radius:4px;padding:1px 6px;font-size:.68rem;font-weight:700">ADMIN</span></span>
   </div>
   <div class="user-card">
@@ -35,35 +35,35 @@
   </div>
   <nav class="sidebar-nav">
     <div class="nav-item active" data-nav="pg-dash"  onclick="go('pg-dash')">
-      <span class="nav-icon">📊</span> لوحة التحكم
+      <span class="nav-icon"><i class="fas fa-chart-pie"></i></span> لوحة التحكم
     </div>
     <div class="nav-item" data-nav="pg-dep" onclick="go('pg-dep')">
-      <span class="nav-icon">⬇</span> الإيداعات
+      <span class="nav-icon"><i class="fas fa-arrow-down"></i></span> الإيداعات
       <span class="nav-badge" id="dep-badge" style="display:none">0</span>
     </div>
     <div class="nav-item" data-nav="pg-wd" onclick="go('pg-wd')">
-      <span class="nav-icon">⬆</span> السحوبات
+      <span class="nav-icon"><i class="fas fa-arrow-up"></i></span> السحوبات
       <span class="nav-badge" id="wd-badge" style="display:none">0</span>
     </div>
     <div class="nav-item" data-nav="pg-users" onclick="go('pg-users')">
-      <span class="nav-icon">👤</span> المستخدمون
+      <span class="nav-icon"><i class="fas fa-user"></i></span> المستخدمون
     </div>
     <div class="nav-item" data-nav="pg-tx" onclick="go('pg-tx')">
-      <span class="nav-icon">📋</span> العمليات
+      <span class="nav-icon"><i class="fas fa-clipboard-list"></i></span> العمليات
     </div>
     <div class="nav-item" data-nav="pg-adj" onclick="go('pg-adj')">
       <span class="nav-icon">⚖</span> تعديل الرصيد
     </div>
     <div class="nav-item" data-nav="pg-comms" onclick="go('pg-comms')">
-      <span class="nav-icon">💬</span> التواصل والتنبيهات
+      <span class="nav-icon"><i class="fas fa-comments"></i></span> التواصل والتنبيهات
     </div>
     <div class="nav-item" data-nav="pg-log" onclick="go('pg-log')">
-      <span class="nav-icon">🔍</span> سجل المشرف
+      <span class="nav-icon"><i class="fas fa-magnifying-glass"></i></span> سجل المشرف
     </div>
   </nav>
   <div class="sidebar-footer">
     <div class="nav-item" onclick="auth.logout()">
-      <span class="nav-icon">🚪</span> تسجيل الخروج
+      <span class="nav-icon"><i class="fas fa-right-from-bracket"></i></span> تسجيل الخروج
     </div>
   </div>
 </aside>
@@ -73,7 +73,7 @@
   <div class="topbar">
     <button class="topbar-hamburger" onclick="openSidebar()">☰</button>
     <span class="topbar-title" id="page-title">لوحة التحكم</span>
-    <span style="font-size:.8rem;color:var(--red);font-weight:700;margin-right:auto">🛡 مشرف</span>
+    <span style="font-size:.8rem;color:var(--red);font-weight:700;margin-right:auto"><i class="fas fa-shield-halved"></i> مشرف</span>
   </div>
 
   <div class="content">
@@ -113,7 +113,7 @@
           </div>
         </div>
         <div class="card">
-          <div class="card-head">👑 توزيع VIP</div>
+          <div class="card-head"><i class="fas fa-crown"></i> توزيع VIP</div>
           <div class="card-body">
             <div class="chart-wrap"><canvas id="vip-chart"></canvas></div>
             <div id="vip-chart-legend" style="margin-top:12px;font-size:.75rem"></div>
@@ -126,7 +126,7 @@
     <div id="pg-dep" data-page style="display:none">
       <div class="card">
         <div class="card-head">
-          ⬇ الإيداعات
+          <i class="fas fa-arrow-down"></i> الإيداعات
           <div class="filters">
             <select class="filter-select" id="dep-status-f" onchange="loadDeps()">
               <option value="pending">معلق</option>
@@ -147,7 +147,7 @@
     <div id="pg-wd" data-page style="display:none">
       <div class="card">
         <div class="card-head">
-          ⬆ السحوبات
+          <i class="fas fa-arrow-up"></i> السحوبات
           <div class="filters">
             <select class="filter-select" id="wd-status-f" onchange="loadWds()">
               <option value="pending">معلق</option>
@@ -168,10 +168,10 @@
     <div id="pg-users" data-page style="display:none">
       <div class="card">
         <div class="card-head">
-          👤 المستخدمون
+          <i class="fas fa-user"></i> المستخدمون
           <div class="filters">
             <input type="text" id="user-search" class="filter-select"
-              placeholder="🔍 بحث بالاسم أو البريد..." oninput="debSearch()" style="width:210px">
+              placeholder="بحث بالاسم أو البريد..." oninput="debSearch()" style="width:210px">
             <select class="filter-select" id="user-vip-f" onchange="loadUsers()">
               <option value="">كل المستويات</option>
               <option value="-1">غير نشط</option>
@@ -218,7 +218,7 @@
     <div id="pg-tx" data-page style="display:none">
       <div class="card">
         <div class="card-head">
-          📋 كل العمليات
+          <i class="fas fa-clipboard-list"></i> كل العمليات
           <div class="filters">
             <select class="filter-select" id="atx-type-f" onchange="loadAdminTx()">
               <option value="">كل الأنواع</option>
@@ -270,7 +270,7 @@
         <div class="card">
           <div class="card-head">⚖ تعديل رصيد مستخدم</div>
           <div class="card-body">
-            <div class="err-box" style="margin-bottom:14px">⚠ هذه العملية حساسة وتُسجل في سجل المشرف</div>
+            <div class="err-box" style="margin-bottom:14px"><i class="fas fa-triangle-exclamation"></i> هذه العملية حساسة وتُسجل في سجل المشرف</div>
             <div class="form-group">
               <label class="form-label">معرّف المستخدم (User ID)</label>
               <input type="text" id="adj-uid" class="form-input" placeholder="MongoDB ObjectId">
@@ -287,7 +287,7 @@
           </div>
         </div>
         <div class="card">
-          <div class="card-head">📝 آخر التعديلات الإدارية</div>
+          <div class="card-head"><i class="fas fa-file-lines"></i> آخر التعديلات الإدارية</div>
           <div class="card-body" style="padding:0">
             <div class="table-wrap">
               <table class="table">
@@ -308,7 +308,7 @@
     <div id="pg-log" data-page style="display:none">
       <div class="card">
         <div class="card-head">
-          🔍 سجل الإجراءات الإدارية
+          <i class="fas fa-magnifying-glass"></i> سجل الإجراءات الإدارية
           <div class="filters">
             <select class="filter-select" id="log-sev-f" onchange="loadLog()">
               <option value="">كل المستويات</option>
@@ -329,7 +329,7 @@
     <div id="pg-comms" data-page style="display:none">
       <div class="admin-pro-grid">
         <div class="card">
-          <div class="card-head">💬 إرسال تنبيه للمستخدمين</div>
+          <div class="card-head"><i class="fas fa-comments"></i> إرسال تنبيه للمستخدمين</div>
           <div class="card-body">
             <div class="info-box" style="margin-bottom:14px">
               الرسائل تظهر داخل جرس الإشعارات عند المستخدم. استعملها للتنبيه حول الأرباح، الشحن، الإحالة، الدعم أو النظام.
@@ -406,7 +406,7 @@
       </div>
 
       <div class="card">
-        <div class="card-head">📨 آخر التنبيهات المرسلة</div>
+        <div class="card-head"><i class="fas fa-envelope-open-text"></i> آخر التنبيهات المرسلة</div>
         <div class="card-body" id="admin-msg-list">
           <div style="text-align:center;padding:20px;color:var(--text3)">جاري التحميل...</div>
         </div>
@@ -419,11 +419,11 @@
 
 <!-- ══════════════════ BOTTOM NAV (mobile) ══════════════════ -->
 <nav class="bottom-nav">
-  <div class="bn-item active" data-nav="pg-dash"  onclick="go('pg-dash')"><span class="bn-icon">📊</span>الرئيسية</div>
-  <div class="bn-item" data-nav="pg-dep"   onclick="go('pg-dep')"><span class="bn-icon">⬇</span>إيداع</div>
-  <div class="bn-item" data-nav="pg-wd"    onclick="go('pg-wd')"><span class="bn-icon">⬆</span>سحب</div>
-  <div class="bn-item" data-nav="pg-users" onclick="go('pg-users')"><span class="bn-icon">👤</span>مستخدمون</div>
-  <div class="bn-item" data-nav="pg-comms" onclick="go('pg-comms')"><span class="bn-icon">💬</span>رسائل</div>
+  <div class="bn-item active" data-nav="pg-dash"  onclick="go('pg-dash')"><span class="bn-icon"><i class="fas fa-chart-pie"></i></span>الرئيسية</div>
+  <div class="bn-item" data-nav="pg-dep"   onclick="go('pg-dep')"><span class="bn-icon"><i class="fas fa-arrow-down"></i></span>إيداع</div>
+  <div class="bn-item" data-nav="pg-wd"    onclick="go('pg-wd')"><span class="bn-icon"><i class="fas fa-arrow-up"></i></span>سحب</div>
+  <div class="bn-item" data-nav="pg-users" onclick="go('pg-users')"><span class="bn-icon"><i class="fas fa-user"></i></span>مستخدمون</div>
+  <div class="bn-item" data-nav="pg-comms" onclick="go('pg-comms')"><span class="bn-icon"><i class="fas fa-comments"></i></span>رسائل</div>
 </nav>
 
 <!-- ══════════════════ USER DETAIL MODAL ══════════════════ -->
@@ -431,7 +431,7 @@
   <div class="modal-box">
     <div class="modal-head">
       <span class="modal-title">تفاصيل المستخدم</span>
-      <button class="modal-close" onclick="closeUserModal()">✕</button>
+      <button class="modal-close" onclick="closeUserModal()"><i class="fas fa-xmark"></i></button>
     </div>
 
     <!-- Header -->
@@ -446,7 +446,7 @@
     </div>
 
     <!-- Stats Grid -->
-    <div class="section-label">💰 المالية</div>
+    <div class="section-label"><i class="fas fa-sack-dollar"></i> المالية</div>
     <div class="user-detail-grid">
       <div class="user-detail-item">
         <div class="user-detail-label">الرصيد الحالي</div>
@@ -466,7 +466,7 @@
       </div>
     </div>
 
-    <div class="section-label">👑 عضوية VIP</div>
+    <div class="section-label"><i class="fas fa-crown"></i> عضوية VIP</div>
     <div class="user-detail-grid">
       <div class="user-detail-item">
         <div class="user-detail-label">المستوى</div>
@@ -498,12 +498,12 @@
       </div>
     </div>
 
-    <div class="section-label">📋 كشف آخر العمليات</div>
+    <div class="section-label"><i class="fas fa-clipboard-list"></i> كشف آخر العمليات</div>
     <div id="um-statement" class="mini-statement">
       <div style="color:var(--text3);font-size:.8rem">اضغط على المستخدم لتحميل الكشف...</div>
     </div>
 
-    <div class="section-label">📅 معلومات الحساب</div>
+    <div class="section-label"><i class="fas fa-calendar-days"></i> معلومات الحساب</div>
     <div class="user-detail-grid">
       <div class="user-detail-item">
         <div class="user-detail-label">تاريخ التسجيل</div>
@@ -520,7 +520,7 @@
       <button class="btn btn-ghost btn-sm" id="um-adj-btn" onclick="">تعديل الرصيد</button>
       <button class="btn btn-ghost btn-sm" id="um-pass-btn" onclick="">كلمة المرور</button>
       <button class="btn btn-sm" id="um-freeze-btn" onclick="">تجميد / رفع</button>
-      <button class="btn btn-red btn-sm" id="um-delete-btn" onclick="">🗑 حذف</button>
+      <button class="btn btn-red btn-sm" id="um-delete-btn" onclick=""><i class="fas fa-trash"></i> حذف</button>
     </div>
   </div>
 </div>
@@ -606,18 +606,18 @@ async function loadDashboard() {
 
 function renderAdminStats(s) {
   const cards = [
-    { label:'إجمالي المستخدمين',   value: s.totalUsers,                  icon:'👤', color:'var(--teal)'   },
+    { label:'إجمالي المستخدمين',   value: s.totalUsers,                  icon:'<i class="fas fa-user"></i>', color:'var(--teal)'   },
     { label:'مستخدمون جدد اليوم',  value: s.newToday,                    icon:'🆕', color:'var(--blue)'   },
-    { label:'إجمالي الإيداعات',    value: fmt.usd(s.totalDeposits),      icon:'⬇',  color:'var(--green)'  },
-    { label:'إجمالي السحوبات',     value: fmt.usd(s.totalWithdraws),     icon:'⬆',  color:'var(--gold)'   },
+    { label:'إجمالي الإيداعات',    value: fmt.usd(s.totalDeposits),      icon:'<i class="fas fa-arrow-down"></i>',  color:'var(--green)'  },
+    { label:'إجمالي السحوبات',     value: fmt.usd(s.totalWithdraws),     icon:'<i class="fas fa-arrow-up"></i>',  color:'var(--gold)'   },
     { label:'إيداعات معلقة',       value: s.pendingDeposits,             icon:'⏳', color:'var(--red)'    },
     { label:'سحوبات معلقة',        value: s.pendingWithdraws,            icon:'⏳', color:'var(--orange)' },
-    { label:'أعضاء VIP نشطون',     value: s.activeVips,                  icon:'👑', color:'var(--purple)' },
-    { label:'إجمالي المكافآت',     value: fmt.usd(s.totalRewardsPaid),   icon:'⭐', color:'var(--teal2)'  },
-    { label:'أرباح جاهزة للصرف',   value: s.dueProfitCount || 0,          icon:'✅', color:'var(--green)'  },
+    { label:'أعضاء VIP نشطون',     value: s.activeVips,                  icon:'<i class="fas fa-crown"></i>', color:'var(--purple)' },
+    { label:'إجمالي المكافآت',     value: fmt.usd(s.totalRewardsPaid),   icon:'<i class="fas fa-star"></i>', color:'var(--teal2)'  },
+    { label:'أرباح جاهزة للصرف',   value: s.dueProfitCount || 0,          icon:'<i class="fas fa-circle-check"></i>', color:'var(--green)'  },
     { label:'خطط تنتهي خلال 3 أيام',value: s.expiringPlans || 0,          icon:'⏰', color:'var(--gold)'   },
     { label:'توقيت النظام',        value: 'المغرب',                      icon:'🇲🇦', color:'var(--blue)'   },
-    { label:'رسائل اليوم',          value: s.notificationCount || 0,       icon:'💬', color:'var(--purple)' },
+    { label:'رسائل اليوم',          value: s.notificationCount || 0,       icon:'<i class="fas fa-comments"></i>', color:'var(--purple)' },
   ];
   document.getElementById('admin-stats-grid').innerHTML = cards.map(c => `
     <div class="stat-card" style="--stat-color:${c.color}">
@@ -630,7 +630,7 @@ function renderAdminStats(s) {
 function renderPendingAlerts(s) {
   const el = document.getElementById('pending-alerts');
   if (!s.pendingDeposits && !s.pendingWithdraws && !s.nextProfit) {
-    el.innerHTML = '<div class="info-box">✅ لا توجد طلبات معلقة — كل شيء تمام!</div>'; return;
+    el.innerHTML = '<div class="info-box"><i class="fas fa-circle-check"></i> لا توجد طلبات معلقة — كل شيء تمام!</div>'; return;
   }
   let html = '';
   if (s.pendingDeposits)  html += `
@@ -716,7 +716,7 @@ async function loadDeps(page = 1) {
     }
     el.innerHTML = data.deposits.map(d => `
       <div class="tx-item" style="padding:14px 20px" id="dep-${d._id}">
-        <div class="tx-icon" style="background:rgba(34,197,94,.12);color:var(--green)">⬇</div>
+        <div class="tx-icon" style="background:rgba(34,197,94,.12);color:var(--green)"><i class="fas fa-arrow-down"></i></div>
         <div class="tx-info">
           <div class="tx-name">
             ${esc(d.user?.name || '—')}
@@ -724,7 +724,7 @@ async function loadDeps(page = 1) {
           </div>
           <div class="tx-meta">${esc(d.paymentMethod)} • Hash: <span class="mono" style="color:var(--teal)">${esc(d.txHash || '—')}</span></div>
           <div class="tx-meta" style="color:var(--text3)">${fmt.date(d.createdAt)}</div>
-          ${d.adminNote ? `<div class="tx-meta" style="color:var(--red)">⚠ ${esc(d.adminNote)}</div>` : ''}
+          ${d.adminNote ? `<div class="tx-meta" style="color:var(--red)"><i class="fas fa-triangle-exclamation"></i> ${esc(d.adminNote)}</div>` : ''}
         </div>
         <div style="text-align:left;min-width:90px">
           <div class="tx-amount" style="color:var(--green)">${fmt.usd(d.amount)}</div>
@@ -733,7 +733,7 @@ async function loadDeps(page = 1) {
         ${d.status === 'pending' ? `
         <div class="tx-actions">
           <button class="btn btn-green btn-sm" onclick="approveDep('${d._id}','${esc(d.user?.name||'')}')">✓ قبول</button>
-          <button class="btn btn-red-o btn-sm" onclick="rejectDep('${d._id}','${esc(d.user?.name||'')}')">✕ رفض</button>
+          <button class="btn btn-red-o btn-sm" onclick="rejectDep('${d._id}','${esc(d.user?.name||'')}')"><i class="fas fa-xmark"></i> رفض</button>
         </div>` : ''}
       </div>`).join('');
     renderAdminPag('dep-pag', data.pagination, loadDeps);
@@ -744,7 +744,7 @@ async function approveDep(id, name) {
   if (!confirm(`اعتماد إيداع "${name}"؟`)) return;
   try {
     await http.post(`/admin/deposits/${id}/approve`);
-    toast('✅ تم اعتماد الإيداع', 's');
+    toast('<i class="fas fa-circle-check"></i> تم اعتماد الإيداع', 's');
     document.getElementById(`dep-${id}`)?.remove();
     loadDashboard();
   } catch (e) { toast(e.message, 'e'); }
@@ -775,7 +775,7 @@ async function loadWds(page = 1) {
     }
     el.innerHTML = data.withdraws.map(w => `
       <div class="tx-item" style="padding:14px 20px" id="wd-${w._id}">
-        <div class="tx-icon" style="background:rgba(239,68,68,.12);color:var(--red)">⬆</div>
+        <div class="tx-icon" style="background:rgba(239,68,68,.12);color:var(--red)"><i class="fas fa-arrow-up"></i></div>
         <div class="tx-info">
           <div class="tx-name">
             ${esc(w.user?.name || '—')}
@@ -783,7 +783,7 @@ async function loadWds(page = 1) {
           </div>
           <div class="tx-meta">${esc(w.paymentMethod)} • إلى: <span class="mono" style="color:var(--teal)">${esc((w.toAddress||'—').substring(0,24))}...</span></div>
           <div class="tx-meta">رسوم: ${fmt.usd(w.fee)} | صافي: <span style="color:var(--green);font-weight:600">${fmt.usd(w.netAmount)}</span> • ${fmt.date(w.createdAt)}</div>
-          ${w.adminNote ? `<div class="tx-meta" style="color:var(--red)">⚠ ${esc(w.adminNote)}</div>` : ''}
+          ${w.adminNote ? `<div class="tx-meta" style="color:var(--red)"><i class="fas fa-triangle-exclamation"></i> ${esc(w.adminNote)}</div>` : ''}
         </div>
         <div style="text-align:left;min-width:90px">
           <div class="tx-amount" style="color:var(--red)">${fmt.usd(w.amount)}</div>
@@ -792,7 +792,7 @@ async function loadWds(page = 1) {
         ${w.status === 'pending' ? `
         <div class="tx-actions">
           <button class="btn btn-green btn-sm" onclick="approveWd('${w._id}','${esc(w.user?.name||'')}',${w.netAmount})">✓ قبول</button>
-          <button class="btn btn-red-o btn-sm" onclick="rejectWd('${w._id}','${esc(w.user?.name||'')}')">✕ رفض</button>
+          <button class="btn btn-red-o btn-sm" onclick="rejectWd('${w._id}','${esc(w.user?.name||'')}')"><i class="fas fa-xmark"></i> رفض</button>
         </div>` : ''}
       </div>`).join('');
     renderAdminPag('wd-pag', data.pagination, loadWds);
@@ -804,7 +804,7 @@ async function approveWd(id, name, net) {
   if (txHash === null) return;
   try {
     await http.post(`/admin/withdraws/${id}/approve`, { txHash: txHash || undefined });
-    toast('✅ تم اعتماد السحب', 's');
+    toast('<i class="fas fa-circle-check"></i> تم اعتماد السحب', 's');
     document.getElementById(`wd-${id}`)?.remove();
     loadDashboard();
   } catch (e) { toast(e.message, 'e'); }
@@ -879,7 +879,7 @@ async function loadUsers(page = 1) {
         <td class="hide-mobile" style="color:var(--text3);font-size:.78rem">${fmt.date(u.createdAt)}</td>
         <td>
           ${u.isFrozen
-            ? '<span class="badge badge-red">🔒 مجمد</span>'
+            ? '<span class="badge badge-red"><i class="fas fa-lock"></i> مجمد</span>'
             : '<span class="badge badge-green">✓ نشط</span>'}
           ${u.isAdmin ? '<span class="badge badge-blue">مشرف</span>' : ''}
         </td>
@@ -887,7 +887,7 @@ async function loadUsers(page = 1) {
           <div style="display:flex;gap:5px;flex-wrap:wrap">
             <button class="btn ${u.isFrozen ? 'btn-green' : 'btn-ghost'} btn-xs"
               onclick="toggleFreeze('${u._id}',${u.isFrozen},'${esc(u.name)}')">
-              ${u.isFrozen ? '🔓 رفع' : '🔒 تجميد'}
+              ${u.isFrozen ? '<i class="fas fa-unlock"></i> رفع' : '<i class="fas fa-lock"></i> تجميد'}
             </button>
             <button class="btn btn-ghost btn-xs"
               onclick="document.getElementById('adj-uid').value='${u._id}';go('pg-adj')">
@@ -895,7 +895,7 @@ async function loadUsers(page = 1) {
             </button>
             <button class="btn btn-red-o btn-xs"
               onclick="deleteUser('${u._id}','${esc(u.name)}')">
-              🗑
+              <i class="fas fa-trash"></i>
             </button>
           </div>
         </td>
@@ -916,12 +916,12 @@ async function toggleFreeze(id, isFrozen, name) {
 }
 
 async function deleteUser(id, name) {
-  if (!confirm(`⚠ تحذير!\n\nسيتم حذف حساب "${name}" نهائياً مع جميع بياناته وعملياته.\n\nهذا الإجراء لا يمكن التراجع عنه. هل أنت متأكد؟`)) return;
+  if (!confirm(`تحذير!\n\nسيتم حذف حساب "${name}" نهائياً مع جميع بياناته وعملياته.\n\nهذا الإجراء لا يمكن التراجع عنه. هل أنت متأكد؟`)) return;
   const confirmName = prompt(`اكتب اسم المستخدم "${name}" للتأكيد:`);
   if (confirmName !== name) { toast('الاسم غير متطابق — تم الإلغاء', 'w'); return; }
   try {
     await http.delete(`/admin/users/${id}`);
-    toast(`✅ تم حذف المستخدم "${name}" نهائياً`, 's');
+    toast(`<i class="fas fa-circle-check"></i> تم حذف المستخدم "${name}" نهائياً`, 's');
     loadUsers();
     loadDashboard();
     if (_currentModalUser?._id === id) closeUserModal();
@@ -944,7 +944,7 @@ function openUserModal(uid) {
   document.getElementById('um-id').textContent     = u._id;
 
   document.getElementById('um-status-badge').innerHTML = u.isFrozen
-    ? '<span class="badge badge-red">🔒 مجمد</span>'
+    ? '<span class="badge badge-red"><i class="fas fa-lock"></i> مجمد</span>'
     : '<span class="badge badge-green">✓ نشط</span>';
 
   document.getElementById('um-balance').textContent   = fmt.usd(w.balance   || 0);
@@ -969,7 +969,7 @@ function openUserModal(uid) {
   };
   document.getElementById('um-pass-btn').onclick = () => resetUserPassword(u._id, u.name);
   const freezeBtn = document.getElementById('um-freeze-btn');
-  freezeBtn.textContent = u.isFrozen ? '🔓 رفع التجميد' : '🔒 تجميد';
+  freezeBtn.innerHTML = u.isFrozen ? '<i class="fas fa-unlock"></i> رفع التجميد' : '<i class="fas fa-lock"></i> تجميد';
   freezeBtn.className = `btn ${u.isFrozen ? 'btn-green' : 'btn-ghost'} btn-sm`;
   freezeBtn.onclick = () => toggleFreeze(u._id, u.isFrozen, u.name);
 

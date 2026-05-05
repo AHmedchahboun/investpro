@@ -91,7 +91,7 @@
   display: flex; align-items: center; justify-content: center; gap: 5px;
 }
 .vip-stats-note::before {
-  content: '🔴'; font-size: .55rem; animation: pulse-dot 2s infinite;
+  content: ''; width: .45rem; height: .45rem; border-radius: 999px; background: currentColor; animation: pulse-dot 2s infinite;
 }
 @keyframes pulse-dot { 0%,100%{opacity:1} 50%{opacity:.3} }
 

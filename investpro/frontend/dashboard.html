@@ -47,12 +47,12 @@
     <!-- Notification Bell -->
     <div class="notif-wrapper" id="notif-wrapper">
       <button type="button" class="notif-bell" id="notif-bell">
-        🔔
+        <i class="fas fa-bell"></i>
         <span class="notif-badge" id="notif-badge" style="display:none">0</span>
       </button>
       <div class="notif-dropdown" id="notif-dropdown">
         <div class="notif-header">
-          <h4>🔔 الإشعارات</h4>
+          <h4><i class="fas fa-bell"></i> الإشعارات</h4>
           <span class="notif-mark-all" onclick="markAllRead()">تحديد كمقروء</span>
         </div>
         <div class="notif-list" id="notif-list"></div>
@@ -63,7 +63,7 @@
     </div>
     <!-- Dark Mode Toggle -->
     <button class="theme-toggle" onclick="toggleTheme()" title="تبديل الوضع">
-      <span id="theme-icon">☀️</span>
+      <span id="theme-icon"><i class="fas fa-sun"></i></span>
     </button>
     <button class="btn-icon" style="width: 40px; height: 40px; font-size: 1rem; border-radius: 50%;" onclick="auth.logout()">
       <i class="fas fa-sign-out-alt text-danger"></i>
@@ -89,7 +89,7 @@
     <div class="telegram-card telegram-card-notif">
       <div class="telegram-icon"><i class="fab fa-telegram-plane"></i></div>
       <div class="telegram-body">
-        <div class="telegram-title">📢 تابع آخر الأخبار عبر Telegram</div>
+        <div class="telegram-title"><i class="fas fa-bullhorn"></i> تابع آخر الأخبار عبر Telegram</div>
         <div class="telegram-text">تحديثات المنصة، تنبيهات الأرباح، فرص جديدة، وأخبار السوق في مكان واحد.</div>
       </div>
       <button type="button" class="telegram-btn telegram-btn-small" onclick="openTelegramGroup()">انضم الآن</button>
@@ -102,7 +102,7 @@
 <div class="notif-detail-overlay" id="notif-detail-overlay" onclick="closeNotifDetail(event)">
   <div class="notif-detail" role="dialog" aria-modal="true" aria-labelledby="notif-detail-title">
     <div class="notif-detail-head">
-      <div class="notif-detail-icon" id="notif-detail-icon">🔔</div>
+      <div class="notif-detail-icon" id="notif-detail-icon"><i class="fas fa-bell"></i></div>
       <div>
         <div class="notif-detail-kicker" id="notif-detail-kicker">إشعار</div>
         <h3 id="notif-detail-title">تفاصيل الإشعار</h3>
@@ -213,7 +213,7 @@
 
         <!-- VIP card -->
         <div class="visa-mini-card" id="vmc-vip">
-          <div class="vmc-icon">👑</div>
+          <div class="vmc-icon"><i class="fas fa-crown"></i></div>
           <div class="vmc-body">
             <div class="vmc-title" id="vmc-vip-name">لا توجد خطة</div>
             <div class="vmc-sub" id="vmc-vip-sub">—</div>
@@ -223,7 +223,7 @@
 
         <!-- Last deposit card -->
         <div class="visa-mini-card" id="vmc-dep">
-          <div class="vmc-icon">💳</div>
+          <div class="vmc-icon"><i class="fas fa-credit-card"></i></div>
           <div class="vmc-body">
             <div class="vmc-title" id="vmc-dep-amount">—</div>
             <div class="vmc-sub" id="vmc-dep-time">آخر شحن</div>
@@ -233,7 +233,7 @@
 
         <!-- Hourly profit card -->
         <div class="visa-mini-card" id="vmc-profit">
-          <div class="vmc-icon">📈</div>
+          <div class="vmc-icon"><i class="fas fa-chart-line"></i></div>
           <div class="vmc-body">
             <div class="vmc-title" id="vmc-profit-val">$0.00</div>
             <div class="vmc-sub">ربح 24 ساعة</div>
@@ -272,7 +272,7 @@
       <div class="telegram-icon"><i class="fab fa-telegram-plane"></i></div>
       <div class="telegram-body">
         <div class="telegram-badge">انضم الآن وابقَ على اطلاع</div>
-        <div class="telegram-title">📢 تابع آخر الأخبار عبر Telegram</div>
+        <div class="telegram-title"><i class="fas fa-bullhorn"></i> تابع آخر الأخبار عبر Telegram</div>
         <div class="telegram-text">
           انضم إلى مجموعتنا للحصول على آخر تحديثات المنصة، إشعارات الأرباح، فرص استثمار جديدة، وأخبار السوق Crypto / Gold / Stocks.
         </div>
@@ -287,12 +287,12 @@
     <div class="section-title">إحصائيات المنصة</div>
     <div class="stats-grid mb-6">
       <div class="stat-box stat-box-animated">
-        <div class="stat-box-icon">👥</div>
+        <div class="stat-box-icon"><i class="fas fa-users"></i></div>
         <div class="stat-box-val text-primary" id="plat-users">+0</div>
         <div class="text-xs text-secondary mt-1">مستثمر نشط</div>
       </div>
       <div class="stat-box stat-box-animated">
-        <div class="stat-box-icon">💸</div>
+        <div class="stat-box-icon"><i class="fas fa-money-bill-transfer"></i></div>
         <div class="stat-box-val text-success" id="plat-withdrawals">$0</div>
         <div class="text-xs text-secondary mt-1">إجمالي السحوبات</div>
       </div>
@@ -309,17 +309,17 @@
       </div>
       <div class="today-stats-grid">
         <div class="today-stat-card today-stat-wd">
-          <div class="today-stat-icon">💸</div>
+          <div class="today-stat-icon"><i class="fas fa-money-bill-transfer"></i></div>
           <div class="today-stat-val" id="today-wd">$0</div>
           <div class="today-stat-lbl">سحوبات اليوم</div>
         </div>
         <div class="today-stat-card today-stat-dep">
-          <div class="today-stat-icon">💳</div>
+          <div class="today-stat-icon"><i class="fas fa-credit-card"></i></div>
           <div class="today-stat-val" id="today-dep">$0</div>
           <div class="today-stat-lbl">شحن اليوم</div>
         </div>
         <div class="today-stat-card today-stat-profit">
-          <div class="today-stat-icon">📈</div>
+          <div class="today-stat-icon"><i class="fas fa-chart-line"></i></div>
           <div class="today-stat-val" id="today-profit">$0</div>
           <div class="today-stat-lbl">أرباح اليوم</div>
         </div>
@@ -363,7 +363,7 @@
       <!-- Portfolio Performance (shown on both mobile & desktop) -->
       <div class="chart-card">
         <div class="chart-card-header">
-          <div class="chart-card-title">📈 أداء المحفظة</div>
+          <div class="chart-card-title"><i class="fas fa-chart-line"></i> أداء المحفظة</div>
           <div class="chart-period-btns">
             <button class="chart-period-btn active" data-period="7"  onclick="refreshCharts(7)">7د</button>
             <button class="chart-period-btn"        data-period="30" onclick="refreshCharts(30)">30د</button>
@@ -382,7 +382,7 @@
       <!-- Daily Profit (hidden on mobile via CSS) -->
       <div class="chart-card">
         <div class="chart-card-header">
-          <div class="chart-card-title">💰 الأرباح اليومية</div>
+          <div class="chart-card-title"><i class="fas fa-sack-dollar"></i> الأرباح اليومية</div>
           <span class="live-dot">مباشر</span>
         </div>
         <div class="chart-value-display">
@@ -408,13 +408,13 @@
       <!-- Header card (always visible) -->
       <div class="hiw-header-card">
         <div class="hiw-header-top">
-          <div class="hiw-badge">🤖 كيف يعمل النظام؟</div>
+          <div class="hiw-badge"><i class="fas fa-robot"></i> كيف يعمل النظام؟</div>
           <button class="hiw-toggle-btn" id="hiw-toggle" onclick="toggleHiw()">
             <span>إخفاء</span>
             <span class="hiw-toggle-icon">▲</span>
           </button>
         </div>
-        <div class="hiw-title">كيف يتم تشغيل أموالك داخل النظام؟ 📊</div>
+        <div class="hiw-title">كيف يتم تشغيل أموالك داخل النظام؟ <i class="fas fa-chart-pie"></i></div>
         <div class="hiw-desc">
           يتم تشغيل أموالك عبر نظام استثمار رقمي متكامل يعتمد على تنويع المصادر بين الذهب، الأسواق المالية، التداول، والذكاء الاصطناعي — لتحقيق أفضل توازن بين الربح والاستقرار.
         </div>
@@ -426,22 +426,22 @@
         <!-- Flow Steps -->
         <div class="hiw-flow">
           <div class="hiw-step">
-            <div class="hiw-step-icon">💳</div>
+            <div class="hiw-step-icon"><i class="fas fa-credit-card"></i></div>
             <div class="hiw-step-title">الإيداع</div>
             <div class="hiw-step-sub">أموالك تُضاف للمحفظة فور الموافقة</div>
           </div>
           <div class="hiw-step">
-            <div class="hiw-step-icon">🧩</div>
+            <div class="hiw-step-icon"><i class="fas fa-puzzle-piece"></i></div>
             <div class="hiw-step-title">التوزيع الذكي</div>
             <div class="hiw-step-sub">تقسيم على 4 مجالات لتقليل المخاطر</div>
           </div>
           <div class="hiw-step">
-            <div class="hiw-step-icon">⚙️</div>
+            <div class="hiw-step-icon"><i class="fas fa-gear"></i></div>
             <div class="hiw-step-title">تشغيل النظام</div>
             <div class="hiw-step-sub">تحليل + تنفيذ صفقات 24/7 تلقائياً</div>
           </div>
           <div class="hiw-step">
-            <div class="hiw-step-icon">💰</div>
+            <div class="hiw-step-icon"><i class="fas fa-sack-dollar"></i></div>
             <div class="hiw-step-title">توليد الأرباح</div>
             <div class="hiw-step-sub">تُضاف لحسابك كل ساعة / يوم</div>
           </div>
@@ -451,7 +451,7 @@
         <div class="hiw-domains">
 
           <div class="hiw-domain d-gold">
-            <span class="hiw-domain-icon">🪙</span>
+            <span class="hiw-domain-icon"><i class="fas fa-coins"></i></span>
             <div class="hiw-domain-name">الذهب</div>
             <div class="hiw-domain-pct">35%</div>
             <div class="hiw-domain-feats">
@@ -461,7 +461,7 @@
           </div>
 
           <div class="hiw-domain d-stocks">
-            <span class="hiw-domain-icon">📈</span>
+            <span class="hiw-domain-icon"><i class="fas fa-chart-line"></i></span>
             <div class="hiw-domain-name">البورصة</div>
             <div class="hiw-domain-pct">30%</div>
             <div class="hiw-domain-feats">
@@ -471,7 +471,7 @@
           </div>
 
           <div class="hiw-domain d-trade">
-            <span class="hiw-domain-icon">🔄</span>
+            <span class="hiw-domain-icon"><i class="fas fa-rotate"></i></span>
             <div class="hiw-domain-name">التداول</div>
             <div class="hiw-domain-pct">20%</div>
             <div class="hiw-domain-feats">
@@ -481,7 +481,7 @@
           </div>
 
           <div class="hiw-domain d-ai">
-            <span class="hiw-domain-icon">🤖</span>
+            <span class="hiw-domain-icon"><i class="fas fa-robot"></i></span>
             <div class="hiw-domain-name">الذكاء الاصطناعي</div>
             <div class="hiw-domain-pct">15%</div>
             <div class="hiw-domain-feats">
@@ -1032,7 +1032,7 @@
       <div class="telegram-icon"><i class="fab fa-telegram-plane"></i></div>
       <div class="telegram-body">
         <div class="telegram-badge">مجتمع InvestPro الرسمي</div>
-        <div class="telegram-title">📢 تابع آخر الأخبار عبر Telegram</div>
+        <div class="telegram-title"><i class="fas fa-bullhorn"></i> تابع آخر الأخبار عبر Telegram</div>
         <div class="telegram-text">
           ننشر في المجموعة أخبار المنصة، تحديثات النظام، فرص الاستثمار الجديدة، وتنبيهات السوق Crypto / Gold / Stocks حتى تبقى قريباً من كل جديد.
         </div>
@@ -1078,16 +1078,16 @@
 
     <!-- Hero Header -->
     <div class="ref-hero">
-      <div class="ref-hero-icon">🌐</div>
+      <div class="ref-hero-icon"><i class="fas fa-globe"></i></div>
       <div class="ref-hero-title">شبكة الإحالة</div>
       <div class="ref-hero-sub">ابنِ شبكتك واكسب عمولات متدرجة على 3 مستويات</div>
     </div>
 
     <!-- Motivational Banner -->
     <div class="ref-motive-strip">
-      <div class="ref-motive-item">💡 كل إحالة = مصدر دخل دائم</div>
-      <div class="ref-motive-item">📈 شبكة قوية = أرباح بلا مجهود</div>
-      <div class="ref-motive-item">🚀 كلما توسعت، زادت أرباحك</div>
+      <div class="ref-motive-item"><i class="fas fa-lightbulb"></i> كل إحالة = مصدر دخل دائم</div>
+      <div class="ref-motive-item"><i class="fas fa-chart-line"></i> شبكة قوية = أرباح بلا مجهود</div>
+      <div class="ref-motive-item"><i class="fas fa-rocket"></i> كلما توسعت، زادت أرباحك</div>
     </div>
 
     <!-- Referral Link Card -->
@@ -1120,7 +1120,7 @@
     <div class="ref-levels-grid">
       <div class="ref-level-card ref-l1">
         <div class="ref-level-badge">L1</div>
-        <div class="ref-level-icon">👥</div>
+        <div class="ref-level-icon"><i class="fas fa-users"></i></div>
         <div class="ref-level-pct" id="ref-l1-rate">15%</div>
         <div class="ref-level-name">إحالة مباشرة</div>
         <div class="ref-level-desc">عمولة على كل إيداع من أشخاص دعوتهم مباشرة</div>
@@ -1128,7 +1128,7 @@
       </div>
       <div class="ref-level-card ref-l2">
         <div class="ref-level-badge">L2</div>
-        <div class="ref-level-icon">🔗</div>
+        <div class="ref-level-icon"><i class="fas fa-link"></i></div>
         <div class="ref-level-pct" id="ref-l2-rate">10%</div>
         <div class="ref-level-name">شبكة L1</div>
         <div class="ref-level-desc">عمولة على إحالات أعضاء L1 الخاصين بك</div>
@@ -1136,7 +1136,7 @@
       </div>
       <div class="ref-level-card ref-l3">
         <div class="ref-level-badge">L3</div>
-        <div class="ref-level-icon">🌐</div>
+        <div class="ref-level-icon"><i class="fas fa-globe"></i></div>
         <div class="ref-level-pct" id="ref-l3-rate">5%</div>
         <div class="ref-level-name">شبكة L2</div>
         <div class="ref-level-desc">دخل طويل المدى من توسع شبكتك غير المباشرة</div>
@@ -1191,7 +1191,7 @@
 
     <!-- Goals System -->
     <div class="section-title" style="padding:0 20px;margin-top:8px">
-      <span>🎯 أهداف الإحالة</span>
+      <span><i class="fas fa-bullseye"></i> أهداف الإحالة</span>
     </div>
     <div class="ref-goals-wrap" id="ref-goals-container">
       <!-- Rendered by JS -->
@@ -1265,7 +1265,7 @@
     </button>
     <div class="telegram-popup-icon"><i class="fab fa-telegram-plane"></i></div>
     <div class="telegram-badge">انضم الآن وابقَ على اطلاع</div>
-    <h3 id="telegram-popup-title">📢 تابع آخر الأخبار عبر Telegram</h3>
+    <h3 id="telegram-popup-title"><i class="fas fa-bullhorn"></i> تابع آخر الأخبار عبر Telegram</h3>
     <p>
       احصل على آخر تحديثات المنصة، إشعارات الأرباح، فرص استثمار جديدة، وأخبار السوق Crypto / Gold / Stocks مباشرة من مجتمع InvestPro.
     </p>
@@ -1608,9 +1608,9 @@ async function _updateVisaMiniCards() {
       if (depTimeEl) depTimeEl.textContent = fmt.ago(lastDep.createdAt);
       if (depStatusEl) {
         const statusMap = {
-          pending:  { text: '🟡 معلق',   cls: 'vmc-badge-gold' },
-          approved: { text: '🟢 مكتمل',  cls: 'vmc-badge-green' },
-          rejected: { text: '🔴 مرفوض',  cls: 'vmc-badge-red' },
+          pending:  { text: '<i class="fas fa-circle"></i> معلق',   cls: 'vmc-badge-gold' },
+          approved: { text: '<i class="fas fa-circle"></i> مكتمل',  cls: 'vmc-badge-green' },
+          rejected: { text: '<i class="fas fa-circle"></i> مرفوض',  cls: 'vmc-badge-red' },
         };
         const s = statusMap[lastDep.status] || { text: lastDep.status, cls: 'vmc-badge-muted' };
         depStatusEl.textContent = s.text;
@@ -1742,7 +1742,7 @@ function goDepStep2() {
   document.getElementById('dep-addr-net-label').textContent = meta.label || net;
   document.getElementById('dep-warn-net').textContent   = meta.label || net;
   document.getElementById('dep-addr-dot').style.background = meta.gradient || '';
-  document.getElementById('dep-network-hint').textContent  = '⚠ ' + (meta.hint || '');
+  document.getElementById('dep-network-hint').textContent  = 'تنبيه: ' + (meta.hint || '');
   document.getElementById('dep-copy-label').textContent    = 'نسخ';
 
   document.getElementById('dep-s1').style.display = 'none';
@@ -1822,7 +1822,10 @@ function validateTxid(el) {
   const ok = pat && pat.re.test(val);
   el.classList.toggle('valid-input', ok);
   el.classList.toggle('invalid-input', !ok);
-  if (icon) { icon.textContent = ok ? '✓' : '✕'; icon.className = 'txid-status ' + (ok ? 'valid' : 'invalid'); }
+  if (icon) {
+    icon.innerHTML = ok ? '<i class="fas fa-check"></i>' : '<i class="fas fa-xmark"></i>';
+    icon.className = 'txid-status ' + (ok ? 'valid' : 'invalid');
+  }
 }
 
 /* legacy no-op kept so loadWalletInfo() call doesn't break */
@@ -1986,7 +1989,7 @@ async function loadVip() {
 function renderVipStatus(s) {
   s = normalizeVipStatus(s);
   const el = document.getElementById('vip-current-status');
-  const vipIcons = { '-1':'😴', '0':'📚', '1':'🥉', '2':'🥈', '3':'🥇', '4':'💎' };
+  const vipIcons = { '-1':'<i class="fas fa-bed"></i>', '0':'<i class="fas fa-book-open"></i>', '1':'<i class="fas fa-medal"></i>', '2':'<i class="fas fa-medal"></i>', '3':'<i class="fas fa-medal"></i>', '4':'<i class="fas fa-gem"></i>' };
   const vipColors = { '-1':'#64748b', '0':'#06b6d4', '1':'#d97706', '2':'#94a3b8', '3':'#f59e0b', '4':'#38bdf8' };
   const vipNames = { '-1':'غير نشط', '0':'التدريب', '1':'البرونزي', '2':'الفضي', '3':'الذهبي', '4':'الماسي' };
   const lvl = s.currentLevel;
@@ -1994,7 +1997,7 @@ function renderVipStatus(s) {
   if (lvl === -1) {
     el.innerHTML = `
       <div class="card" style="text-align:center;padding:28px 20px;">
-        <div style="font-size:2.5rem;margin-bottom:12px">🚀</div>
+        <div style="font-size:2.5rem;margin-bottom:12px"><i class="fas fa-rocket"></i></div>
         <div class="font-bold text-lg mb-2">ابدأ رحلتك الاستثمارية</div>
         <div class="text-secondary text-sm mb-20px" style="margin-bottom:20px">جرّب المنصة مجاناً لمدة 5 أيام واكسب $0.10 يومياً</div>
         <button class="btn btn-primary" onclick="startTraining()">
@@ -2005,7 +2008,7 @@ function renderVipStatus(s) {
   }
 
   const color = vipColors[String(lvl)] || '#06b6d4';
-  const icon  = vipIcons[String(lvl)] || '👑';
+  const icon  = vipIcons[String(lvl)] || '<i class="fas fa-crown"></i>';
   const name  = s.currentLevelName || vipNames[String(lvl)] || 'غير نشط';
   const active = s.isActive;
   const totalDays = lvl === 0 ? 5 : 30;
@@ -2053,7 +2056,7 @@ function openVipModal(level) {
   if (!v) return;
   _vipModalData = v;
 
-  const icons  = { 0:'📚', 1:'🥉', 2:'🥈', 3:'🥇', 4:'💎' };
+  const icons  = { 0:'<i class="fas fa-book-open"></i>', 1:'<i class="fas fa-medal"></i>', 2:'<i class="fas fa-medal"></i>', 3:'<i class="fas fa-medal"></i>', 4:'<i class="fas fa-gem"></i>' };
   const colors = { 0:'#06b6d4', 1:'#cd7f32', 2:'#94a3b8', 3:'#f59e0b', 4:'#38bdf8' };
   const color  = colors[v.level] || '#06b6d4';
 
@@ -2064,7 +2067,7 @@ function openVipModal(level) {
   // Fallback: old modal
   document.getElementById('vm-icon').style.background = color + '22';
   document.getElementById('vm-icon').style.color = color;
-  document.getElementById('vm-icon').textContent = icons[v.level] || '👑';
+  document.getElementById('vm-icon').innerHTML = icons[v.level] || '<i class="fas fa-crown"></i>';
   document.getElementById('vm-name').textContent = v.name;
   document.getElementById('vm-desc').textContent = v.marketing || v.description;
   document.getElementById('vm-price').textContent = v.isTraining ? 'مجاني' : fmt.usd(v.price);
@@ -2094,7 +2097,7 @@ function _openVipDetailModal(v, status, color, icons) {
 
   el('vdm-icon').style.background = color + '22';
   el('vdm-icon').style.color = color;
-  el('vdm-icon').textContent = icons[v.level] || '👑';
+  el('vdm-icon').innerHTML = icons[v.level] || '<i class="fas fa-crown"></i>';
   el('vdm-name').textContent = v.name + (v.tier ? ` — ${v.tier}` : '');
   el('vdm-desc').textContent = v.marketing || v.description;
   el('vdm-price').textContent = v.isTraining ? 'مجاني' : fmt.usd(v.price);
@@ -2163,7 +2166,7 @@ document.getElementById('vip-detail-modal')?.addEventListener('click', function(
 
 function renderVipPlans(levels, status) {
   const el = document.getElementById('vip-plans-container');
-  const icons     = { 0:'📚', 1:'🥉', 2:'🥈', 3:'🥇', 4:'💎' };
+  const icons     = { 0:'<i class="fas fa-book-open"></i>', 1:'<i class="fas fa-medal"></i>', 2:'<i class="fas fa-medal"></i>', 3:'<i class="fas fa-medal"></i>', 4:'<i class="fas fa-gem"></i>' };
   const colors    = { 0:'#06b6d4', 1:'#cd7f32', 2:'#94a3b8', 3:'#f59e0b', 4:'#38bdf8' };
   const riskColor = { 'منعدم':'#22c55e', 'منخفض':'#22c55e', 'متوسط':'#f59e0b', 'مرتفع':'#ef4444' };
   const demandPct = { 0:45, 1:68, 2:82, 3:91, 4:74 };
@@ -2181,7 +2184,7 @@ function renderVipPlans(levels, status) {
   el.innerHTML = levels.map((v, idx) => {
     const isCurrent = v.level === status.currentLevel;
     const color     = colors[v.level] || '#06b6d4';
-    const icon      = icons[v.level]  || '👑';
+    const icon      = icons[v.level]  || '<i class="fas fa-crown"></i>';
     const canBuy    = !v.isTraining && !isCurrent;
     const rc        = riskColor[v.risk] || '#94a3b8';
     const demand    = demandPct[v.level] || 70;
@@ -2200,13 +2203,13 @@ function renderVipPlans(levels, status) {
       const subsId = `vip-subs-${v.level}`;
       subsHtml = `
         <div class="vip-subscribers-row">
-          <span class="vip-subs-icon">👥</span>
+          <span class="vip-subs-icon"><i class="fas fa-users"></i></span>
           <span class="vip-subs-label">المشتركون:</span>
           <span class="vip-subs-count" id="${subsId}"
                 data-target="${v.subscribers.base}"
                 data-min="${v.subscribers.min}"
                 data-max="${v.subscribers.max}">0</span>
-          <span class="vip-subs-trend">📈 نمو مستمر</span>
+          <span class="vip-subs-trend"><i class="fas fa-chart-line"></i> نمو مستمر</span>
         </div>`;
     }
 
@@ -2416,7 +2419,7 @@ function _stopSubsCounters() {
 async function startTraining() {
   try {
     await http.post('/vip/start-training');
-    toast('🎉 تم تفعيل التدريب المجاني!', 's');
+    toast('<i class="fas fa-circle-check"></i> تم تفعيل التدريب المجاني!', 's');
     await loadUserData();
     loadVip();
   } catch (e) { toast(e.message, 'e'); }
@@ -2431,7 +2434,7 @@ async function activateVip(level, name, price) {
   btnLoad(btn, true);
   try {
     const result = await http.post('/vip/activate', { level });
-    toast(`🎉 تم تفعيل ${name} بنجاح! ربحك اليومي يبدأ غداً.`, 's', 4500);
+    toast(`<i class="fas fa-circle-check"></i> تم تفعيل ${name} بنجاح! ربحك اليومي يبدأ غداً.`, 's', 4500);
     // Update balance immediately from server response
     if (result.balance !== undefined) {
       document.getElementById('d-balance').textContent = fmt.usd(result.balance);
@@ -2459,7 +2462,7 @@ function _vipConfirm(name, price) {
     overlay.className = 'vip-confirm-overlay';
     overlay.innerHTML = `
       <div class="vip-confirm-box">
-        <div class="vip-confirm-icon">👑</div>
+        <div class="vip-confirm-icon"><i class="fas fa-crown"></i></div>
         <div class="vip-confirm-title">تأكيد الشراء</div>
         <div class="vip-confirm-msg">سيتم خصم <strong style="color:#f59e0b">${fmt.usd(price)}</strong> من رصيدك لتفعيل خطة <strong>${name}</strong></div>
         <div class="vip-confirm-actions">
@@ -2487,7 +2490,7 @@ function _showInsufficientBalance(name, price, serverMsg) {
   overlay.className = 'vip-confirm-overlay';
   overlay.innerHTML = `
     <div class="vip-confirm-box vip-confirm-error">
-      <div class="vip-confirm-icon">💳</div>
+      <div class="vip-confirm-icon"><i class="fas fa-credit-card"></i></div>
       <div class="vip-confirm-title" style="color:#ef4444">رصيد غير كافٍ</div>
       <div class="vip-confirm-msg">${serverMsg || 'رصيدك الحالي لا يكفي لتفعيل خطة ' + name}</div>
       <div class="vip-confirm-actions">
@@ -2545,9 +2548,9 @@ async function loadReferralPage() {
     const total = d.totalTeam || 0;
     document.getElementById('ref-total-team').textContent = total;
     document.getElementById('ref-growth-ind').textContent =
-      total === 0 ? 'ابدأ الآن' : total < 5 ? '🌱 نامية' : total < 20 ? '📈 متنامية' : '🚀 قوية';
+      total === 0 ? 'ابدأ الآن' : total < 5 ? '<i class="fas fa-seedling"></i> نامية' : total < 20 ? '<i class="fas fa-chart-line"></i> متنامية' : '<i class="fas fa-rocket"></i> قوية';
     document.getElementById('ref-rank-ind').textContent =
-      total === 0 ? 'مبتدئ' : total < 10 ? '🥉 برونزي' : total < 50 ? '🥈 فضي' : '🥇 ذهبي';
+      total === 0 ? 'مبتدئ' : total < 10 ? '<i class="fas fa-medal"></i> برونزي' : total < 50 ? '<i class="fas fa-medal"></i> فضي' : '<i class="fas fa-medal"></i> ذهبي';
 
     // Goals
     renderRefGoals(d.goals || [], d.directCount || 0);
@@ -2585,7 +2588,7 @@ function renderRefGoals(goals, directCount) {
     return `
       <div class="ref-goal-card ${reached ? 'ref-goal-reached' : ''}">
         <div class="ref-goal-top">
-          <div class="ref-goal-icon">${reached ? '✅' : '🎯'}</div>
+          <div class="ref-goal-icon">${reached ? '<i class="fas fa-circle-check"></i>' : '<i class="fas fa-bullseye"></i>'}</div>
           <div class="ref-goal-info">
             <div class="ref-goal-title">
               <span class="ref-goal-target">${g.target} إحالة</span>
@@ -2623,7 +2626,7 @@ function copyRefLink() {
 
 function shareRefLink() {
   const link = document.getElementById('ref-link-display').textContent.trim();
-  const text = `انضم إلى InvestPro واكسب أرباحاً يومية ثابتة! 🚀\n${link}`;
+  const text = `انضم إلى InvestPro واكسب أرباحاً يومية ثابتة! <i class="fas fa-rocket"></i>\n${link}`;
   if (navigator.share) {
     navigator.share({ title: 'InvestPro — دعوة للانضمام', text, url: link }).catch(() => {});
   } else {
@@ -2711,7 +2714,7 @@ function acceptTerms() {
   setTimeout(() => {
     const user = store.get('user');
     const name = user ? user.name.split(' ')[0] : 'بك';
-    toast(`🎉 أهلاً ${name}! رحلتك الاستثمارية تبدأ الآن`, 's', 4000);
+    toast(`<i class="fas fa-circle-check"></i> أهلاً ${name}! رحلتك الاستثمارية تبدأ الآن`, 's', 4000);
   }, 420);
 }
 
@@ -2734,10 +2737,10 @@ function checkWelcomeModal() {
     <div class="wm-header">
       <div class="wm-logo">
         <div class="wm-logo-ring"></div>
-        <span class="wm-logo-icon">💎</span>
+        <span class="wm-logo-icon"><i class="fas fa-gem"></i></span>
       </div>
       <div class="wm-welcome-text">
-        <div class="wm-greeting">👋 مرحباً بك في</div>
+        <div class="wm-greeting"><i class="fas fa-hand"></i> مرحباً بك في</div>
         <div class="wm-brand">InvestPro</div>
         <div class="wm-tagline">نظام الاستثمار الرقمي الذكي</div>
       </div>
@@ -2767,7 +2770,7 @@ function checkWelcomeModal() {
 
       <!-- Referral Teaser -->
       <div class="wm-ref-teaser">
-        <div class="wm-ref-icon">👥</div>
+        <div class="wm-ref-icon"><i class="fas fa-users"></i></div>
         <div>
           <div class="wm-ref-title">نظام الإحالة — دخل سلبي</div>
           <div class="wm-ref-desc">ادعُ أصدقاءك واكسب حتى <strong style="color:#22c55e">15%</strong> من إيداعاتهم تلقائياً على 3 مستويات</div>
@@ -2785,19 +2788,19 @@ function checkWelcomeModal() {
             <span>استخدام المنصة يعني موافقتك على جميع الشروط والأحكام</span>
           </li>
           <li>
-            <span class="wm-term-icon wm-ok">🔐</span>
+            <span class="wm-term-icon wm-ok"><i class="fas fa-user-shield"></i></span>
             <span>جميع العمليات تتم وفق نظام آمن ومراقب على مدار الساعة</span>
           </li>
           <li>
-            <span class="wm-term-icon wm-ok">💰</span>
+            <span class="wm-term-icon wm-ok"><i class="fas fa-sack-dollar"></i></span>
             <span>الأرباح تعتمد على الخطة المختارة ونشاط النظام الاستثماري</span>
           </li>
           <li>
-            <span class="wm-term-icon wm-warn">❌</span>
+            <span class="wm-term-icon wm-warn"><i class="fas fa-xmark"></i></span>
             <span>يُمنع إنشاء حسابات مزيفة أو استخدام بيانات غير صحيحة</span>
           </li>
           <li>
-            <span class="wm-term-icon wm-warn">🚫</span>
+            <span class="wm-term-icon wm-warn"><i class="fas fa-ban"></i></span>
             <span>أي محاولة تلاعب أو احتيال تؤدي إلى إيقاف الحساب فوراً</span>
           </li>
         </ul>
@@ -2916,7 +2919,7 @@ window.addEventListener('beforeinstallprompt', e => {
   banner.className = 'pwa-banner';
   banner.id = 'pwa-banner';
   banner.innerHTML = `
-    <div class="pwa-banner-icon">📲</div>
+    <div class="pwa-banner-icon"><i class="fas fa-mobile-screen-button"></i></div>
     <div class="pwa-banner-text">
       <div class="pwa-banner-title">تثبيت InvestPro</div>
       <div class="pwa-banner-sub">أضفه للشاشة الرئيسية كتطبيق</div>
