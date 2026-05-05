@@ -857,3 +857,173 @@ input:focus-visible {
   transform: translateY(-2px) scale(1.04) !important;
   box-shadow: 0 8px 24px rgba(14, 165, 233, 0.35) !important;
 }
+
+/* ============================================================
+   FINTECH TRUST REFINEMENT — incremental, layout-safe polish
+   ============================================================ */
+
+:root {
+  --pro-bank-surface: #0b1728;
+  --pro-bank-border: rgba(148, 163, 184, 0.14);
+  --pro-bank-shadow: 0 14px 34px rgba(2, 6, 23, 0.38);
+}
+
+.visa-card,
+.chart-card,
+.today-stats-wrap,
+.telegram-card,
+.hourly-profit-card,
+.visa-mini-card,
+.stat-box,
+.tx-item {
+  box-shadow: var(--pro-bank-shadow) !important;
+  border-color: var(--pro-bank-border) !important;
+}
+
+.visa-card,
+.visa-card.card-black,
+.visa-card.card-training,
+.visa-card.card-silver,
+.visa-card.card-gold {
+  background:
+    linear-gradient(135deg, rgba(255,255,255,.045), rgba(255,255,255,0) 42%),
+    linear-gradient(145deg, #07111f 0%, #0b1b2e 54%, #12313a 118%) !important;
+  box-shadow:
+    0 18px 44px rgba(2, 6, 23, .48),
+    inset 0 1px 0 rgba(255,255,255,.08),
+    0 0 0 1px rgba(148,163,184,.12) !important;
+}
+
+.visa-card:hover {
+  transform: translateY(-2px) !important;
+  box-shadow:
+    0 20px 48px rgba(2, 6, 23, .52),
+    inset 0 1px 0 rgba(255,255,255,.08),
+    0 0 0 1px rgba(148,163,184,.16) !important;
+}
+
+.visa-circle-1,
+.visa-circle-2 {
+  opacity: .38 !important;
+  filter: blur(2px);
+}
+
+.visa-balance {
+  letter-spacing: -0.04em !important;
+  text-shadow: none !important;
+}
+
+.visa-balance.balance-updated {
+  animation: balanceUpdatePulse .65s ease;
+}
+
+@keyframes balanceUpdatePulse {
+  0% { color: #86efac; transform: scale(1.015); }
+  100% { color: #fff; transform: scale(1); }
+}
+
+.visa-balance-split {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: -8px 0 5px;
+  color: rgba(226, 232, 240, .58);
+  font-size: .62rem;
+  font-weight: 700;
+}
+
+.visa-balance-split span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 7px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, .34);
+  border: 1px solid rgba(148, 163, 184, .12);
+}
+
+.visa-balance-split strong {
+  color: rgba(248, 250, 252, .92);
+  font-variant-numeric: tabular-nums;
+}
+
+.visa-last-update {
+  position: relative;
+  z-index: 1;
+  margin-bottom: 11px;
+  color: rgba(148, 163, 184, .72);
+  font-size: .58rem;
+  font-weight: 700;
+}
+
+.visa-number {
+  margin-bottom: 13px !important;
+}
+
+.visa-live {
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: rgba(34, 197, 94, .1);
+  border: 1px solid rgba(34, 197, 94, .18);
+}
+
+.visa-live-dot {
+  animation: none !important;
+  box-shadow: 0 0 0 3px rgba(34,197,94,.12);
+}
+
+.action-btn.deposit {
+  background: linear-gradient(145deg, rgba(34,197,94,.18), rgba(14,165,233,.08)) !important;
+  border-color: rgba(34,197,94,.28) !important;
+}
+
+.action-btn.deposit .icon {
+  background: linear-gradient(135deg, #16a34a, #22c55e) !important;
+  color: #fff !important;
+  box-shadow: 0 8px 18px rgba(34,197,94,.18);
+}
+
+.action-btn:not(.deposit) {
+  background: rgba(15, 23, 42, .42) !important;
+}
+
+.action-btn:not(.deposit) .icon {
+  box-shadow: none !important;
+}
+
+.action-btn:hover {
+  transform: translateY(-1px) !important;
+}
+
+.action-btn:active {
+  transform: scale(.97) !important;
+}
+
+.mini-activity-hint {
+  margin: -4px 16px 8px;
+  color: var(--text3);
+  font-size: .68rem;
+  font-weight: 700;
+}
+
+.tx-item {
+  background: rgba(15, 23, 42, .42) !important;
+}
+
+.tx-date::before {
+  content: 'آخر تحديث: ';
+  color: rgba(148, 163, 184, .72);
+}
+
+.vmc-badge,
+.badge {
+  box-shadow: none !important;
+}
+
+.trust-badges {
+  border-top: 1px solid rgba(148,163,184,.08);
+  border-bottom: 1px solid rgba(148,163,184,.08);
+}

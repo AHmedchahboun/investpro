@@ -132,11 +132,18 @@ function _applyAllCalculations() {
 function _syncWalletSummary() {
   const w = _state.wallet;
   if (!w) return;
+  const balanceEl = document.getElementById('d-balance');
+  const previousBalance = balanceEl ? balanceEl.textContent : '';
   const setText = (id, value) => {
     const el = document.getElementById(id);
     if (el) el.textContent = fmt.usd(value);
   };
   setText('d-balance', w.balance || 0);
+  if (balanceEl && previousBalance && previousBalance !== balanceEl.textContent) {
+    balanceEl.classList.remove('balance-updated');
+    void balanceEl.offsetWidth;
+    balanceEl.classList.add('balance-updated');
+  }
   setText('d-deposited', w.totalDeposited || 0);
   setText('d-earned', w.totalEarned || 0);
   setText('w-balance', w.availableProfit || 0);
@@ -145,6 +152,15 @@ function _syncWalletSummary() {
   setText('wallet-card-balance', w.balance || 0);
   setText('wallet-card-earned', w.totalEarned || 0);
   setText('wallet-card-deposited', w.totalDeposited || 0);
+  setText('visa-available-balance', w.balance || 0);
+  setText('visa-frozen-balance', w.frozenProfit || _state.hourlyProfit?.frozenProfit || 0);
+  const updated = document.getElementById('visa-last-update');
+  if (updated) {
+    updated.textContent = 'آخر تحديث: ' + new Date().toLocaleTimeString('ar-MA', {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  }
 }
 
 function _formatCardValidThru(dateValue) {
@@ -248,6 +264,8 @@ function _renderHourlyProfitCard() {
   if (wdAvail) wdAvail.textContent = '$' + Number(hp.availableProfit || 0).toFixed(4);
   if (wdFrozen) wdFrozen.textContent = '$' + Number(hp.frozenProfit || 0).toFixed(4);
   if (wdBalance) wdBalance.textContent = '$' + Number(hp.availableProfit || 0).toFixed(4);
+  const cardFrozen = document.getElementById('visa-frozen-balance');
+  if (cardFrozen) cardFrozen.textContent = '$' + Number(hp.frozenProfit || 0).toFixed(4);
 }
 
 setInterval(() => {

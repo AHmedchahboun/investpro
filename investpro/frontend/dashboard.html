@@ -151,6 +151,11 @@
         <!-- Balance -->
         <div class="visa-balance-label">الرصيد المتاح (USDT)</div>
         <div class="visa-balance" id="d-balance">$0.00</div>
+        <div class="visa-balance-split">
+          <span>متاح <strong id="visa-available-balance">$0.00</strong></span>
+          <span>مجمّد <strong id="visa-frozen-balance">$0.00</strong></span>
+        </div>
+        <div class="visa-last-update" id="visa-last-update">آخر تحديث: الآن</div>
 
         <!-- Card number (derived from referral code — unique per user) -->
         <div class="visa-number" id="visa-number">**** &nbsp;**** &nbsp;**** &nbsp;****</div>
@@ -328,9 +333,10 @@
 
     <!-- Recent Transactions -->
     <div class="section-title">
-      <span>آخر العمليات</span>
+      <span>آخر النشاط</span>
       <span class="section-link" data-go="pg-hist">عرض الكل</span>
     </div>
+    <div class="mini-activity-hint">آخر 3 عمليات فقط — تتم مراجعة السحوبات خلال 24 ساعة</div>
     <div class="tx-list" id="dash-tx-body">
       <div class="tx-item skeleton"></div>
       <div class="tx-item skeleton"></div>
@@ -397,9 +403,9 @@
 
     <!-- Trust Indicators -->
     <div class="trust-badges">
-      <div class="trust-item"><i class="fas fa-shield-alt"></i><span>معاملات آمنة</span></div>
-      <div class="trust-item"><i class="fas fa-bolt"></i><span>نظام آلي 24/7</span></div>
-      <div class="trust-item"><i class="fas fa-link"></i><span>شبكة موثقة</span></div>
+      <div class="trust-item"><i class="fas fa-shield-alt"></i><span>SSL آمن</span></div>
+      <div class="trust-item"><i class="fas fa-circle-check"></i><span>حساب موثق</span></div>
+      <div class="trust-item"><i class="fas fa-clock"></i><span>مراجعة خلال 24h</span></div>
     </div>
 
     <!-- ══ HOW IT WORKS — Investment Explainer ══ -->
