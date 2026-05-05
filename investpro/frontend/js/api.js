@@ -47,6 +47,9 @@ const http = {
         result = await res.json();
       } else {
         const text = await res.text();
+        if (text.trim().startsWith('<!DOCTYPE') || text.trim().startsWith('<html')) {
+          throw new Error('API غير متصل: الخادم أرجع صفحة HTML بدل JSON. تحقق من رابط الباكند في js/config.js');
+        }
         throw new Error(text || 'Server Error');
       }
 

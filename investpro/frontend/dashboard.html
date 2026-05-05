@@ -1314,9 +1314,9 @@
 </div>
 
 <!-- Scripts -->
-<script src="js/config.js"></script>
-<script src="js/api.js?v=globals-20260503"></script>
-<script src="js/fintech-pro.js?v=desktop-notifications-20260503"></script>
+<script src="js/config.js?v=api-origin-20260505"></script>
+<script src="js/api.js?v=api-origin-20260505"></script>
+<script src="js/fintech-pro.js?v=api-origin-20260505"></script>
 <script src="js/entry-modal.js"></script>
 <script>
 /* ════════════════════════════════════════════════════════════
@@ -1970,9 +1970,9 @@ function renderPag(containerId, pag, fn) {
 async function loadVip() {
   try {
     const { levels, userStatus } = await http.get('/vip');
-    _userVipStatus = userStatus;
-    renderVipStatus(userStatus);
-    renderVipPlans(levels, userStatus);
+    _userVipStatus = normalizeVipStatus(userStatus);
+    renderVipStatus(_userVipStatus);
+    renderVipPlans(levels, _userVipStatus);
   } catch (e) {
     console.error('loadVip error:', e);
     document.getElementById('vip-current-status').innerHTML =
@@ -1983,6 +1983,7 @@ async function loadVip() {
 }
 
 function renderVipStatus(s) {
+  s = normalizeVipStatus(s);
   const el = document.getElementById('vip-current-status');
   const vipIcons = { '-1':'😴', '0':'📚', '1':'🥉', '2':'🥈', '3':'🥇', '4':'💎' };
   const vipColors = { '-1':'#64748b', '0':'#06b6d4', '1':'#d97706', '2':'#94a3b8', '3':'#f59e0b', '4':'#38bdf8' };
@@ -2004,7 +2005,7 @@ function renderVipStatus(s) {
 
   const color = vipColors[String(lvl)] || '#06b6d4';
   const icon  = vipIcons[String(lvl)] || '👑';
-  const name  = vipNames[String(lvl)] || `VIP ${lvl}`;
+  const name  = s.currentLevelName || vipNames[String(lvl)] || 'غير نشط';
   const active = s.isActive;
   const totalDays = lvl === 0 ? 5 : 30;
   const pct = totalDays > 0 ? Math.max(0, Math.min(100, ((totalDays - s.daysLeft) / totalDays) * 100)) : 100;
@@ -2032,9 +2033,22 @@ let _vipModalData = null;
 let _vipModalStatus = null;
 const _vipLevelsCache = new Map();
 
+function normalizeVipStatus(status = {}) {
+  const rawLevel = status.currentLevel ?? status.vipLevel ?? status.level ?? -1;
+  const currentLevel = Number.isFinite(Number(rawLevel)) ? Number(rawLevel) : -1;
+  const fallbackDays = currentLevel === 0 ? status.trainingDaysLeft : status.daysLeft;
+  const daysLeft = Number.isFinite(Number(fallbackDays)) ? Number(fallbackDays) : 0;
+  return {
+    ...status,
+    currentLevel,
+    daysLeft,
+    currentLevelName: status.currentLevelName || status.vipName || status.planName,
+  };
+}
+
 function openVipModal(level) {
   const v = _vipLevelsCache.get(level);
-  const status = _userVipStatus;
+  const status = normalizeVipStatus(_userVipStatus);
   if (!v) return;
   _vipModalData = v;
 

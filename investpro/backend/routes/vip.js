@@ -64,10 +64,10 @@ router.post('/start-training', protect, async (req, res) => {
       return res.status(400).json({ success: false, message: 'لقد بدأت التدريب مسبقاً' });
     }
     user.vipLevel         = 0;
-    user.trainingDaysLeft = parseInt(process.env.TRAINING_DAYS || 30);
+    user.trainingDaysLeft = parseInt(process.env.TRAINING_DAYS || 5);
     user.vipActivatedAt   = new Date();
     user.vipLastHourlyRewardAt = user.vipActivatedAt;
-    user.vipExpiresAt     = new Date(user.vipActivatedAt.getTime() + 30 * 86400000);
+    user.vipExpiresAt     = new Date(user.vipActivatedAt.getTime() + user.trainingDaysLeft * 86400000);
     await user.save();
     await processUserHourlyRewards(user._id);
     res.json({ success: true, message: `تم تفعيل فترة التدريب المجانية (${user.trainingDaysLeft} أيام)` });

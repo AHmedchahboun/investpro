@@ -12,10 +12,33 @@ app.set('trust proxy', 1); // Fix rate limiting when behind a proxy
 
 /* ── Security & Parsing ──────────────────────────────────────────────────── */
 app.use(helmet({ contentSecurityPolicy: false }));
-// In production, restrict to the configured SITE_URL; block all other origins.
-// In development (NODE_ENV !== 'production'), allow any origin for convenience.
+const allowedOrigins = [
+  process.env.SITE_URL,
+  process.env.FRONTEND_URL,
+  process.env.RENDER_EXTERNAL_URL,
+  ...(process.env.CORS_ORIGINS || '').split(','),
+]
+  .map(origin => origin && origin.trim())
+  .filter(Boolean);
+
+function isAllowedOrigin(origin) {
+  if (!origin) return true;
+  if (process.env.NODE_ENV !== 'production') return true;
+  if (allowedOrigins.includes(origin)) return true;
+  try {
+    const { hostname } = new URL(origin);
+    return hostname.endsWith('.hostingersite.com');
+  } catch {
+    return false;
+  }
+}
+
+// In production, allow configured frontend origins and Hostinger preview domains.
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production' ? process.env.SITE_URL : true,
+  origin(origin, cb) {
+    if (isAllowedOrigin(origin)) return cb(null, true);
+    return cb(new Error(`CORS blocked origin: ${origin}`));
+  },
   credentials: true,
 }));
 app.use(express.json({ limit: '3mb' }));

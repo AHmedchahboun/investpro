@@ -23,6 +23,8 @@ services:
         sync: false
       - key: SITE_URL
         sync: false
+      - key: CORS_ORIGINS
+        sync: false
       - key: MIN_DEPOSIT
         value: "10"
       - key: MAX_DEPOSIT
@@ -34,7 +36,7 @@ services:
       - key: WITHDRAWAL_FEE
         value: "10"
       - key: TRAINING_DAYS
-        value: "30"
+        value: "5"
       - key: TRAINING_DAILY
         value: "0.10"
       - key: REFERRAL_L1
