@@ -1619,7 +1619,7 @@ async function _updateVisaMiniCards() {
           rejected: { text: '<i class="fas fa-circle"></i> مرفوض',  cls: 'vmc-badge-red' },
         };
         const s = statusMap[lastDep.status] || { text: lastDep.status, cls: 'vmc-badge-muted' };
-        depStatusEl.textContent = s.text;
+        depStatusEl.innerHTML = s.text;
         depStatusEl.className   = `vmc-badge ${s.cls}`;
       }
     } else {
