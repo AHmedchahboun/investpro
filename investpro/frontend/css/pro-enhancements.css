@@ -1,0 +1,859 @@
+/* ============================================================
+   InvestPro — Pro UI Enhancements
+   Toast | Forms | Auth Modal | Cards | Buttons | RTL Polish
+   ============================================================ */
+
+/* ── Google Fonts (Arabic-first) ─────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+/* ── Root Overrides ──────────────────────────────────────── */
+:root {
+  --pro-radius:     16px;
+  --pro-radius-sm:  10px;
+  --pro-radius-lg:  22px;
+  --pro-shadow:     0 8px 32px rgba(0, 0, 0, 0.35);
+  --pro-shadow-lg:  0 20px 60px rgba(0, 0, 0, 0.5);
+  --pro-glow-blue:  rgba(14, 165, 233, 0.25);
+  --pro-glow-green: rgba(34, 197, 94, 0.2);
+  --pro-glow-red:   rgba(239, 68, 68, 0.2);
+  --pro-glow-gold:  rgba(245, 158, 11, 0.2);
+}
+
+/* ── Base Font (Arabic + Latin) ──────────────────────────── */
+body,
+input,
+button,
+select,
+textarea {
+  font-family: 'Noto Sans Arabic', 'Inter', 'Segoe UI', Tahoma, sans-serif !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ============================================================
+   TOAST NOTIFICATIONS
+   (dashboard + index — toast CSS only exists in admin.css)
+   ============================================================ */
+
+.toast-wrap {
+  position: fixed;
+  bottom: 90px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 99999;
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 10px;
+  pointer-events: none;
+  width: min(400px, calc(100vw - 32px));
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 16px;
+  border-radius: 14px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  pointer-events: all;
+  animation: toastIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid transparent;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.4);
+  direction: rtl;
+  text-align: right;
+  line-height: 1.45;
+}
+
+.toast > span:first-child {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 0.8rem;
+  font-weight: 900;
+}
+
+/* Success */
+.toast-s {
+  background: rgba(10, 28, 18, 0.97);
+  border-color: rgba(34, 197, 94, 0.32);
+  color: #a7f3d0;
+}
+.toast-s > span:first-child {
+  background: rgba(34, 197, 94, 0.18);
+  color: #22c55e;
+}
+
+/* Error */
+.toast-e {
+  background: rgba(28, 8, 8, 0.97);
+  border-color: rgba(239, 68, 68, 0.32);
+  color: #fecaca;
+}
+.toast-e > span:first-child {
+  background: rgba(239, 68, 68, 0.18);
+  color: #ef4444;
+}
+
+/* Info */
+.toast-i {
+  background: rgba(6, 16, 32, 0.97);
+  border-color: rgba(56, 189, 248, 0.28);
+  color: #bae6fd;
+}
+.toast-i > span:first-child {
+  background: rgba(14, 165, 233, 0.18);
+  color: #38bdf8;
+}
+
+/* Warning */
+.toast-w {
+  background: rgba(26, 16, 4, 0.97);
+  border-color: rgba(245, 158, 11, 0.32);
+  color: #fde68a;
+}
+.toast-w > span:first-child {
+  background: rgba(245, 158, 11, 0.18);
+  color: #f59e0b;
+}
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateY(18px) scale(0.92); }
+  to   { opacity: 1; transform: translateY(0)   scale(1);    }
+}
+
+/* Desktop: pin to bottom-right */
+@media (min-width: 768px) {
+  .toast-wrap {
+    bottom: 28px;
+    left: auto;
+    right: 28px;
+    transform: none;
+  }
+}
+
+/* ============================================================
+   FORM INPUTS — Focus, Error, Success States
+   ============================================================ */
+
+.form-input {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+.form-input:focus {
+  border-color: rgba(14, 165, 233, 0.55) !important;
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.12) !important;
+  outline: none !important;
+}
+
+.form-input.input-error,
+.form-input.invalid-input {
+  border-color: rgba(239, 68, 68, 0.55) !important;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
+}
+
+.form-input.input-success,
+.form-input.valid-input {
+  border-color: rgba(34, 197, 94, 0.55) !important;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1) !important;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: rgba(100, 116, 139, 0.7) !important;
+  font-style: normal;
+}
+
+/* ── Arabic Error Messages ───────────────────────────────── */
+.form-err,
+.error-msg,
+[id$="-err"],
+[id$="-error"] {
+  font-size: 0.775rem !important;
+  color: #fca5a5 !important;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 20px;
+  margin-top: 5px;
+  line-height: 1.4;
+  font-weight: 500;
+}
+
+.form-err:not(:empty)::before,
+.error-msg:not(:empty)::before {
+  content: '⚠';
+  font-size: 0.7rem;
+  flex-shrink: 0;
+}
+
+/* ── Success message ─────────────────────────────────────── */
+.success-msg {
+  font-size: 0.775rem !important;
+  color: #86efac !important;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 20px;
+  margin-top: 5px;
+  line-height: 1.4;
+  font-weight: 500;
+}
+
+.success-msg:not(:empty)::before {
+  content: '✓';
+  font-size: 0.75rem;
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   AUTH MODAL POLISH
+   ============================================================ */
+
+.modal-overlay,
+.auth-modal {
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+}
+
+.modal-box,
+.auth-box {
+  box-shadow: var(--pro-shadow-lg) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Tab active state */
+.auth-tab.active,
+[data-tab].active {
+  background: rgba(14, 165, 233, 0.15) !important;
+  color: #38bdf8 !important;
+  border: 1px solid rgba(14, 165, 233, 0.22) !important;
+  border-radius: 8px !important;
+}
+
+/* Submit button */
+.form-submit {
+  font-family: 'Noto Sans Arabic', 'Inter', sans-serif !important;
+  letter-spacing: 0 !important;
+  transition: all 0.22s ease !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.form-submit::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0);
+  transition: background 0.15s;
+}
+
+.form-submit:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 28px rgba(14, 165, 233, 0.45) !important;
+}
+
+.form-submit:hover::after {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.form-submit:active {
+  transform: translateY(0) scale(0.98) !important;
+}
+
+/* Modal close button */
+.modal-close,
+.auth-close {
+  transition: background 0.15s, color 0.15s !important;
+}
+
+.modal-close:hover,
+.auth-close:hover {
+  background: rgba(255, 255, 255, 0.12) !important;
+  color: #f1f5f9 !important;
+}
+
+/* ============================================================
+   BUTTONS — Global Polish
+   ============================================================ */
+
+.btn {
+  font-family: 'Noto Sans Arabic', 'Inter', sans-serif !important;
+  transition: all 0.22s ease !important;
+  letter-spacing: 0 !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary {
+  box-shadow: 0 4px 18px var(--pro-glow-blue) !important;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 28px var(--pro-glow-blue) !important;
+  filter: brightness(1.06) !important;
+}
+
+.btn-primary:active {
+  transform: translateY(0) scale(0.97) !important;
+  box-shadow: 0 2px 10px var(--pro-glow-blue) !important;
+}
+
+.btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+/* ── Quick Action Buttons ────────────────────────────────── */
+.action-btn {
+  transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease !important;
+}
+
+.action-btn:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25) !important;
+}
+
+.action-btn:active {
+  transform: scale(0.95) !important;
+}
+
+/* ── VIP Pro Buttons ─────────────────────────────────────── */
+.vip-pro-btn-primary,
+.vip-detail-buy-btn,
+.vip-sticky-cta-btn {
+  transition: all 0.22s ease !important;
+}
+
+.vip-pro-btn-primary:not(:disabled):hover,
+.vip-detail-buy-btn:not(:disabled):hover {
+  filter: brightness(1.08) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 6px 22px rgba(14, 165, 233, 0.35) !important;
+}
+
+/* ============================================================
+   CARDS — Uniform Polish
+   ============================================================ */
+
+.card,
+.vip-card,
+.vip-pro-card,
+.dep-net-card,
+.stat-box {
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+/* ── Balance / VISA Card subtle glow ─────────────────────── */
+.visa-card,
+.balance-card {
+  box-shadow: 0 12px 40px rgba(14, 165, 233, 0.12), 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* ── Wallet tab active gradient ─────────────────────────── */
+.wallet-tab.active {
+  background: linear-gradient(135deg, rgba(14,165,233,0.25), rgba(6,182,212,0.2)) !important;
+  color: #38bdf8 !important;
+  box-shadow: 0 4px 14px rgba(14, 165, 233, 0.2) !important;
+}
+
+/* ── Transaction items ───────────────────────────────────── */
+.tx-item {
+  transition: background 0.15s ease, border-color 0.15s ease !important;
+}
+
+.tx-item:hover {
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* ============================================================
+   VIP PAGE — Current Plan Badge Animation
+   ============================================================ */
+
+.vip-active-badge.on,
+.badge-current {
+  animation: statusGlow 2.5s ease infinite;
+}
+
+@keyframes statusGlow {
+  0%,  100% { box-shadow: 0 0 0 0   rgba(34, 197, 94, 0.35); }
+  50%        { box-shadow: 0 0 0 5px rgba(34, 197, 94, 0);   }
+}
+
+/* ── VIP no-plan call-to-action button ───────────────────── */
+.vip-no-plan .btn,
+.vip-no-plan button {
+  background: linear-gradient(135deg, #0ea5e9, #06b6d4) !important;
+  color: #fff !important;
+  border: none !important;
+  box-shadow: 0 4px 18px rgba(14, 165, 233, 0.35) !important;
+}
+
+/* ============================================================
+   SKELETON SHIMMER (dashboard + index shared)
+   ============================================================ */
+
+.skeleton {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-color: transparent !important;
+  overflow: hidden !important;
+  position: relative !important;
+}
+
+.skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent  0%,
+    rgba(255, 255, 255, 0.05) 50%,
+    transparent 100%
+  );
+  animation: proShimmer 1.6s ease infinite;
+}
+
+@keyframes proShimmer {
+  from { transform: translateX(120%); }
+  to   { transform: translateX(-120%); }
+}
+
+/* ============================================================
+   STATUS BADGES — Arabic-friendly
+   ============================================================ */
+
+.badge,
+.badge-green,
+.badge-gold,
+.badge-red,
+.badge-muted {
+  font-family: 'Noto Sans Arabic', 'Inter', sans-serif !important;
+  font-weight: 700 !important;
+  letter-spacing: 0 !important;
+}
+
+/* ── Pending badge pulse ─────────────────────────────────── */
+.badge-gold {
+  animation: pendingPulse 3s ease infinite;
+}
+
+@keyframes pendingPulse {
+  0%,  100% { opacity: 1; }
+  50%        { opacity: 0.7; }
+}
+
+/* ============================================================
+   DASHBOARD — Layout Spacing Fixes
+   ============================================================ */
+
+/* Visa card wrap spacing */
+.visa-card-wrap {
+  padding: 14px 16px 0 !important;
+}
+
+/* Mini cards below visa */
+.visa-mini-cards {
+  gap: 8px !important;
+}
+
+/* Quick actions consistent spacing */
+.quick-actions {
+  padding: 12px 16px 0 !important;
+  gap: 10px !important;
+}
+
+/* Stats grid */
+.stats-grid {
+  padding: 0 16px !important;
+  gap: 10px !important;
+}
+
+/* Section titles consistent padding */
+.section-title {
+  padding: 16px 16px 10px !important;
+}
+
+/* Transaction list */
+.tx-list {
+  padding: 0 16px !important;
+  gap: 8px !important;
+}
+
+/* Profit strip bottom spacing */
+.profit-strip {
+  margin-bottom: 4px;
+}
+
+/* Hourly profit card */
+.hourly-profit-card {
+  margin: 10px 16px 12px !important;
+}
+
+/* ── Smart state banner ──────────────────────────────────── */
+.dash-state-banner {
+  margin: 10px 16px 0 !important;
+  border-radius: 16px !important;
+  padding: 14px !important;
+}
+
+/* ── Today stats wrap ────────────────────────────────────── */
+.today-stats-wrap {
+  margin: 0 16px 12px !important;
+}
+
+/* ============================================================
+   NOTIFICATION BELL + DROPDOWN
+   ============================================================ */
+
+.notif-bell {
+  position: relative;
+  background: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 50% !important;
+  width: 38px !important;
+  height: 38px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer;
+  transition: background 0.15s ease !important;
+  font-size: 0.95rem;
+}
+
+.notif-bell:hover {
+  background: rgba(255, 255, 255, 0.11) !important;
+}
+
+.notif-badge {
+  position: absolute !important;
+  top: -2px !important;
+  left: -2px !important;
+  min-width: 18px !important;
+  height: 18px !important;
+  border-radius: 9px !important;
+  background: #ef4444 !important;
+  color: #fff !important;
+  font-size: 0.6rem !important;
+  font-weight: 800 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: 2px solid var(--bg, #060d1a) !important;
+  padding: 0 3px !important;
+}
+
+/* ============================================================
+   TOP BAR — Sticky refinement
+   ============================================================ */
+
+.top-bar {
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Theme toggle button */
+.theme-toggle {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 50% !important;
+  width: 38px !important;
+  height: 38px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.15s ease !important;
+}
+
+.theme-toggle:hover {
+  background: rgba(255, 255, 255, 0.11) !important;
+}
+
+/* ============================================================
+   BOTTOM NAVIGATION — Active indicator refinement
+   ============================================================ */
+
+.nav-item {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.nav-item.active .nav-label {
+  font-weight: 700 !important;
+}
+
+/* ============================================================
+   DEPOSIT FLOW — Step nodes
+   ============================================================ */
+
+.dep-step-node.active .dep-step-circle {
+  animation: stepPulse 2s ease infinite;
+}
+
+@keyframes stepPulse {
+  0%,  100% { box-shadow: 0 0 0 0   rgba(14, 165, 233, 0.5); }
+  50%        { box-shadow: 0 0 0 8px rgba(14, 165, 233, 0);   }
+}
+
+/* Copy button feedback */
+.dep-copy-btn.copied,
+.dep-copy-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.3) !important;
+}
+
+/* ============================================================
+   TXID INPUT — Validation feedback
+   ============================================================ */
+
+.txid-status.valid  { color: #22c55e !important; }
+.txid-status.invalid { color: #ef4444 !important; }
+
+/* ============================================================
+   INFO / WARNING BOXES — Improved Arabic readability
+   ============================================================ */
+
+.info-box,
+.dep-danger-box,
+.dep-recap-box {
+  line-height: 1.65 !important;
+  font-family: 'Noto Sans Arabic', 'Inter', sans-serif !important;
+}
+
+.dep-danger-list li {
+  line-height: 1.65 !important;
+  font-size: 0.8rem !important;
+}
+
+/* ============================================================
+   REFERRAL CODE — Copy box polish
+   ============================================================ */
+
+.input-with-button .form-input {
+  letter-spacing: 1px !important;
+  font-family: 'SFMono-Regular', 'Consolas', monospace !important;
+  font-size: 0.82rem !important;
+}
+
+/* ============================================================
+   HISTORY TABLE — Responsive overflow
+   ============================================================ */
+
+.tx-table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: var(--pro-radius);
+  margin: 0 16px;
+}
+
+.tx-table-wrap table {
+  min-width: 480px;
+  width: 100%;
+}
+
+/* ============================================================
+   LANDING PAGE (index.html) IMPROVEMENTS
+   ============================================================ */
+
+/* Hero section font */
+.hero-title,
+.hero-sub,
+.hero-badge {
+  font-family: 'Noto Sans Arabic', 'Inter', sans-serif !important;
+}
+
+/* VIP cards on landing */
+.vip-scroll .vip-card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease !important;
+}
+
+.vip-scroll .vip-card:hover {
+  transform: translateY(-5px) !important;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.45) !important;
+}
+
+/* How-it-works steps */
+.hiw-num {
+  transition: box-shadow 0.2s ease !important;
+}
+
+.hiw-step:hover .hiw-num {
+  box-shadow: 0 0 0 6px rgba(14, 165, 233, 0.15) !important;
+}
+
+/* Market cards */
+.m-card {
+  transition: transform 0.2s ease, border-color 0.2s ease !important;
+}
+
+/* Stats band counters */
+.stat-val {
+  font-variant-numeric: tabular-nums !important;
+}
+
+/* ── Auth modal heading ───────────────────────────────────── */
+.modal-box h2,
+.auth-box h2,
+.modal-box h3 {
+  font-family: 'Noto Sans Arabic', 'Inter', sans-serif !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.02em;
+}
+
+/* ── Form foot link ──────────────────────────────────────── */
+.form-foot a,
+.form-foot a:hover {
+  transition: color 0.2s ease !important;
+}
+
+.form-foot a:hover {
+  color: #38bdf8 !important;
+}
+
+/* ── RTL fix for inputs ──────────────────────────────────── */
+.form-input[type="text"],
+.form-input[type="email"],
+.form-input[type="number"] {
+  text-align: right !important;
+  direction: rtl !important;
+}
+
+.form-input[type="password"] {
+  letter-spacing: 0.15em;
+  text-align: right !important;
+  direction: rtl !important;
+}
+
+/* ============================================================
+   MOBILE OVERFLOW GUARD
+   ============================================================ */
+
+* {
+  -webkit-overflow-scrolling: touch;
+}
+
+body {
+  overflow-x: hidden !important;
+}
+
+/* ── Safe area bottom padding ────────────────────────────── */
+@media (max-width: 768px) {
+  body {
+    padding-bottom: calc(62px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  .toast-wrap {
+    bottom: 78px !important;
+  }
+
+  /* Prevent text from touching screen edges */
+  .page-content {
+    min-height: calc(100vh - 120px);
+  }
+
+  /* Fix overlapping in quick actions on very small screens */
+  @media (max-width: 360px) {
+    .quick-actions {
+      grid-template-columns: repeat(2, 1fr) !important;
+    }
+
+    .action-btn span {
+      font-size: 0.65rem !important;
+    }
+  }
+}
+
+/* ============================================================
+   DESKTOP CENTERING (max 480px app shell)
+   ============================================================ */
+
+@media (min-width: 768px) {
+  .bottom-nav {
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%) !important;
+    width: 480px !important;
+    border-radius: 0 !important;
+  }
+}
+
+/* ============================================================
+   SCROLL IMPROVEMENTS
+   ============================================================ */
+
+.vip-scroll-container,
+.vip-trust-strip,
+.vip-filter-tabs,
+.profit-strip,
+.trust-badges {
+  scroll-snap-type: none;
+  overscroll-behavior-x: contain;
+}
+
+/* ============================================================
+   FOCUS VISIBLE — keyboard accessibility
+   ============================================================ */
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible {
+  outline: 2px solid rgba(14, 165, 233, 0.6) !important;
+  outline-offset: 2px !important;
+}
+
+/* ============================================================
+   LOADING SPINNER (btnLoad) — refined
+   ============================================================ */
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ============================================================
+   PAGE TRANSITION
+   ============================================================ */
+
+.page-content {
+  animation: proPageIn 0.22s ease forwards !important;
+}
+
+@keyframes proPageIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   TICKER BAR — spacing refinement
+   ============================================================ */
+
+.ticker-bar,
+.ticker-wrap {
+  font-family: 'Noto Sans Arabic', 'Inter', sans-serif !important;
+}
+
+.platform-news-track span {
+  font-family: 'Noto Sans Arabic', 'Inter', sans-serif !important;
+  font-size: 0.72rem !important;
+}
+
+/* ============================================================
+   SUPPORT / HELP BUTTON — floating
+   ============================================================ */
+
+.support-fab,
+[id="ai-support-btn"],
+.ai-support-btn {
+  transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+.support-fab:hover,
+[id="ai-support-btn"]:hover {
+  transform: translateY(-2px) scale(1.04) !important;
+  box-shadow: 0 8px 24px rgba(14, 165, 233, 0.35) !important;
+}
