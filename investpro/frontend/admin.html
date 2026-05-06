@@ -940,7 +940,7 @@ async function loadUsers(page = 1) {
         <td>
           ${u.isFrozen
             ? '<span class="badge badge-red"><i class="fas fa-lock"></i> مجمد</span>'
-            : '<span class="badge badge-green"><i class="fas fa-check"></i> نشط</span>'
+            : '<span class="badge badge-green"><i class="fas fa-check"></i> نشط</span>'}
           ${u.isAdmin ? '<span class="badge badge-blue">مشرف</span>' : ''}
         </td>
         <td onclick="event.stopPropagation()">
