@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="768" height="768" viewBox="0 0 768 768" fill="none">
+  <defs>
+    <linearGradient id="metal" x1="158" y1="104" x2="604" y2="650" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2d4058"/>
+      <stop offset="0.28" stop-color="#0c1728"/>
+      <stop offset="0.72" stop-color="#08111e"/>
+      <stop offset="1" stop-color="#17263a"/>
+    </linearGradient>
+    <linearGradient id="edge" x1="180" y1="110" x2="590" y2="624" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#38bdf8"/>
+      <stop offset="0.38" stop-color="#ffffff" stop-opacity="0.34"/>
+      <stop offset="0.72" stop-color="#22c55e" stop-opacity="0.78"/>
+      <stop offset="1" stop-color="#020617"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="245" y1="165" x2="530" y2="560" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#fff7ad"/>
+      <stop offset="0.25" stop-color="#fbbf24"/>
+      <stop offset="0.58" stop-color="#c78010"/>
+      <stop offset="1" stop-color="#5d3604"/>
+    </linearGradient>
+    <linearGradient id="cyan" x1="180" y1="140" x2="570" y2="570" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#e0faff"/>
+      <stop offset="0.22" stop-color="#38bdf8"/>
+      <stop offset="0.72" stop-color="#22c55e"/>
+      <stop offset="1" stop-color="#0f172a"/>
+    </linearGradient>
+    <radialGradient id="halo" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(384 386) rotate(90) scale(292)">
+      <stop stop-color="#38bdf8" stop-opacity="0.34"/>
+      <stop offset="0.52" stop-color="#22c55e" stop-opacity="0.10"/>
+      <stop offset="1" stop-color="#38bdf8" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="heavyShadow" x="54" y="56" width="660" height="666" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="35" stdDeviation="36" flood-color="#000000" flood-opacity="0.62"/>
+      <feDropShadow dx="0" dy="0" stdDeviation="22" flood-color="#38bdf8" flood-opacity="0.18"/>
+    </filter>
+    <filter id="objectShadow" x="118" y="110" width="532" height="540" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#000000" flood-opacity="0.44"/>
+      <feDropShadow dx="0" dy="0" stdDeviation="13" flood-color="#38bdf8" flood-opacity="0.28"/>
+    </filter>
+  </defs>
+  <g filter="url(#heavyShadow)">
+    <ellipse cx="384" cy="610" rx="220" ry="36" fill="#000000" fill-opacity="0.38"/>
+    <rect x="110" y="96" width="548" height="548" rx="138" fill="url(#metal)"/>
+    <rect x="114" y="100" width="540" height="540" rx="134" stroke="url(#edge)" stroke-width="8"/>
+    <path d="M172 229C205 138 309 122 384 122C506 122 587 183 612 276" stroke="#ffffff" stroke-opacity="0.12" stroke-width="28" stroke-linecap="round"/>
+    <circle cx="384" cy="374" r="248" fill="url(#halo)"/>
+    <path d="M166 506C240 611 510 614 596 490" stroke="#ffffff" stroke-opacity="0.055" stroke-width="24" stroke-linecap="round"/>
+  </g>
+  <g filter="url(#objectShadow)">
+    <rect x="196" y="216" width="376" height="292" rx="54" fill="url(#metal)" stroke="url(#edge)" stroke-width="10"/>
+  <path d="M224 250C288 224 480 224 544 250" stroke="#ffffff" stroke-opacity="0.18" stroke-width="12" stroke-linecap="round"/>
+    <path d="M262 438V364M384 438V292M506 438V330" stroke="url(#cyan)" stroke-width="38" stroke-linecap="round"/>
+    <path d="M242 274H526M242 484H526" stroke="#ffffff" stroke-opacity=".18" stroke-width="14" stroke-linecap="round"/>
+  </g>
+</svg>

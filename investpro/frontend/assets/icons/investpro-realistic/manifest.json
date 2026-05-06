@@ -1,0 +1,116 @@
+{
+  "name": "InvestPro Realistic Premium Fintech Icon System",
+  "size": 768,
+  "transparentPng": true,
+  "visualDirection": "realistic premium banking, semi-3D, dark navy, metallic glass, cyan emerald and gold accents",
+  "icons": [
+    {
+      "id": "wallet",
+      "title": "Wallet",
+      "svg": "svg/wallet.svg",
+      "png": "png/wallet.png"
+    },
+    {
+      "id": "deposit",
+      "title": "Deposit",
+      "svg": "svg/deposit.svg",
+      "png": "png/deposit.png"
+    },
+    {
+      "id": "withdraw",
+      "title": "Withdraw",
+      "svg": "svg/withdraw.svg",
+      "png": "png/withdraw.png"
+    },
+    {
+      "id": "vip-crown",
+      "title": "VIP Crown",
+      "svg": "svg/vip-crown.svg",
+      "png": "png/vip-crown.png"
+    },
+    {
+      "id": "daily-profit",
+      "title": "Daily Profit",
+      "svg": "svg/daily-profit.svg",
+      "png": "png/daily-profit.png"
+    },
+    {
+      "id": "referral-bonus",
+      "title": "Referral Bonus",
+      "svg": "svg/referral-bonus.svg",
+      "png": "png/referral-bonus.png"
+    },
+    {
+      "id": "team-members",
+      "title": "Team Members",
+      "svg": "svg/team-members.svg",
+      "png": "png/team-members.png"
+    },
+    {
+      "id": "ai-trading",
+      "title": "AI Trading",
+      "svg": "svg/ai-trading.svg",
+      "png": "png/ai-trading.png"
+    },
+    {
+      "id": "security-shield",
+      "title": "Security Shield",
+      "svg": "svg/security-shield.svg",
+      "png": "png/security-shield.png"
+    },
+    {
+      "id": "verification-badge",
+      "title": "Verification Badge",
+      "svg": "svg/verification-badge.svg",
+      "png": "png/verification-badge.png"
+    },
+    {
+      "id": "locked-balance",
+      "title": "Locked Balance",
+      "svg": "svg/locked-balance.svg",
+      "png": "png/locked-balance.png"
+    },
+    {
+      "id": "statistics",
+      "title": "Statistics",
+      "svg": "svg/statistics.svg",
+      "png": "png/statistics.png"
+    },
+    {
+      "id": "notifications",
+      "title": "Notifications",
+      "svg": "svg/notifications.svg",
+      "png": "png/notifications.png"
+    },
+    {
+      "id": "telegram-community",
+      "title": "Telegram Community",
+      "svg": "svg/telegram-community.svg",
+      "png": "png/telegram-community.png"
+    },
+    {
+      "id": "customer-support",
+      "title": "Customer Support",
+      "svg": "svg/customer-support.svg",
+      "png": "png/customer-support.png"
+    },
+    {
+      "id": "investment-plans",
+      "title": "Investment Plans",
+      "svg": "svg/investment-plans.svg",
+      "png": "png/investment-plans.png"
+    },
+    {
+      "id": "market-analytics",
+      "title": "Market Analytics",
+      "svg": "svg/market-analytics.svg",
+      "png": "png/market-analytics.png"
+    },
+    {
+      "id": "smart-automation",
+      "title": "Smart Automation",
+      "svg": "svg/smart-automation.svg",
+      "png": "png/smart-automation.png"
+    }
+  ]
+}
