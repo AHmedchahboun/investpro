@@ -566,12 +566,16 @@ function fmtCasa(iso) {
    Init
    ════════════════════════════════════════ */
 async function init() {
-  if (!auth.check()) return;
-  if (!auth.isAdmin()) { toast('غير مصرح', 'e'); auth.logout(); return; }
-  const u = auth.user();
-  document.getElementById('sb-avatar').textContent = (u?.name || 'A')[0].toUpperCase();
-  document.getElementById('sb-name').textContent   = u?.name || 'مشرف';
-  await loadDashboard();
+  try {
+    if (!auth.check()) return;
+    if (!auth.isAdmin()) { toast('غير مصرح', 'e'); auth.logout(); return; }
+    const u = auth.user();
+    document.getElementById('sb-avatar').textContent = (u?.name || 'A')[0].toUpperCase();
+    document.getElementById('sb-name').textContent   = u?.name || 'مشرف';
+    await loadDashboard();
+  } catch (e) {
+    renderAdminLoadError(e);
+  }
 }
 
 /* ════════════════════════════════════════
@@ -598,12 +602,41 @@ function go(pageId) {
 async function loadDashboard() {
   try {
     const data = await http.get('/admin/dashboard');
+    if (!data?.stats) throw new Error('تعذر قراءة بيانات لوحة التحكم');
     const s = data.stats;
     renderAdminStats(s);
     renderPendingAlerts(s);
-    renderVipChart(s.vipDistribution);
+    try {
+      renderVipChart(s.vipDistribution);
+    } catch (chartErr) {
+      console.warn('VIP chart render failed:', chartErr);
+      renderVipChartFallback(s.vipDistribution);
+    }
     updateBadges(s.pendingDeposits, s.pendingWithdraws);
-  } catch (e) { toast(e.message, 'e'); }
+  } catch (e) {
+    renderAdminLoadError(e);
+    toast(e.message, 'e');
+  }
+}
+
+function renderAdminLoadError(e) {
+  const msg = esc(e?.message || 'تعذر تحميل بيانات لوحة التحكم');
+  const grid = document.getElementById('admin-stats-grid');
+  if (grid) {
+    grid.innerHTML = `
+      <div class="card" style="grid-column:1/-1;border-color:rgba(239,68,68,.35)">
+        <div class="card-body" style="text-align:center;padding:28px">
+          <div style="color:var(--red);font-size:1.05rem;font-weight:800;margin-bottom:8px">
+            <i class="fas fa-triangle-exclamation"></i> تعذر تحميل لوحة التحكم
+          </div>
+          <div style="color:var(--text2);margin-bottom:14px">${msg}</div>
+          <button class="btn btn-teal" onclick="loadDashboard()">إعادة المحاولة</button>
+        </div>
+      </div>`;
+  }
+
+  const alerts = document.getElementById('pending-alerts');
+  if (alerts) alerts.innerHTML = `<div class="err-box">${msg}</div>`;
 }
 
 function renderAdminStats(s) {
@@ -666,7 +699,14 @@ function renderPendingAlerts(s) {
 }
 
 function renderVipChart(dist) {
-  if (!dist?.length) return;
+  if (!dist?.length) {
+    renderVipChartFallback(dist);
+    return;
+  }
+  if (typeof Chart === 'undefined') {
+    renderVipChartFallback(dist);
+    return;
+  }
   const labels = dist.map(d => VIP_NAMES[String(d._id)] || `L${d._id}`);
   const counts  = dist.map(d => d.count);
   const colors  = dist.map(d => VIP_COLORS[String(d._id)] || '#999');
@@ -686,6 +726,24 @@ function renderVipChart(dist) {
       <span style="color:var(--text2)">${labels[i]}: </span>
       <span style="font-weight:600">${counts[i]}</span>
     </div>`).join('');
+}
+
+function renderVipChartFallback(dist) {
+  const legend = document.getElementById('vip-chart-legend');
+  if (!legend) return;
+  if (!dist?.length) {
+    legend.innerHTML = '<div style="color:var(--text3);padding:10px">لا توجد بيانات VIP بعد</div>';
+    return;
+  }
+  legend.innerHTML = dist.map(d => {
+    const label = VIP_NAMES[String(d._id)] || `L${d._id}`;
+    const color = VIP_COLORS[String(d._id)] || '#64748b';
+    return `<div style="display:flex;align-items:center;gap:6px;margin-bottom:7px">
+      <span style="width:10px;height:10px;border-radius:50%;background:${color};flex-shrink:0"></span>
+      <span style="color:var(--text2)">${label}: </span>
+      <span style="font-weight:700">${d.count || 0}</span>
+    </div>`;
+  }).join('');
 }
 
 function updateBadges(deps, wds) {
