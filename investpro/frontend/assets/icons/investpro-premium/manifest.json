@@ -1,0 +1,117 @@
+{
+  "name": "InvestPro Premium Fintech Icon Pack",
+  "version": "1.0.0",
+  "style": "premium 3D fintech, dark navy, gold, electric blue, emerald, glassmorphism",
+  "size": 512,
+  "transparentPng": true,
+  "icons": [
+    {
+      "id": "wallet-balance",
+      "title": "Wallet / Balance",
+      "svg": "svg/wallet-balance.svg",
+      "png": "png/wallet-balance.png"
+    },
+    {
+      "id": "deposit",
+      "title": "Deposit",
+      "svg": "svg/deposit.svg",
+      "png": "png/deposit.png"
+    },
+    {
+      "id": "withdraw",
+      "title": "Withdraw",
+      "svg": "svg/withdraw.svg",
+      "png": "png/withdraw.png"
+    },
+    {
+      "id": "vip-plans",
+      "title": "VIP Plans",
+      "svg": "svg/vip-plans.svg",
+      "png": "png/vip-plans.png"
+    },
+    {
+      "id": "daily-profit",
+      "title": "Daily Profit",
+      "svg": "svg/daily-profit.svg",
+      "png": "png/daily-profit.png"
+    },
+    {
+      "id": "referral-rewards",
+      "title": "Referral Rewards",
+      "svg": "svg/referral-rewards.svg",
+      "png": "png/referral-rewards.png"
+    },
+    {
+      "id": "team-users",
+      "title": "Team / Users",
+      "svg": "svg/team-users.svg",
+      "png": "png/team-users.png"
+    },
+    {
+      "id": "security-shield",
+      "title": "Security Shield",
+      "svg": "svg/security-shield.svg",
+      "png": "png/security-shield.png"
+    },
+    {
+      "id": "verification",
+      "title": "Verification",
+      "svg": "svg/verification.svg",
+      "png": "png/verification.png"
+    },
+    {
+      "id": "notifications",
+      "title": "Notifications",
+      "svg": "svg/notifications.svg",
+      "png": "png/notifications.png"
+    },
+    {
+      "id": "trading-growth-chart",
+      "title": "Trading / Growth Chart",
+      "svg": "svg/trading-growth-chart.svg",
+      "png": "png/trading-growth-chart.png"
+    },
+    {
+      "id": "ai-robot-assistant",
+      "title": "AI Robot Assistant",
+      "svg": "svg/ai-robot-assistant.svg",
+      "png": "png/ai-robot-assistant.png"
+    },
+    {
+      "id": "telegram-community",
+      "title": "Telegram Community",
+      "svg": "svg/telegram-community.svg",
+      "png": "png/telegram-community.png"
+    },
+    {
+      "id": "support-center",
+      "title": "Support Center",
+      "svg": "svg/support-center.svg",
+      "png": "png/support-center.png"
+    },
+    {
+      "id": "statistics-dashboard",
+      "title": "Statistics Dashboard",
+      "svg": "svg/statistics-dashboard.svg",
+      "png": "png/statistics-dashboard.png"
+    },
+    {
+      "id": "locked-funds",
+      "title": "Locked Funds",
+      "svg": "svg/locked-funds.svg",
+      "png": "png/locked-funds.png"
+    },
+    {
+      "id": "completed-tasks",
+      "title": "Completed Tasks",
+      "svg": "svg/completed-tasks.svg",
+      "png": "png/completed-tasks.png"
+    },
+    {
+      "id": "investment-packages",
+      "title": "Investment Packages",
+      "svg": "svg/investment-packages.svg",
+      "png": "png/investment-packages.png"
+    }
+  ]
+}
