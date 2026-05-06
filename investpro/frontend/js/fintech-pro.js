@@ -8,22 +8,13 @@
    Source of truth for rate calculations
 ──────────────────────────────────────────────────────────── */
 const VIP_CONFIG = {
-  '-1': { name: 'غير نشط',  dailyProfit: 0,     dailyBonus: 0,    monthlyPct: 0  },
-   '0': { name: 'تدريب',    dailyProfit: 0.10,  dailyBonus: 0,    monthlyPct: 0  },
-   '1': { name: 'برونزي',   dailyProfit: 0.40,  dailyBonus: 0.10, monthlyPct: 20 },
-   '2': { name: 'فضي',      dailyProfit: 1.25,  dailyBonus: 0.20, monthlyPct: 25 },
-   '3': { name: 'ذهبي',     dailyProfit: 4.33,  dailyBonus: 0.30, monthlyPct: 30 },
-   '4': { name: 'ماسي',     dailyProfit: 13.50, dailyBonus: 0,    monthlyPct: 35 },
+  '-1': { name: 'غير نشط',  dailyProfit: 0,     dailyBonus: 0, monthlyPct: 0   },
+  '0':  { name: 'التدريب',  dailyProfit: 0.10,  dailyBonus: 0, monthlyPct: 0   },
+  '1':  { name: 'البرونزي', dailyProfit: 0.50,  dailyBonus: 0, monthlyPct: 150 },
+  '2':  { name: 'الفضي',    dailyProfit: 1.50,  dailyBonus: 0, monthlyPct: 150 },
+  '3':  { name: 'الذهبي',   dailyProfit: 5.00,  dailyBonus: 0, monthlyPct: 150 },
+  '4':  { name: 'الماسي',   dailyProfit: 17.00, dailyBonus: 0, monthlyPct: 170 },
 };
-
-Object.assign(VIP_CONFIG, {
-  '-1': { name: 'غير نشط', dailyProfit: 0, dailyBonus: 0, monthlyPct: 0 },
-  '0':  { name: 'التدريب', dailyProfit: 0.10, dailyBonus: 0, monthlyPct: 0 },
-  '1':  { name: 'البرونزي', dailyProfit: 0.50, dailyBonus: 0, monthlyPct: 0 },
-  '2':  { name: 'الفضي', dailyProfit: 1.50, dailyBonus: 0, monthlyPct: 0 },
-  '3':  { name: 'الذهبي', dailyProfit: 5.00, dailyBonus: 0, monthlyPct: 0 },
-  '4':  { name: 'الماسي', dailyProfit: 17.00, dailyBonus: 0, monthlyPct: 0 },
-});
 
 /* ────────────────────────────────────────────────────────────
    STATE — single source of truth, set once from API
