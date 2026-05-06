@@ -9,14 +9,16 @@ const DEMO = {
   email: 'ahmed.moujdobe.demo@gmail.com',
   passwordHash: '$2a$12$8oOSVGq29SDq0xAn0YmwJuMt1k4SAHsXnxvsLq6zqo3MfrZSe3mAG',
   vipLevel: 3,
-  grossBalance: 546,
   totalDeposited: 100,
   dailyProfit: 5,
-  withdrawals: [66, 211, 22, 10],
+  profitDays: 30,
+  approvedWithdrawals: [66, 22, 10],
+  rejectedWithdrawals: [211],
 };
 
-DEMO.totalWithdrawn = DEMO.withdrawals.reduce((sum, amount) => sum + amount, 0);
-DEMO.balance = DEMO.grossBalance - DEMO.totalWithdrawn;
+DEMO.totalEarned = DEMO.dailyProfit * DEMO.profitDays;
+DEMO.totalWithdrawn = DEMO.approvedWithdrawals.reduce((sum, amount) => sum + amount, 0);
+DEMO.balance = DEMO.totalEarned - DEMO.totalWithdrawn;
 
 async function upsertDemoUser(now, expiresAt) {
   let user = await User.findOne({ email: DEMO.email });
@@ -76,10 +78,12 @@ async function seedDemoAccount() {
   const now = new Date();
   const oneMonthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
   const withdrawalDates = [
-    new Date(now.getTime() - 24 * 24 * 60 * 60 * 1000),
-    new Date(now.getTime() - 17 * 24 * 60 * 60 * 1000),
+    new Date(now.getTime() - 18 * 24 * 60 * 60 * 1000),
     new Date(now.getTime() - 9 * 24 * 60 * 60 * 1000),
     new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000),
+  ];
+  const rejectedWithdrawalDates = [
+    new Date(now.getTime() - 1 * 24 * 60 * 60 * 1000),
   ];
   const expiresAt = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
   const cycleStart = new Date(now);
@@ -94,7 +98,7 @@ async function seedDemoAccount() {
         balance: DEMO.balance,
         totalDeposited: DEMO.totalDeposited,
         totalWithdrawn: DEMO.totalWithdrawn,
-        totalEarned: DEMO.grossBalance,
+        totalEarned: DEMO.totalEarned,
         availableProfit: DEMO.balance,
         frozenProfit: 0,
         pendingWithdraw: 0,
@@ -131,16 +135,20 @@ async function seedDemoAccount() {
       createdAt: now,
       approvedAt: now,
     },
-    {
-      user: user._id,
-      type: 'daily_profit',
-      amount: DEMO.grossBalance,
-      status: 'approved',
-      note: `${DEMO.marker}: withdrawable demo balance`,
-      createdAt: now,
-      approvedAt: now,
-    },
-    ...DEMO.withdrawals.map((amount, index) => {
+    ...Array.from({ length: DEMO.profitDays }, (_, index) => {
+      const createdAt = new Date(oneMonthAgo.getTime() + (index + 1) * 24 * 60 * 60 * 1000);
+
+      return {
+        user: user._id,
+        type: 'daily_profit',
+        amount: DEMO.dailyProfit,
+        status: 'approved',
+        note: `${DEMO.marker}: VIP Gold daily profit day ${index + 1}`,
+        createdAt,
+        approvedAt: createdAt,
+      };
+    }),
+    ...DEMO.approvedWithdrawals.map((amount, index) => {
       const fee = +(amount * 0.1).toFixed(2);
       const netAmount = +(amount - fee).toFixed(2);
       const createdAt = withdrawalDates[index] || now;
@@ -152,12 +160,30 @@ async function seedDemoAccount() {
         fee,
         netAmount,
         status: 'approved',
-        paymentMethod: 'usdt_trc20',
+        paymentMethod: 'TRC20',
         toAddress: `DEMO-${index + 1}-WITHDRAW-ADDRESS`,
         txHash: `${DEMO.marker}_WITHDRAW_${index + 1}_${amount}_${user._id}`,
-        note: `${DEMO.marker}: separated approved withdrawal ${amount}`,
+        note: `${DEMO.marker}: approved VIP profit withdrawal ${amount}`,
         createdAt,
         approvedAt: createdAt,
+      };
+    }),
+    ...DEMO.rejectedWithdrawals.map((amount, index) => {
+      const createdAt = rejectedWithdrawalDates[index] || now;
+
+      return {
+        user: user._id,
+        type: 'withdraw',
+        amount,
+        fee: 0,
+        netAmount: 0,
+        status: 'rejected',
+        paymentMethod: 'TRC20',
+        toAddress: `DEMO-REJECTED-${index + 1}-WITHDRAW-ADDRESS`,
+        txHash: `${DEMO.marker}_REJECTED_WITHDRAW_${index + 1}_${amount}_${user._id}`,
+        note: `${DEMO.marker}: rejected because it exceeds available VIP profit`,
+        adminNote: 'Insufficient available VIP profit for this withdrawal amount.',
+        createdAt,
       };
     }),
   ]);
