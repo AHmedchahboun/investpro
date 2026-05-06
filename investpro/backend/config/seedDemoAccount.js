@@ -9,10 +9,14 @@ const DEMO = {
   email: 'ahmed.moujdobe.demo@gmail.com',
   passwordHash: '$2a$12$8oOSVGq29SDq0xAn0YmwJuMt1k4SAHsXnxvsLq6zqo3MfrZSe3mAG',
   vipLevel: 3,
-  balance: 546,
+  grossBalance: 546,
   totalDeposited: 100,
   dailyProfit: 5,
+  withdrawals: [66, 211, 22, 10],
 };
+
+DEMO.totalWithdrawn = DEMO.withdrawals.reduce((sum, amount) => sum + amount, 0);
+DEMO.balance = DEMO.grossBalance - DEMO.totalWithdrawn;
 
 async function upsertDemoUser(now, expiresAt) {
   let user = await User.findOne({ email: DEMO.email });
@@ -71,6 +75,12 @@ async function seedDemoAccount() {
 
   const now = new Date();
   const oneMonthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+  const withdrawalDates = [
+    new Date(now.getTime() - 24 * 24 * 60 * 60 * 1000),
+    new Date(now.getTime() - 17 * 24 * 60 * 60 * 1000),
+    new Date(now.getTime() - 9 * 24 * 60 * 60 * 1000),
+    new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000),
+  ];
   const expiresAt = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
   const cycleStart = new Date(now);
   cycleStart.setMinutes(0, 0, 0);
@@ -83,10 +93,11 @@ async function seedDemoAccount() {
       $set: {
         balance: DEMO.balance,
         totalDeposited: DEMO.totalDeposited,
-        totalWithdrawn: 0,
-        totalEarned: DEMO.balance,
+        totalWithdrawn: DEMO.totalWithdrawn,
+        totalEarned: DEMO.grossBalance,
         availableProfit: DEMO.balance,
         frozenProfit: 0,
+        pendingWithdraw: 0,
         lastDepositAt: oneMonthAgo,
       },
     },
@@ -123,12 +134,32 @@ async function seedDemoAccount() {
     {
       user: user._id,
       type: 'daily_profit',
-      amount: DEMO.balance,
+      amount: DEMO.grossBalance,
       status: 'approved',
       note: `${DEMO.marker}: withdrawable demo balance`,
       createdAt: now,
       approvedAt: now,
     },
+    ...DEMO.withdrawals.map((amount, index) => {
+      const fee = +(amount * 0.1).toFixed(2);
+      const netAmount = +(amount - fee).toFixed(2);
+      const createdAt = withdrawalDates[index] || now;
+
+      return {
+        user: user._id,
+        type: 'withdraw',
+        amount,
+        fee,
+        netAmount,
+        status: 'approved',
+        paymentMethod: 'usdt_trc20',
+        toAddress: `DEMO-${index + 1}-WITHDRAW-ADDRESS`,
+        txHash: `${DEMO.marker}_WITHDRAW_${index + 1}_${amount}_${user._id}`,
+        note: `${DEMO.marker}: separated approved withdrawal ${amount}`,
+        createdAt,
+        approvedAt: createdAt,
+      };
+    }),
   ]);
 
   await HourlyProfit.deleteMany({ user: user._id, planName: new RegExp('^' + DEMO.marker + ':') });
