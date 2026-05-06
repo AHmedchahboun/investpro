@@ -20,6 +20,7 @@
   <link rel="stylesheet" href="css/mobile.css?v=desktop-notifications-20260503">
   <link rel="stylesheet" href="css/entry-modal.css">
   <link rel="stylesheet" href="css/pro-enhancements.css">
+  <link rel="stylesheet" href="css/premium-ui.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 <body>
@@ -2200,7 +2201,7 @@ function renderVipPlans(levels, status) {
 
     // Badge
     let badgeHtml = '';
-    if (isCurrent)    badgeHtml = `<div class="vip-pro-badge badge-current">باقتك الحالية ✓</div>`;
+    if (isCurrent)    badgeHtml = `<div class="vip-pro-badge badge-current"><i class="fas fa-check"></i> باقتك الحالية</div>`;
     else if (v.badge) badgeHtml = `<div class="vip-pro-badge badge-recommended">${v.badge}</div>`;
 
     // Subscribers
@@ -2237,7 +2238,7 @@ function renderVipPlans(levels, status) {
     // CTA
     let ctaHtml = '';
     if (isCurrent) {
-      ctaHtml = `<button class="vip-pro-btn-primary" style="background:#1a3050;cursor:default" disabled>✓ باقتك الحالية</button>`;
+      ctaHtml = `<button class="vip-pro-btn-primary" style="background:#1a3050;cursor:default" disabled><i class="fas fa-check"></i> باقتك الحالية</button>`;
     } else if (v.isTraining && status.currentLevel === -1) {
       ctaHtml = `<button class="vip-pro-btn-primary"
         style="background:linear-gradient(135deg,#0ea5e9,#06b6d4)"
@@ -2790,7 +2791,7 @@ function checkWelcomeModal() {
         </div>
         <ul class="wm-terms-list">
           <li>
-            <span class="wm-term-icon wm-ok">⚖️</span>
+            <span class="wm-term-icon wm-ok"><i class="fas fa-scale-balanced"></i></span>
             <span>استخدام المنصة يعني موافقتك على جميع الشروط والأحكام</span>
           </li>
           <li>

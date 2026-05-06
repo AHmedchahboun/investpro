@@ -1,0 +1,344 @@
+/* ============================================================
+   InvestPro — Premium UI v1
+   Refinements: spacing, cards, buttons, icons, typography
+   No layout changes — overlay only
+   ============================================================ */
+
+/* ── Lucide Icons CDN via inline SVG sprite approach ─────── */
+/* Using Lucide via unpkg (lightweight, tree-shakeable) */
+
+/* ── Root Premium Variables ──────────────────────────────── */
+:root {
+  --pm-card-bg:        #0f1923;
+  --pm-card-border:    rgba(255, 255, 255, 0.07);
+  --pm-card-hover:     rgba(14, 165, 233, 0.12);
+  --pm-card-radius:    18px;
+  --pm-btn-radius:     12px;
+  --pm-icon-size:      20px;
+  --pm-shadow:         0 4px 24px rgba(0, 0, 0, 0.4);
+  --pm-shadow-hover:   0 8px 32px rgba(0, 0, 0, 0.55);
+  --pm-transition:     all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  --pm-text-muted:     #64748b;
+  --pm-divider:        rgba(255, 255, 255, 0.06);
+  --pm-green:          #22c55e;
+  --pm-red:            #ef4444;
+  --pm-gold:           #f59e0b;
+  --pm-blue:           #0ea5e9;
+  --pm-surface:        rgba(15, 25, 35, 0.85);
+}
+
+/* ── Global Typography Refinements ──────────────────────── */
+body {
+  letter-spacing: -0.01em;
+}
+h1, h2, h3, .section-title, .hero-title {
+  letter-spacing: -0.02em;
+}
+
+/* ── Lucide Icon Base Style ──────────────────────────────── */
+.lucide {
+  width: var(--pm-icon-size);
+  height: var(--pm-icon-size);
+  stroke: currentColor;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+  display: inline-block;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+.lucide-sm { width: 16px; height: 16px; }
+.lucide-lg { width: 24px; height: 24px; }
+.lucide-xl { width: 28px; height: 28px; }
+
+/* ── Trust Cards — Premium Refinement ───────────────────── */
+.trust-card {
+  background: var(--pm-card-bg) !important;
+  border: 1px solid var(--pm-card-border) !important;
+  border-radius: var(--pm-card-radius) !important;
+  padding: 24px 20px !important;
+  transition: var(--pm-transition) !important;
+  position: relative;
+  overflow: hidden;
+}
+.trust-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(14, 165, 233, 0.04) 0%, transparent 60%);
+  pointer-events: none;
+}
+.trust-card:hover {
+  border-color: rgba(14, 165, 233, 0.22) !important;
+  transform: translateY(-3px) !important;
+  box-shadow: var(--pm-shadow-hover) !important;
+}
+.tc-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: rgba(14, 165, 233, 0.1);
+  border: 1px solid rgba(14, 165, 233, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 14px;
+  font-size: 1rem !important;
+  color: var(--pm-blue);
+}
+.tc-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: #f1f5f9;
+}
+.tc-body {
+  font-size: 0.8rem;
+  color: var(--pm-text-muted);
+  line-height: 1.6;
+}
+
+/* ── Stat Boxes — Premium ────────────────────────────────── */
+.stat-box {
+  background: var(--pm-card-bg) !important;
+  border: 1px solid var(--pm-card-border) !important;
+  border-radius: var(--pm-card-radius) !important;
+  padding: 20px 16px !important;
+  transition: var(--pm-transition) !important;
+}
+.stat-box:hover {
+  border-color: rgba(14, 165, 233, 0.2) !important;
+  box-shadow: var(--pm-shadow) !important;
+}
+.stat-icon, .stat-box-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: rgba(14, 165, 233, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 10px;
+  font-size: 0.95rem !important;
+  color: var(--pm-blue);
+}
+.stat-val, .stat-box-val {
+  font-size: 1.5rem !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+.stat-lbl, .stat-box-lbl {
+  font-size: 0.72rem !important;
+  color: var(--pm-text-muted) !important;
+  margin-top: 4px;
+  font-weight: 500;
+}
+
+/* ── Hero Stats ──────────────────────────────────────────── */
+.hero-stat {
+  text-align: center;
+  padding: 0 8px;
+}
+.hero-stat-val {
+  font-size: 1.6rem;
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+}
+.hero-stat-lbl {
+  font-size: 0.72rem;
+  color: var(--pm-text-muted);
+  margin-top: 2px;
+}
+
+/* ── Buttons — Premium Refinement ───────────────────────── */
+.btn, .btn-primary, .btn-teal, .btn-lg, .form-submit {
+  border-radius: var(--pm-btn-radius) !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.01em;
+  transition: var(--pm-transition) !important;
+}
+.btn-primary, .form-submit {
+  background: linear-gradient(135deg, #0ea5e9, #06b6d4) !important;
+  box-shadow: 0 4px 16px rgba(14, 165, 233, 0.3) !important;
+}
+.btn-primary:hover, .form-submit:hover {
+  box-shadow: 0 6px 24px rgba(14, 165, 233, 0.45) !important;
+  transform: translateY(-1px);
+}
+.btn-primary:active, .form-submit:active {
+  transform: translateY(0);
+}
+
+/* ── Country Cards ───────────────────────────────────────── */
+.c-card {
+  background: var(--pm-card-bg) !important;
+  border: 1px solid var(--pm-card-border) !important;
+  border-radius: 14px !important;
+  padding: 16px 12px !important;
+  transition: var(--pm-transition) !important;
+  text-align: center;
+}
+.c-card:hover {
+  border-color: rgba(14, 165, 233, 0.2) !important;
+  transform: translateY(-2px);
+}
+.c-flag {
+  font-size: 1.6rem !important;
+  margin-bottom: 6px;
+  line-height: 1;
+}
+.c-name {
+  font-size: 0.75rem;
+  color: var(--pm-text-muted);
+  font-weight: 600;
+}
+
+/* ── Section Titles ──────────────────────────────────────── */
+.section-title {
+  font-size: clamp(1.25rem, 3vw, 1.75rem) !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.025em;
+  margin-bottom: 8px !important;
+}
+.section-sub {
+  font-size: 0.85rem !important;
+  color: var(--pm-text-muted) !important;
+  margin-bottom: 36px !important;
+  line-height: 1.6;
+}
+
+/* ── Plan Cards — VIP ────────────────────────────────────── */
+.plan-card, .vip-plan-card, .vip-pro-card {
+  border-radius: var(--pm-card-radius) !important;
+  transition: var(--pm-transition) !important;
+}
+.plan-card:hover, .vip-plan-card:hover, .vip-pro-card:hover {
+  transform: translateY(-4px) !important;
+  box-shadow: var(--pm-shadow-hover) !important;
+}
+
+/* ── Admin Card Heads ────────────────────────────────────── */
+.card-head {
+  font-size: 0.9rem !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.01em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ── Dashboard Today Stats ───────────────────────────────── */
+.today-stat-card {
+  border-radius: 14px !important;
+  transition: var(--pm-transition) !important;
+}
+.today-stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--pm-shadow) !important;
+}
+.today-stat-val {
+  font-size: 1.3rem !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Form Inputs — Premium ───────────────────────────────── */
+.form-input, input[type="text"], input[type="email"],
+input[type="password"], input[type="number"], select, textarea {
+  border-radius: 12px !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  background: rgba(15, 25, 40, 0.8) !important;
+  color: #f1f5f9 !important;
+  padding: 12px 16px !important;
+  font-size: 0.9rem !important;
+  transition: var(--pm-transition) !important;
+}
+.form-input:focus, input:focus, select:focus, textarea:focus {
+  border-color: rgba(14, 165, 233, 0.5) !important;
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1) !important;
+  outline: none !important;
+}
+
+/* ── Badges — Refined ────────────────────────────────────── */
+.badge, .vip-badge, .vmc-badge {
+  border-radius: 8px !important;
+  font-size: 0.7rem !important;
+  font-weight: 700 !important;
+  padding: 3px 10px !important;
+  letter-spacing: 0.02em;
+}
+
+/* ── Dividers ────────────────────────────────────────────── */
+.visa-stat-divider {
+  background: var(--pm-divider) !important;
+}
+
+/* ── Profit Chips ────────────────────────────────────────── */
+.profit-chip {
+  border-radius: 12px !important;
+  transition: var(--pm-transition) !important;
+}
+.profit-chip:hover {
+  transform: translateY(-1px);
+}
+
+/* ── CTA Section ─────────────────────────────────────────── */
+section[style*="text-align:center"] .section-title {
+  font-size: clamp(1.2rem, 3vw, 1.6rem) !important;
+}
+
+/* ── Footer ──────────────────────────────────────────────── */
+.footer {
+  border-top: 1px solid var(--pm-divider);
+}
+.footer-logo {
+  font-size: 1.1rem !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.02em;
+}
+
+/* ── Telegram Card ───────────────────────────────────────── */
+.telegram-hero-card {
+  border-radius: 20px !important;
+}
+
+/* ── Scrollbar — Minimal ─────────────────────────────────── */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+
+/* ── Remove Cartoon Glow Overrides ──────────────────────── */
+.vip-pro-badge.badge-current {
+  background: rgba(14, 165, 233, 0.15) !important;
+  border: 1px solid rgba(14, 165, 233, 0.3) !important;
+  color: var(--pm-blue) !important;
+  border-radius: 8px !important;
+  font-size: 0.72rem !important;
+  font-weight: 700 !important;
+  padding: 4px 10px !important;
+}
+
+/* ── Responsive Spacing ──────────────────────────────────── */
+@media (max-width: 640px) {
+  .trust-card { padding: 18px 16px !important; }
+  .tc-icon { width: 38px; height: 38px; border-radius: 10px; }
+  .section-title { margin-bottom: 6px !important; }
+  .section-sub { margin-bottom: 28px !important; }
+  .stat-val, .stat-box-val { font-size: 1.3rem !important; }
+}
+
+/* ── Lucide Icon in tc-icon wrapper ─────────────────────── */
+.tc-icon .lucide,
+.stat-icon .lucide,
+.stat-box-icon .lucide,
+.today-stat-icon .lucide,
+.card-head .lucide {
+  width: 18px;
+  height: 18px;
+  stroke-width: 2;
+}

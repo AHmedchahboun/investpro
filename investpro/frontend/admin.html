@@ -10,8 +10,10 @@
   <link rel="apple-touch-icon" href="favicon.png">
   <meta name="theme-color" content="#060d1a">
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="css/admin.css">
   <link rel="stylesheet" href="css/entry-modal.css">
+  <link rel="stylesheet" href="css/premium-ui.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 <body>
@@ -52,7 +54,7 @@
       <span class="nav-icon"><i class="fas fa-clipboard-list"></i></span> العمليات
     </div>
     <div class="nav-item" data-nav="pg-adj" onclick="go('pg-adj')">
-      <span class="nav-icon">⚖</span> تعديل الرصيد
+      <span class="nav-icon"><i class="fas fa-scale-balanced"></i></span> تعديل الرصيد
     </div>
     <div class="nav-item" data-nav="pg-comms" onclick="go('pg-comms')">
       <span class="nav-icon"><i class="fas fa-comments"></i></span> التواصل والتنبيهات
@@ -71,7 +73,7 @@
 <!-- ═══════════════ MAIN ═══════════════ -->
 <div class="main">
   <div class="topbar">
-    <button class="topbar-hamburger" onclick="openSidebar()">☰</button>
+    <button class="topbar-hamburger" onclick="openSidebar()"><i class="fas fa-bars"></i></button>
     <span class="topbar-title" id="page-title">لوحة التحكم</span>
     <span style="font-size:.8rem;color:var(--red);font-weight:700;margin-right:auto"><i class="fas fa-shield-halved"></i> مشرف</span>
   </div>
@@ -97,17 +99,17 @@
       <div style="display:grid;grid-template-columns:1fr 300px;gap:20px;margin-top:4px">
         <div>
           <div class="card">
-            <div class="card-head">⏳ تنبيهات معلقة</div>
+            <div class="card-head"><i class="fas fa-clock"></i> تنبيهات معلقة</div>
             <div class="card-body" id="pending-alerts">
               <div style="color:var(--text3);text-align:center;padding:20px">جاري التحميل...</div>
             </div>
           </div>
           <div class="card">
-            <div class="card-head">⚡ إجراءات سريعة</div>
+            <div class="card-head"><i class="fas fa-bolt"></i> إجراءات سريعة</div>
             <div class="card-body" style="display:flex;gap:10px;flex-wrap:wrap">
               <button class="btn btn-teal btn-md" onclick="go('pg-dep')">مراجعة الإيداعات</button>
               <button class="btn btn-gold btn-md" onclick="go('pg-wd')">مراجعة السحوبات</button>
-              <button class="btn btn-ghost btn-md" onclick="runRewards()">▶ تشغيل المكافآت</button>
+              <button class="btn btn-ghost btn-md" onclick="runRewards()"><i class="fas fa-play"></i> تشغيل المكافآت</button>
               <button class="btn btn-ghost btn-md" onclick="go('pg-adj')">تعديل رصيد</button>
             </div>
           </div>
@@ -268,7 +270,7 @@
     <div id="pg-adj" data-page style="display:none">
       <div style="display:grid;grid-template-columns:400px 1fr;gap:20px">
         <div class="card">
-          <div class="card-head">⚖ تعديل رصيد مستخدم</div>
+          <div class="card-head"><i class="fas fa-scale-balanced"></i> تعديل رصيد مستخدم</div>
           <div class="card-body">
             <div class="err-box" style="margin-bottom:14px"><i class="fas fa-triangle-exclamation"></i> هذه العملية حساسة وتُسجل في سجل المشرف</div>
             <div class="form-group">
@@ -384,7 +386,7 @@
 
         <div>
           <div class="card">
-            <div class="card-head">⚡ قوالب جاهزة</div>
+            <div class="card-head"><i class="fas fa-layer-group"></i> قوالب جاهزة</div>
             <div class="card-body admin-template-list">
               <button class="template-btn" onclick="fillMsgTemplate('profit')">أرباح مجمدة / متاحة</button>
               <button class="template-btn" onclick="fillMsgTemplate('deposit')">تأكيد شحن</button>
@@ -394,7 +396,7 @@
             </div>
           </div>
           <div class="card">
-            <div class="card-head">❓ أسئلة وأجوبة للدعم</div>
+            <div class="card-head"><i class="fas fa-circle-question"></i> أسئلة وأجوبة للدعم</div>
             <div class="card-body faq-list">
               <div><b>متى يصبح الربح قابل للسحب؟</b><span>بعد 24 ساعة من وقت تفعيل الخطة حسب توقيت المغرب.</span></div>
               <div><b>لماذا الربح مجمد؟</b><span>لأنه ظاهر في الحساب لكنه لم يكمل وقت الاستحقاق بعد.</span></div>
@@ -607,16 +609,16 @@ async function loadDashboard() {
 function renderAdminStats(s) {
   const cards = [
     { label:'إجمالي المستخدمين',   value: s.totalUsers,                  icon:'<i class="fas fa-user"></i>', color:'var(--teal)'   },
-    { label:'مستخدمون جدد اليوم',  value: s.newToday,                    icon:'🆕', color:'var(--blue)'   },
+    { label:'مستخدمون جدد اليوم',  value: s.newToday,                    icon:'<i class="fas fa-user-plus"></i>', color:'var(--blue)'   },
     { label:'إجمالي الإيداعات',    value: fmt.usd(s.totalDeposits),      icon:'<i class="fas fa-arrow-down"></i>',  color:'var(--green)'  },
     { label:'إجمالي السحوبات',     value: fmt.usd(s.totalWithdraws),     icon:'<i class="fas fa-arrow-up"></i>',  color:'var(--gold)'   },
-    { label:'إيداعات معلقة',       value: s.pendingDeposits,             icon:'⏳', color:'var(--red)'    },
-    { label:'سحوبات معلقة',        value: s.pendingWithdraws,            icon:'⏳', color:'var(--orange)' },
+    { label:'إيداعات معلقة',       value: s.pendingDeposits,             icon:'<i class="fas fa-hourglass-half"></i>', color:'var(--red)'    },
+    { label:'سحوبات معلقة',        value: s.pendingWithdraws,            icon:'<i class="fas fa-hourglass-half"></i>', color:'var(--orange)' },
     { label:'أعضاء VIP نشطون',     value: s.activeVips,                  icon:'<i class="fas fa-crown"></i>', color:'var(--purple)' },
     { label:'إجمالي المكافآت',     value: fmt.usd(s.totalRewardsPaid),   icon:'<i class="fas fa-star"></i>', color:'var(--teal2)'  },
     { label:'أرباح جاهزة للصرف',   value: s.dueProfitCount || 0,          icon:'<i class="fas fa-circle-check"></i>', color:'var(--green)'  },
-    { label:'خطط تنتهي خلال 3 أيام',value: s.expiringPlans || 0,          icon:'⏰', color:'var(--gold)'   },
-    { label:'توقيت النظام',        value: 'المغرب',                      icon:'🇲🇦', color:'var(--blue)'   },
+    { label:'خطط تنتهي خلال 3 أيام',value: s.expiringPlans || 0,          icon:'<i class="fas fa-calendar-xmark"></i>', color:'var(--gold)'   },
+    { label:'توقيت النظام',        value: 'المغرب',                      icon:'<i class="fas fa-globe"></i>', color:'var(--blue)'   },
     { label:'رسائل اليوم',          value: s.notificationCount || 0,       icon:'<i class="fas fa-comments"></i>', color:'var(--purple)' },
   ];
   document.getElementById('admin-stats-grid').innerHTML = cards.map(c => `
@@ -732,7 +734,7 @@ async function loadDeps(page = 1) {
         </div>
         ${d.status === 'pending' ? `
         <div class="tx-actions">
-          <button class="btn btn-green btn-sm" onclick="approveDep('${d._id}','${esc(d.user?.name||'')}')">✓ قبول</button>
+          <button class="btn btn-green btn-sm" onclick="approveDep('${d._id}','${esc(d.user?.name||'')}')"><i class="fas fa-check"></i> قبول</button>
           <button class="btn btn-red-o btn-sm" onclick="rejectDep('${d._id}','${esc(d.user?.name||'')}')"><i class="fas fa-xmark"></i> رفض</button>
         </div>` : ''}
       </div>`).join('');
@@ -791,7 +793,7 @@ async function loadWds(page = 1) {
         </div>
         ${w.status === 'pending' ? `
         <div class="tx-actions">
-          <button class="btn btn-green btn-sm" onclick="approveWd('${w._id}','${esc(w.user?.name||'')}',${w.netAmount})">✓ قبول</button>
+          <button class="btn btn-green btn-sm" onclick="approveWd('${w._id}','${esc(w.user?.name||'')}',${w.netAmount})"><i class="fas fa-check"></i> قبول</button>
           <button class="btn btn-red-o btn-sm" onclick="rejectWd('${w._id}','${esc(w.user?.name||'')}')"><i class="fas fa-xmark"></i> رفض</button>
         </div>` : ''}
       </div>`).join('');
@@ -880,7 +882,7 @@ async function loadUsers(page = 1) {
         <td>
           ${u.isFrozen
             ? '<span class="badge badge-red"><i class="fas fa-lock"></i> مجمد</span>'
-            : '<span class="badge badge-green">✓ نشط</span>'}
+            : '<span class="badge badge-green"><i class="fas fa-check"></i> نشط</span>'
           ${u.isAdmin ? '<span class="badge badge-blue">مشرف</span>' : ''}
         </td>
         <td onclick="event.stopPropagation()">
@@ -891,7 +893,7 @@ async function loadUsers(page = 1) {
             </button>
             <button class="btn btn-ghost btn-xs"
               onclick="document.getElementById('adj-uid').value='${u._id}';go('pg-adj')">
-              ⚖ رصيد
+              <i class="fas fa-scale-balanced"></i> رصيد
             </button>
             <button class="btn btn-red-o btn-xs"
               onclick="deleteUser('${u._id}','${esc(u.name)}')">
@@ -945,7 +947,7 @@ function openUserModal(uid) {
 
   document.getElementById('um-status-badge').innerHTML = u.isFrozen
     ? '<span class="badge badge-red"><i class="fas fa-lock"></i> مجمد</span>'
-    : '<span class="badge badge-green">✓ نشط</span>';
+    : '<span class="badge badge-green"><i class="fas fa-check"></i> نشط</span>';
 
   document.getElementById('um-balance').textContent   = fmt.usd(w.balance   || 0);
   document.getElementById('um-deposited').textContent = fmt.usd(w.totalDeposited || 0);
