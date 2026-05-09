@@ -1,10 +1,14 @@
 ﻿const router   = require('express').Router();
 const crypto   = require('crypto');
+const sanitizeHtml = require('sanitize-html');
 const User     = require('../models/User');
 const { Wallet, Transaction } = require('../models/Wallet');
 const { protect, generateToken, loginLimit, registerLimit } = require('../middleware');
 const { REFERRAL_RATES } = require('../config/vipConfig');
-const { isValidPassword } = require('../utils/validation');
+const { isValidPassword, getPasswordError } = require('../utils/validation');
+
+/* Helper: strip all HTML tags from a string — prevents stored XSS */
+const sanitizeName = (str) => sanitizeHtml(str, { allowedTags: [], allowedAttributes: {} }).trim();
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const IS_PROD  = process.env.NODE_ENV === 'production';
@@ -35,8 +39,9 @@ router.post('/register', registerLimit, async (req, res) => {
     if (!EMAIL_RE.test(email)) {
       return res.status(400).json({ success: false, message: 'صيغة البريد الإلكتروني غير صحيحة' });
     }
-    if (!isValidPassword(password)) {
-      return res.status(400).json({ success: false, message: 'كلمة المرور يجب أن تكون 8 أحرف على الأقل' });
+    const pwdErr = getPasswordError(password);
+    if (pwdErr) {
+      return res.status(400).json({ success: false, message: pwdErr });
     }
 
     const cleanEmail = email.toLowerCase().trim();
@@ -59,7 +64,12 @@ router.post('/register', registerLimit, async (req, res) => {
     }
 
     /* Create user then wallet (sequential, manual rollback on failure) */
-    const user = await User.create({ name: name.trim(), email: cleanEmail, password, referredBy, referredByL2, referredByL3 });
+    /* FIX: Sanitize name to prevent stored XSS */
+    const cleanName = sanitizeName(name);
+    if (cleanName.length < 2 || cleanName.length > 100) {
+      return res.status(400).json({ success: false, message: 'الاسم يجب أن يكون بين 2 و100 حرف' });
+    }
+    const user = await User.create({ name: cleanName, email: cleanEmail, password, referredBy, referredByL2, referredByL3 });
     try {
       await Wallet.create({ user: user._id });
     } catch (walletErr) {

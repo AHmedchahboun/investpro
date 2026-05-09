@@ -624,7 +624,12 @@ img{max-width:100%}
       <div class="form-err" id="reg-err"></div>
       <div class="form-group"><label class="form-label">الاسم الكامل</label><input type="text" id="reg-name" class="form-input" placeholder="اسمك الكريم"></div>
       <div class="form-group"><label class="form-label">البريد الإلكتروني</label><input type="email" id="reg-email" class="form-input" placeholder="email@example.com"></div>
-      <div class="form-group"><label class="form-label">كلمة المرور</label><input type="password" id="reg-pass" class="form-input" placeholder="8 أحرف على الأقل" onkeydown="if(event.key==='Enter')doRegister()"></div>
+      <div class="form-group">
+        <label class="form-label">كلمة المرور</label>
+        <input type="password" id="reg-pass" class="form-input" placeholder="8 أحرف + حرف كبير + رقم" oninput="_checkPwdStrength(this.value)" onkeydown="if(event.key==='Enter')doRegister()">
+        <div id="pwd-strength-bar" style="height:3px;border-radius:2px;margin-top:5px;background:#1e293b;transition:all .3s"><div id="pwd-strength-fill" style="height:100%;border-radius:2px;width:0%;transition:all .3s"></div></div>
+        <div id="pwd-strength-label" style="font-size:.7rem;color:var(--text3);margin-top:3px;min-height:14px"></div>
+      </div>
       <div class="form-group"><label class="form-label">كود الإحالة (اختياري)</label><input type="text" id="reg-ref" class="form-input" placeholder="XXXXXXXX" style="text-transform:uppercase"></div>
       <button class="form-submit" id="reg-btn" onclick="doRegister()">إنشاء الحساب</button>
     </div>
@@ -678,6 +683,30 @@ async function doLogin() {
   } catch(e) { err.textContent = e.message; btnLoad(btn, false); }
 }
 
+function _checkPwdStrength(pwd) {
+  const fill = document.getElementById('pwd-strength-fill');
+  const lbl  = document.getElementById('pwd-strength-label');
+  if (!fill || !lbl) return;
+  let score = 0;
+  if (pwd.length >= 8) score++;
+  if (/[A-Z]/.test(pwd)) score++;
+  if (/[a-z]/.test(pwd)) score++;
+  if (/[0-9]/.test(pwd)) score++;
+  if (/[^A-Za-z0-9]/.test(pwd)) score++;
+  const levels = [
+    { w: '0%',   color: '#1e293b', label: '' },
+    { w: '25%',  color: '#ef4444', label: 'ضعيفة جداً' },
+    { w: '50%',  color: '#f97316', label: 'ضعيفة' },
+    { w: '75%',  color: '#eab308', label: 'متوسطة' },
+    { w: '90%',  color: '#22c55e', label: 'قوية' },
+    { w: '100%', color: '#10b981', label: 'قوية جداً ✓' },
+  ];
+  const lvl = levels[Math.min(score, 5)];
+  fill.style.width = lvl.w;
+  fill.style.background = lvl.color;
+  lbl.textContent = lvl.label;
+  lbl.style.color = lvl.color;
+}
 async function doRegister() {
   const btn = document.getElementById('reg-btn');
   const err = document.getElementById('reg-err');
