@@ -108,6 +108,17 @@
     } catch (_) {}
   }
 
+  function armOfferSound() {
+    const playOnce = () => {
+      document.removeEventListener('pointerdown', playOnce, true);
+      document.removeEventListener('keydown', playOnce, true);
+      playOfferSound();
+    };
+    const options = { once: true, passive: true, capture: true };
+    document.addEventListener('pointerdown', playOnce, options);
+    document.addEventListener('keydown', playOnce, { once: true, capture: true });
+  }
+
   function closeEntryModal(event) {
     const modal = document.getElementById('entry-modal');
     if (modal) modal.remove();
@@ -331,7 +342,7 @@
 
     startCountdown(endAt);
     hydrateLiveData();
-    setTimeout(playOfferSound, 350);
+    armOfferSound();
   }
 
   if (document.readyState === 'loading') {
