@@ -33,8 +33,8 @@ const adminOnly = (req, res, next) => {
 const mkLimit = (windowMs, max, message) =>
   rateLimit({ windowMs, max, message: { success: false, message }, standardHeaders: true, legacyHeaders: false });
 
-const loginLimit    = mkLimit(15 * 60 * 1000, 10,  'محاولات تسجيل دخول كثيرة، حاول بعد 15 دقيقة');
-const registerLimit = mkLimit(15 * 60 * 1000, 10,  'محاولات تسجيل كثيرة، حاول بعد 15 دقيقة');
+const loginLimit    = mkLimit(15 * 60 * 1000, 30,  'محاولات تسجيل دخول كثيرة، حاول بعد 15 دقيقة');
+const registerLimit = mkLimit(15 * 60 * 1000, 30,  'محاولات تسجيل كثيرة، حاول بعد 15 دقيقة');
 const withdrawLimit = mkLimit(15 * 60 * 1000, 15,  'محاولات سحب كثيرة، حاول بعد 15 دقيقة');
 const depositLimit  = mkLimit(15 * 60 * 1000, 30,  'محاولات إيداع كثيرة، حاول بعد 15 دقيقة');
 const generalLimit  = mkLimit(15 * 60 * 1000, 500, 'طلبات كثيرة، حاول لاحقاً');

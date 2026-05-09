@@ -9,29 +9,9 @@ const { generalLimit }     = require('./middleware');
 
 const app = express();
 app.set('trust proxy', 1); // Fix rate limiting when behind a proxy
-app.disable('x-powered-by'); // Hide Express fingerprint
 
 /* ── Security & Parsing ──────────────────────────────────────────────────── */
-app.use(helmet({
-  contentSecurityPolicy: {
-    directives: {
-      defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "'unsafe-inline'", "https://cdnjs.cloudflare.com", "https://kit.fontawesome.com", "https://cdn.jsdelivr.net"],
-      styleSrc: ["'self'", "'unsafe-inline'", "https://cdnjs.cloudflare.com", "https://fonts.googleapis.com", "https://kit.fontawesome.com"],
-      fontSrc: ["'self'", "https://fonts.gstatic.com", "https://cdnjs.cloudflare.com", "https://ka-f.fontawesome.com"],
-      imgSrc: ["'self'", "data:", "https:"],
-      connectSrc: ["'self'", "https://investpro1.onrender.com"],
-      frameSrc: ["'none'"],
-      objectSrc: ["'none'"],
-      upgradeInsecureRequests: [],
-    },
-  },
-  hsts: { maxAge: 31536000, includeSubDomains: true, preload: true },
-  noSniff: true,
-  frameguard: { action: 'sameorigin' },
-  referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
-  crossOriginEmbedderPolicy: false,
-}));
+app.use(helmet({ contentSecurityPolicy: false }));
 const allowedOrigins = [
   process.env.SITE_URL,
   process.env.FRONTEND_URL,
