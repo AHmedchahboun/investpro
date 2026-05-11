@@ -69,8 +69,9 @@ router.post('/start-training', protect, async (req, res) => {
     if (user.vipLevel !== -1) {
       return res.status(400).json({ success: false, message: 'لقد بدأت التدريب مسبقاً' });
     }
+    const trainingCfg = VIP_LEVELS.find(v => v.level === 0);
     user.vipLevel         = 0;
-    user.trainingDaysLeft = parseInt(process.env.TRAINING_DAYS || 5);
+    user.trainingDaysLeft = trainingCfg?.durationDays ?? 5;
     user.vipActivatedAt   = new Date();
     user.vipLastHourlyRewardAt = user.vipActivatedAt;
     user.vipExpiresAt     = new Date(user.vipActivatedAt.getTime() + user.trainingDaysLeft * 86400000);

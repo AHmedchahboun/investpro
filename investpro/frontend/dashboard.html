@@ -1681,7 +1681,10 @@ async function _updateVisaMiniCards() {
     const vipBadgeEl = document.getElementById('vmc-vip-badge');
 
     if (vipRes.isActive) {
-      const daysLeft = vipRes.daysLeft || 0;
+      const rawDays = vipRes.vipLevel === 0
+        ? Math.min(Number(vipRes.trainingDaysLeft ?? vipRes.daysLeft) || 0, 5)
+        : (Number(vipRes.daysLeft) || 0);
+      const daysLeft = rawDays;
       if (vipNameEl)  vipNameEl.textContent  = vipRes.vipName || '—';
       if (vipSubEl)   vipSubEl.textContent   = `متبقي ${daysLeft} يوم`;
       if (vipBadgeEl) {
@@ -2161,8 +2164,9 @@ const _vipLevelsCache = new Map();
 function normalizeVipStatus(status = {}) {
   const rawLevel = status.currentLevel ?? status.vipLevel ?? status.level ?? -1;
   const currentLevel = Number.isFinite(Number(rawLevel)) ? Number(rawLevel) : -1;
-  const fallbackDays = currentLevel === 0 ? status.trainingDaysLeft : status.daysLeft;
-  const daysLeft = Number.isFinite(Number(fallbackDays)) ? Number(fallbackDays) : 0;
+  const rawFallback = currentLevel === 0 ? (status.trainingDaysLeft ?? status.daysLeft) : status.daysLeft;
+  const cappedFallback = currentLevel === 0 ? Math.min(Number(rawFallback) || 0, 5) : rawFallback;
+  const daysLeft = Number.isFinite(Number(cappedFallback)) ? Number(cappedFallback) : 0;
   return {
     ...status,
     currentLevel,
