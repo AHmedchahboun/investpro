@@ -7,7 +7,7 @@ const walletSchema = new mongoose.Schema({
   totalDeposited:   { type: Number, default: 0 },
   totalWithdrawn:   { type: Number, default: 0 },
   totalEarned:      { type: Number, default: 0 },  // profits + bonuses
-  totalBonus:       { type: Number, default: 0 },  // daily bonus only
+  totalBonus:       { type: Number, default: 0 },  // bonus total
   availableProfit:  { type: Number, default: 0 },
   frozenProfit:     { type: Number, default: 0 },
   pendingWithdraw:  { type: Number, default: 0 },
@@ -23,6 +23,7 @@ const transactionSchema = new mongoose.Schema({
       'withdraw',
       'daily_profit',    // main plan return
       'daily_bonus',     // flat daily bonus
+      'activity_bonus',  // one-time deposit activity offer
       'training_reward', // training plan daily
       'vip_purchase',
       'referral_l1',
@@ -50,10 +51,33 @@ const transactionSchema = new mongoose.Schema({
   approvedBy:    { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   approvedAt:    { type: Date },
   note:          { type: String },
+  rewardDate:    { type: String },
+  promoCode:     { type: String, trim: true },
+  relatedTransaction: { type: mongoose.Schema.Types.ObjectId, ref: 'Transaction' },
 }, { timestamps: true });
 
 transactionSchema.index({ user: 1, type: 1, createdAt: -1 });
 transactionSchema.index({ type: 1, status: 1 });
+transactionSchema.index(
+  { user: 1, type: 1, promoCode: 1 },
+  {
+    unique: true,
+    partialFilterExpression: {
+      type: 'activity_bonus',
+      promoCode: { $type: 'string' },
+    },
+  }
+);
+transactionSchema.index(
+  { user: 1, type: 1, rewardDate: 1 },
+  {
+    unique: true,
+    partialFilterExpression: {
+      type: 'training_reward',
+      rewardDate: { $type: 'string' },
+    },
+  }
+);
 
 // ── AuditLog ─────────────────────────────────────────────────────────────────
 const auditLogSchema = new mongoose.Schema({

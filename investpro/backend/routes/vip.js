@@ -29,7 +29,13 @@ router.get('/', protect, async (req, res) => {
       isTraining:   v.isTraining   || false,
       description:  v.description  || '',
       marketing:    v.marketing    || '',
-      risk:         v.risk         || '—',
+      planLevel:    v.planLevel    || v.tier || '',
+      followType:   v.followType   || '',
+      planStatus:   v.planStatus   || '',
+      demandRate:   v.demandRate   || null,
+      suitableFor:  v.suitableFor  || '',
+      activationText: v.activationText || (v.isTraining ? 'فوري بعد التسجيل' : 'فوري بعد تأكيد الإيداع'),
+      detailBullets: Array.isArray(v.detailBullets) ? v.detailBullets : [],
       subscribers:  v.subscribers  || null,
     }));
 
@@ -171,7 +177,7 @@ router.post('/activate', protect, async (req, res) => {
         daysLeft:    config.durationDays,
         dailyProfit: config.dailyProfit,
         dailyBonus:  config.dailyBonus,
-        dailyTotal:  +(config.dailyProfit + config.dailyBonus).toFixed(4),
+        dailyTotal:  +(config.dailyTotal ?? (config.dailyProfit + config.dailyBonus)).toFixed(4),
         totalReturn: config.totalReturn,
       },
     });
@@ -197,7 +203,7 @@ router.get('/status', protect, async (req, res) => {
       vipExpiresAt:      user.vipExpiresAt,
       dailyProfit:       config ? config.dailyProfit : 0,
       dailyBonus:        config ? config.dailyBonus  : 0,
-      dailyTotal:        config ? +(config.dailyProfit + config.dailyBonus).toFixed(4) : 0,
+      dailyTotal:        config ? +(config.dailyTotal ?? (config.dailyProfit + config.dailyBonus)).toFixed(4) : 0,
       hourlyProfit:      hourly,
     });
   } catch (err) {

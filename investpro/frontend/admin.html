@@ -12,7 +12,6 @@
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="css/admin.css">
-  <link rel="stylesheet" href="css/entry-modal.css">
   <link rel="stylesheet" href="css/premium-ui.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
@@ -228,6 +227,7 @@
               <option value="withdraw">سحب</option>
               <option value="daily_profit">ربح يومي</option>
               <option value="daily_bonus">مكافأة يومية</option>
+              <option value="activity_bonus">بونص النشاط</option>
               <option value="training_reward">مكافأة تدريب</option>
               <option value="vip_purchase">شراء VIP</option>
               <option value="referral_l1">عمولة L1</option>
@@ -527,8 +527,9 @@
   </div>
 </div>
 
-<script src="js/config.js?v=api-origin-20260505"></script>
-<script src="js/api.js?v=api-origin-20260505"></script>
+<script src="js/config.js?v=api-origin-20260509"></script>
+<script src="js/api.js?v=api-origin-20260509"></script>
+<script src="js/csp-events.js?v=csp-bridge-20260509"></script>
 <script>
 /* ════════════════════════════════════════
    Constants
@@ -1062,7 +1063,7 @@ async function loadUserSummary(uid) {
     const txs = data.transactions || [];
     document.getElementById('um-statement').innerHTML = txs.length ? txs.map(tx => {
       const l = txLabel[tx.type] || { icon:'•', lbl: tx.type, sign:'' };
-      const positive = ['deposit','daily_profit','daily_bonus','training_reward','referral_l1','referral_l2','referral_l3','admin_credit'].includes(tx.type);
+      const positive = ['deposit','daily_profit','daily_bonus','activity_bonus','training_reward','referral_l1','referral_l2','referral_l3','admin_credit'].includes(tx.type);
       return `
         <div class="mini-statement-row">
           <div class="mini-statement-main">
@@ -1326,6 +1327,5 @@ function renderAdminPag(containerId, pag, fn) {
    ════════════════════════════════════════ */
 init();
 </script>
-<script src="js/entry-modal.js"></script>
 </body>
 </html>

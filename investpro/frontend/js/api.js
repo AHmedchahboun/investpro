@@ -5,8 +5,20 @@
 // BACKEND_URL: set this to your Render/Railway backend URL in production
 // e.g. 'https://investpro-api.onrender.com'
 // Leave empty to use same-origin (when frontend + backend on same server)
-const _BACKEND_ORIGIN = window._BACKEND_URL || '';
-const API_URL = _BACKEND_ORIGIN ? _BACKEND_ORIGIN + '/api' : window.location.origin + '/api';
+function normalizeBackendOrigin(value) {
+  const raw = String(value || '').trim();
+  if (!raw) return '';
+  return raw.replace(/\/+$/, '').replace(/\/api$/i, '');
+}
+
+function normalizeApiPath(path) {
+  const raw = String(path || '');
+  const withSlash = raw.startsWith('/') ? raw : '/' + raw;
+  return withSlash.replace(/^\/api(?=\/|$)/i, '');
+}
+
+const _BACKEND_ORIGIN = normalizeBackendOrigin(window._BACKEND_URL);
+const API_URL = ((_BACKEND_ORIGIN || window.location.origin).replace(/\/+$/, '')) + '/api';
 
 /* ---- localStorage helpers ---- */
 const store = {
@@ -33,7 +45,8 @@ const http = {
     const timer = setTimeout(() => controller.abort(), 10000);
 
     try {
-      const res = await fetch(API_URL + path, {
+      const requestUrl = API_URL + normalizeApiPath(path);
+      const res = await fetch(requestUrl, {
         method,
         headers,
         body: body ? JSON.stringify(body) : undefined,
@@ -48,7 +61,7 @@ const http = {
       } else {
         const text = await res.text();
         if (text.trim().startsWith('<!DOCTYPE') || text.trim().startsWith('<html')) {
-          throw new Error('API غير متصل: الخادم أرجع صفحة HTML بدل JSON. تحقق من رابط الباكند في js/config.js');
+          throw new Error(`API غير متصل: الخادم أرجع صفحة HTML بدل JSON من ${requestUrl}. تحقق من رابط الباكند في js/config.js`);
         }
         throw new Error(text || 'Server Error');
       }
@@ -205,6 +218,7 @@ const txLabel = {
   withdraw:        { icon: '<i class="fas fa-arrow-up"></i>', lbl: 'سحب',             color: 'var(--red)',    sign: '-' },
   daily_profit:    { icon: '<i class="fas fa-star"></i>', lbl: 'ربح يومي',        color: 'var(--gold)',   sign: '+' },
   daily_bonus:     { icon: '<i class="fas fa-gift"></i>', lbl: 'مكافأة يومية',    color: 'var(--teal)',   sign: '+' },
+  activity_bonus:  { icon: '<i class="fas fa-wallet"></i>', lbl: 'بونص النشاط',    color: 'var(--green)',  sign: '+' },
   training_reward: { icon: '<i class="fas fa-book-open"></i>', lbl: 'مكافأة تدريب',    color: 'var(--teal)',   sign: '+' },
   vip_purchase:    { icon: '<i class="fas fa-crown"></i>', lbl: 'شراء VIP',        color: 'var(--purple)', sign: '-' },
   referral_l1:     { icon: '<i class="fas fa-users"></i>', lbl: 'عمولة إحالة L1',  color: 'var(--blue)',   sign: '+' },
@@ -286,7 +300,7 @@ function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
 /* ---- Real connection check (no navigator.onLine) ---- */
 async function checkConnection() {
   try {
-    await fetch('/api/health', { cache: 'no-store' });
+    await fetch(API_URL + '/health', { cache: 'no-store' });
     return true;
   } catch {
     return false;
@@ -309,6 +323,7 @@ async function requestWithRetry(fn, retries = 2) {
 Object.assign(window, {
   store,
   http,
+  API_URL,
   auth,
   toast,
   copyText,

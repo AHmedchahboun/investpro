@@ -10,10 +10,10 @@
 const VIP_CONFIG = {
   '-1': { name: 'غير نشط',  dailyProfit: 0,     dailyBonus: 0, monthlyPct: 0   },
   '0':  { name: 'التدريب',  dailyProfit: 0.10,  dailyBonus: 0, monthlyPct: 0   },
-  '1':  { name: 'البرونزي', dailyProfit: 0.50,  dailyBonus: 0, monthlyPct: 150 },
-  '2':  { name: 'الفضي',    dailyProfit: 1.50,  dailyBonus: 0, monthlyPct: 150 },
-  '3':  { name: 'الذهبي',   dailyProfit: 5.00,  dailyBonus: 0, monthlyPct: 150 },
-  '4':  { name: 'الماسي',   dailyProfit: 17.00, dailyBonus: 0, monthlyPct: 170 },
+  '1':  { name: 'البرونزي', dailyProfit: 0.35,  dailyBonus: 0, monthlyPct: 105 },
+  '2':  { name: 'الفضي',    dailyProfit: 1.10,  dailyBonus: 0, monthlyPct: 110 },
+  '3':  { name: 'الذهبي',   dailyProfit: 4.20,  dailyBonus: 0, monthlyPct: 126 },
+  '4':  { name: 'الماسي',   dailyProfit: 14.00, dailyBonus: 0, monthlyPct: 140 },
 };
 
 /* ────────────────────────────────────────────────────────────
@@ -284,7 +284,7 @@ function _normalizeWallet(wallet = {}, transactions = []) {
 
   const deposits = sum(['deposit', 'admin_credit']);
   const profits = sum([
-    'daily_profit', 'daily_bonus', 'training_reward',
+    'daily_profit', 'daily_bonus', 'activity_bonus', 'training_reward',
     'referral_l1', 'referral_l2', 'referral_l3', 'signup_bonus'
   ]);
   const withdrawals = sum(['withdraw', 'vip_purchase', 'admin_debit']);
@@ -386,7 +386,7 @@ function _buildBalanceTimeline(days) {
     let bal = 0;
     approved.forEach(tx => {
       if (new Date(tx.createdAt).getTime() > dayEnd) return;
-      const CREDIT = ['deposit','daily_profit','daily_bonus','training_reward',
+      const CREDIT = ['deposit','daily_profit','daily_bonus','activity_bonus','training_reward',
                       'referral_l1','referral_l2','signup_bonus','admin_credit'];
       const DEBIT  = ['withdraw','vip_purchase','admin_debit'];
       if (CREDIT.includes(tx.type)) bal += tx.amount;
@@ -404,7 +404,7 @@ function _buildDailyProfitTimeline(days = 7) {
   const labels = [];
   const data   = [];
 
-  const PROFIT_TYPES = ['daily_profit','daily_bonus','training_reward'];
+  const PROFIT_TYPES = ['daily_profit','daily_bonus','activity_bonus','training_reward'];
   const approved = _state.transactions.filter(
     tx => PROFIT_TYPES.includes(tx.type) && tx.status === 'approved'
   );
@@ -441,8 +441,8 @@ function _buildProfitStrip() {
 
   const w      = _state.wallet;
   const daily  = _dailyProfit();
-  const weekly = _txSum(['daily_profit','daily_bonus','training_reward'], 7);
-  const monthly = _txSum(['daily_profit','daily_bonus','training_reward'], 30);
+  const weekly = _txSum(['daily_profit','daily_bonus','activity_bonus','training_reward'], 7);
+  const monthly = _txSum(['daily_profit','daily_bonus','activity_bonus','training_reward'], 30);
   const referral = _txSum(['referral_l1','referral_l2','signup_bonus']);
   const level    = String(_state.vip?.vipLevel ?? -1);
   const rate     = VIP_CONFIG[level]?.monthlyPct || 0;
@@ -625,6 +625,7 @@ const TX_NOTIF_MAP = {
   withdraw:         { type: 'warning', icon: '<i class="fas fa-money-bill-transfer"></i>', title: 'سحب معتمد'        },
   daily_profit:     { type: 'info',    icon: '<i class="fas fa-star"></i>', title: 'ربح يومي'          },
   daily_bonus:      { type: 'info',    icon: '<i class="fas fa-gift"></i>', title: 'مكافأة يومية'      },
+  activity_bonus:   { type: 'success', icon: '<i class="fas fa-wallet"></i>', title: 'بونص النشاط'      },
   training_reward:  { type: 'info',    icon: '<i class="fas fa-book-open"></i>', title: 'مكافأة تدريب'      },
   vip_purchase:     { type: 'success', icon: '<i class="fas fa-crown"></i>', title: 'تفعيل VIP'         },
   referral_l1:      { type: 'success', icon: '<i class="fas fa-users"></i>', title: 'عمولة إحالة L1'    },
@@ -638,7 +639,7 @@ function _buildNotificationsFromTx() {
   const recent = _state.transactions.slice(0, 8);
   _notifs = recent.map((tx, i) => {
     const map  = TX_NOTIF_MAP[tx.type] || { type:'info', icon:'<i class="fas fa-bell"></i>', title: tx.type };
-    const sign = ['deposit','daily_profit','daily_bonus','training_reward',
+    const sign = ['deposit','daily_profit','daily_bonus','activity_bonus','training_reward',
                   'referral_l1','referral_l2','signup_bonus','admin_credit'].includes(tx.type) ? '+' : '-';
     return {
       id:     i + 1,

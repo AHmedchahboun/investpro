@@ -29,7 +29,7 @@ function isValidCryptoAddress(network, addr) {
 }
 
 const VALID_TX_TYPES = [
-  'deposit','withdraw','daily_profit','daily_bonus','training_reward',
+  'deposit','withdraw','daily_profit','daily_bonus','activity_bonus','training_reward',
   'vip_purchase','referral_l1','referral_l2','signup_bonus','admin_credit','admin_debit',
 ];
 const VALID_TX_STATUSES = ['pending','approved','rejected','cancelled'];

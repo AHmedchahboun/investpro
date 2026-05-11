@@ -3,7 +3,7 @@
    Network-first strategy — no forced offline mode
 ═══════════════════════════════════════════════════════════ */
 
-const CACHE_NAME = 'investpro-v6';
+const CACHE_NAME = 'investpro-v8';
 
 const STATIC_ASSETS = [
   '/css/style.css',
@@ -14,7 +14,6 @@ const STATIC_ASSETS = [
   '/css/welcome-modal.css',
   '/css/fintech-pro.css',
   '/css/mobile.css',
-  '/css/entry-modal.css',
   '/css/pro-enhancements.css',
 ];
 

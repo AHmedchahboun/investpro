@@ -18,7 +18,6 @@
   <link rel="stylesheet" href="css/welcome-modal.css">
   <link rel="stylesheet" href="css/fintech-pro.css">
   <link rel="stylesheet" href="css/mobile.css?v=desktop-notifications-20260503">
-  <link rel="stylesheet" href="css/entry-modal.css">
   <link rel="stylesheet" href="css/pro-enhancements.css">
   <link rel="stylesheet" href="css/premium-ui.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -250,6 +249,53 @@
       </div>
     </div>
 
+    <!-- New Activity Bonus Offer -->
+    <section class="activity-bonus-card" aria-labelledby="activity-bonus-title">
+      <div class="activity-bonus-content">
+        <div class="activity-bonus-icon"><i class="fas fa-wallet"></i></div>
+        <div>
+          <div class="activity-bonus-kicker">
+            <i class="fas fa-bolt"></i>
+            <span>بونص النشاط الجديد</span>
+          </div>
+          <h2 id="activity-bonus-title">عرض خاص للمستخدمين النشيطين</h2>
+          <p>
+            استفد من عرض النشاط الجديد. قم بشحن حسابك اليوم واحصل على بونص إضافي حسب قيمة الإيداع. العرض متاح لمدة محدودة للمستخدمين النشيطين فقط.
+          </p>
+          <div class="activity-bonus-terms" aria-label="شروط العرض">
+            <span><i class="fas fa-user-check"></i> مرة واحدة لكل مستخدم</span>
+            <span><i class="fas fa-shield-halved"></i> بعد تأكيد الإدارة</span>
+            <span><i class="fas fa-clock"></i> صالح لمدة 24 ساعة</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="activity-bonus-panel">
+        <div class="activity-bonus-timer" aria-live="polite">
+          <span>ينتهي خلال</span>
+          <strong id="activity-bonus-countdown">24:00:00</strong>
+        </div>
+        <table class="activity-bonus-table" aria-label="قيمة الشحن والبونص">
+          <thead>
+            <tr>
+              <th>قيمة الشحن</th>
+              <th>البونص</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>$10</td><td>$1</td></tr>
+            <tr><td>$30</td><td>$3</td></tr>
+            <tr><td>$50</td><td>$5</td></tr>
+            <tr><td>$100 أو أكثر</td><td>$10</td></tr>
+          </tbody>
+        </table>
+        <button type="button" class="activity-bonus-cta" id="activity-bonus-cta">
+          <i class="fas fa-credit-card"></i>
+          <span>اشحن الآن</span>
+        </button>
+      </div>
+    </section>
+
     <!-- Quick Actions -->
     <div class="quick-actions">
       <div class="action-btn deposit" data-go="pg-wal">
@@ -440,7 +486,7 @@
           <div class="hiw-step">
             <div class="hiw-step-icon"><i class="fas fa-puzzle-piece"></i></div>
             <div class="hiw-step-title">التوزيع الذكي</div>
-            <div class="hiw-step-sub">تقسيم على 4 مجالات لتقليل المخاطر</div>
+        <div class="hiw-step-sub">تقسيم على 4 مجالات لتحسين التوازن</div>
           </div>
           <div class="hiw-step">
             <div class="hiw-step-icon"><i class="fas fa-gear"></i></div>
@@ -502,7 +548,7 @@
         <!-- Risk Management -->
         <div class="hiw-risk-box">
           <div class="hiw-risk-title">
-            <i class="fas fa-shield-alt"></i> إدارة المخاطر
+            <i class="fas fa-shield-alt"></i> إدارة التوازن
           </div>
           <div class="hiw-risk-grid">
             <div class="hiw-risk-item">تنويع على 4 مجالات مختلفة</div>
@@ -894,8 +940,16 @@
           <span class="vip-detail-feature-val" id="vdm-duration">—</span>
         </div>
         <div class="vip-detail-feature-row">
-          <span class="vip-detail-feature-lbl">مستوى المخاطرة</span>
-          <span class="vip-detail-feature-val" id="vdm-risk">—</span>
+          <span class="vip-detail-feature-lbl">مستوى الخطة</span>
+          <span class="vip-detail-feature-val" id="vdm-plan-level">—</span>
+        </div>
+        <div class="vip-detail-feature-row">
+          <span class="vip-detail-feature-lbl">نوع المتابعة</span>
+          <span class="vip-detail-feature-val" id="vdm-follow-type">—</span>
+        </div>
+        <div class="vip-detail-feature-row">
+          <span class="vip-detail-feature-lbl">حالة الخطة</span>
+          <span class="vip-detail-feature-val" id="vdm-plan-status">—</span>
         </div>
         <div class="vip-detail-feature-row">
           <span class="vip-detail-feature-lbl">صافي الربح</span>
@@ -924,6 +978,7 @@
           <option value="deposit">إيداع</option>
           <option value="withdraw">سحب</option>
           <option value="daily_profit">أرباح يومية</option>
+          <option value="activity_bonus">بونص النشاط</option>
         </select>
         <select class="form-input" id="hist-status" onchange="loadHistory()" style="height: 40px; font-size: 0.85rem;">
           <option value="">كل الحالات</option>
@@ -1322,10 +1377,10 @@
 </div>
 
 <!-- Scripts -->
-<script src="js/config.js?v=api-origin-20260505"></script>
-<script src="js/api.js?v=api-origin-20260505"></script>
-<script src="js/fintech-pro.js?v=api-origin-20260505"></script>
-<script src="js/entry-modal.js"></script>
+<script src="js/config.js?v=api-origin-20260509"></script>
+<script src="js/api.js?v=api-origin-20260509"></script>
+<script src="js/csp-events.js?v=csp-bridge-20260509"></script>
+<script src="js/fintech-pro.js?v=api-origin-20260509"></script>
 <script>
 /* ════════════════════════════════════════════════════════════
    Global state
@@ -1379,13 +1434,63 @@ function switchWalletTab(tab) {
   }
 }
 
+const ACTIVITY_BONUS_TIMER_KEY = 'investpro_activity_bonus_end_at';
+const ACTIVITY_BONUS_DURATION = 24 * 60 * 60 * 1000;
+
+function getActivityBonusEndAt() {
+  const endAt = Date.now() + ACTIVITY_BONUS_DURATION;
+  try {
+    const saved = Number(localStorage.getItem(ACTIVITY_BONUS_TIMER_KEY));
+    if (Number.isFinite(saved) && saved > 0) return saved;
+    localStorage.setItem(ACTIVITY_BONUS_TIMER_KEY, String(endAt));
+  } catch (_) {}
+  return endAt;
+}
+
+function updateActivityBonusCountdown(endAt) {
+  const timer = document.getElementById('activity-bonus-countdown');
+  const card = document.querySelector('.activity-bonus-card');
+  const cta = document.getElementById('activity-bonus-cta');
+  if (!timer) return;
+
+  const remaining = Math.max(0, endAt - Date.now());
+  const hours = Math.floor(remaining / 3600000);
+  const minutes = Math.floor((remaining % 3600000) / 60000);
+  const seconds = Math.floor((remaining % 60000) / 1000);
+  const pad = value => String(value).padStart(2, '0');
+
+  timer.textContent = `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+  if (remaining <= 0) {
+    if (card) card.classList.add('is-expired');
+    if (cta) {
+      cta.disabled = true;
+      cta.innerHTML = '<i class="fas fa-lock"></i><span>انتهى العرض</span>';
+    }
+    if (window._activityBonusCountdownId) clearInterval(window._activityBonusCountdownId);
+  }
+}
+
+function openActivityBonusDeposit() {
+  go('pg-wal');
+  setTimeout(() => {
+    switchWalletTab('deposit');
+    document.getElementById('dep-amount')?.focus();
+  }, 120);
+}
+
+function initActivityBonusOffer() {
+  const cta = document.getElementById('activity-bonus-cta');
+  const endAt = getActivityBonusEndAt();
+  if (cta) cta.addEventListener('click', openActivityBonusDeposit);
+  updateActivityBonusCountdown(endAt);
+  window._activityBonusCountdownId = setInterval(() => updateActivityBonusCountdown(endAt), 1000);
+}
+
 /* ════════════════════════════════════════════════════════════
    Startup & Navigation Listener
    ════════════════════════════════════════════════════════════ */
 window.addEventListener('DOMContentLoaded', async () => {
   if (!auth.check()) return;
-
-  // Entry rules modal is shown on every visit by js/entry-modal.js.
 
   // Global Navigation Listener (Professional Fix for ReferenceError)
   document.addEventListener('click', (e) => {    const btn = e.target.closest('[data-go]');
@@ -1418,6 +1523,7 @@ window.addEventListener('DOMContentLoaded', async () => {
   loadSystemStats();
   loadDashTx();
   initTodayStats();
+  initActivityBonusOffer();
   setTimeout(_updateVisaMiniCards, 800);
 });
 
@@ -1432,8 +1538,16 @@ const txStyles = {
   deposit: { icon: '<i class="fas fa-arrow-down"></i>', class: 'deposit', sign: '+', color: 'success', label: 'إيداع' },
   withdraw: { icon: '<i class="fas fa-arrow-up"></i>', class: 'withdraw', sign: '-', color: 'danger', label: 'سحب' },
   daily_profit: { icon: '<i class="fas fa-chart-line"></i>', class: 'profit', sign: '+', color: 'success', label: 'أرباح' },
+  daily_bonus: { icon: '<i class="fas fa-gift"></i>', class: 'profit', sign: '+', color: 'success', label: 'مكافأة يومية' },
+  activity_bonus: { icon: '<i class="fas fa-wallet"></i>', class: 'profit', sign: '+', color: 'success', label: 'بونص النشاط' },
+  training_reward: { icon: '<i class="fas fa-book-open"></i>', class: 'profit', sign: '+', color: 'success', label: 'مكافأة تدريب' },
   vip_purchase: { icon: '<i class="fas fa-crown"></i>', class: 'profit', sign: '-', color: 'danger', label: 'تفعيل VIP' },
   referral_l1: { icon: '<i class="fas fa-users"></i>', class: 'profit', sign: '+', color: 'success', label: 'عمولة إحالة' },
+  referral_l2: { icon: '<i class="fas fa-link"></i>', class: 'profit', sign: '+', color: 'success', label: 'عمولة إحالة L2' },
+  referral_l3: { icon: '<i class="fas fa-link"></i>', class: 'profit', sign: '+', color: 'success', label: 'عمولة إحالة L3' },
+  signup_bonus: { icon: '<i class="fas fa-circle-check"></i>', class: 'profit', sign: '+', color: 'success', label: 'مكافأة تسجيل' },
+  admin_credit: { icon: '<i class="fas fa-sack-dollar"></i>', class: 'profit', sign: '+', color: 'success', label: 'إضافة إدارية' },
+  admin_debit: { icon: '<i class="fas fa-money-bill-transfer"></i>', class: 'withdraw', sign: '-', color: 'danger', label: 'خصم إداري' },
   default: { icon: '<i class="fas fa-exchange-alt"></i>', class: 'profit', sign: '', color: 'primary', label: 'عملية' }
 };
 
@@ -2106,7 +2220,7 @@ function _openVipDetailModal(v, status, color, icons) {
   el('vdm-icon').style.color = color;
   el('vdm-icon').innerHTML = icons[v.level] || '<i class="fas fa-crown"></i>';
   el('vdm-name').textContent = v.name + (v.tier ? ` — ${v.tier}` : '');
-  el('vdm-desc').textContent = v.marketing || v.description;
+  el('vdm-desc').textContent = v.description || v.marketing;
   el('vdm-price').textContent = v.isTraining ? 'مجاني' : fmt.usd(v.price);
   el('vdm-price').style.color = color;
   el('vdm-daily').textContent = fmt.usd(v.dailyTotal);
@@ -2115,12 +2229,17 @@ function _openVipDetailModal(v, status, color, icons) {
   el('vdm-duration').textContent = v.isTraining ? '5 أيام' : '30 يوم';
   el('vdm-net').textContent = v.isTraining ? fmt.usd(0.50) : fmt.usd(v.netProfit || 0);
 
-  // Risk badge
-  const riskEl = el('vdm-risk');
-  if (riskEl) {
-    const rc = { 'منعدم':'#22c55e','منخفض':'#22c55e','متوسط':'#f59e0b','مرتفع':'#ef4444' };
-    riskEl.textContent = v.risk || '—';
-    riskEl.style.color = rc[v.risk] || '#94a3b8';
+  const planLevelEl = el('vdm-plan-level');
+  if (planLevelEl) {
+    planLevelEl.textContent = v.planLevel || v.tier || '—';
+    planLevelEl.style.color = color;
+  }
+  const followTypeEl = el('vdm-follow-type');
+  if (followTypeEl) followTypeEl.textContent = v.followType || (v.isTraining ? 'تجربة النظام' : 'متابعة يومية');
+  const planStatusEl = el('vdm-plan-status');
+  if (planStatusEl) {
+    planStatusEl.textContent = v.planStatus || (v.isTraining ? 'تفعيل فوري' : 'نمو مستمر');
+    planStatusEl.style.color = '#22c55e';
   }
 
   // Pending banner
@@ -2175,7 +2294,6 @@ function renderVipPlans(levels, status) {
   const el = document.getElementById('vip-plans-container');
   const icons     = { 0:'<i class="fas fa-book-open"></i>', 1:'<i class="fas fa-medal"></i>', 2:'<i class="fas fa-medal"></i>', 3:'<i class="fas fa-medal"></i>', 4:'<i class="fas fa-gem"></i>' };
   const colors    = { 0:'#06b6d4', 1:'#cd7f32', 2:'#94a3b8', 3:'#f59e0b', 4:'#38bdf8' };
-  const riskColor = { 'منعدم':'#22c55e', 'منخفض':'#22c55e', 'متوسط':'#f59e0b', 'مرتفع':'#ef4444' };
   const demandPct = { 0:45, 1:68, 2:82, 3:91, 4:74 };
 
   levels.forEach(v => _vipLevelsCache.set(v.level, v));
@@ -2193,8 +2311,12 @@ function renderVipPlans(levels, status) {
     const color     = colors[v.level] || '#06b6d4';
     const icon      = icons[v.level]  || '<i class="fas fa-crown"></i>';
     const canBuy    = !v.isTraining && !isCurrent;
-    const rc        = riskColor[v.risk] || '#94a3b8';
-    const demand    = demandPct[v.level] || 70;
+    const demand    = Number(v.demandRate ?? demandPct[v.level] ?? 70);
+    const planLevel = v.planLevel || v.tier || '—';
+    const followType = v.followType || (v.isTraining ? 'تجربة النظام' : 'متابعة يومية');
+    const planStatus = v.planStatus || (v.isTraining ? 'تفعيل فوري' : 'نمو مستمر');
+    const activationText = v.activationText || (v.isTraining ? 'فوري بعد التسجيل' : 'فوري بعد تأكيد الإيداع');
+    const detailBullets = Array.isArray(v.detailBullets) ? v.detailBullets : [];
 
     // Filter data attributes
     const filterAttr = v.isTraining ? 'free' : (v.level <= 1 ? 'beginner' : 'vip');
@@ -2216,7 +2338,7 @@ function renderVipPlans(levels, status) {
                 data-target="${v.subscribers.base}"
                 data-min="${v.subscribers.min}"
                 data-max="${v.subscribers.max}">0</span>
-          <span class="vip-subs-trend"><i class="fas fa-chart-line"></i> نمو مستمر</span>
+          <span class="vip-subs-trend"><i class="fas fa-chart-line"></i> ${planStatus}</span>
         </div>`;
     }
 
@@ -2279,10 +2401,12 @@ function renderVipPlans(levels, status) {
 
           ${subsHtml}
 
+          ${v.description ? `<div class="vip-pro-description">${v.description}</div>` : ''}
+
           <!-- Stats 4-col -->
           <div class="vip-pro-stats">
             <div class="vip-pro-stat">
-              <div class="vip-pro-stat-val" style="color:#22c55e">${fmt.usd(v.dailyTotal)}</div>
+              <div class="vip-pro-stat-val vip-profit-glow" style="color:#22c55e">${fmt.usd(v.dailyTotal)}</div>
               <div class="vip-pro-stat-lbl">ربح يومي</div>
             </div>
             <div class="vip-pro-stat">
@@ -2294,8 +2418,8 @@ function renderVipPlans(levels, status) {
               <div class="vip-pro-stat-lbl">صافي الربح</div>
             </div>
             <div class="vip-pro-stat">
-              <div class="vip-pro-stat-val" style="color:${rc};font-size:.72rem">${v.risk||'—'}</div>
-              <div class="vip-pro-stat-lbl">المخاطرة</div>
+              <div class="vip-pro-stat-val" style="color:${color}">${v.isTraining?'—':demand+'%'}</div>
+              <div class="vip-pro-stat-lbl">نسبة الطلب</div>
             </div>
           </div>
 
@@ -2313,11 +2437,20 @@ function renderVipPlans(levels, status) {
         <!-- Expand details -->
         <button class="vip-card-expand-btn" id="vip-exp-btn-${v.level}"
                 onclick="event.stopPropagation();_toggleVipCard(${v.level})">
-          <span id="vip-exp-lbl-${v.level}">تفاصيل إضافية</span>
+          <span id="vip-exp-lbl-${v.level}">التفاصيل</span>
           <span class="vip-expand-icon">▼</span>
         </button>
         <div class="vip-card-details" id="vip-exp-${v.level}">
           <div class="vip-card-details-inner">
+            ${v.suitableFor ? `
+            <div class="vip-detail-copy">
+              <div class="vip-detail-copy-title">مناسب لهذا النوع من المستخدمين</div>
+              <div>${v.suitableFor}</div>
+            </div>` : ''}
+            ${detailBullets.length ? `
+            <div class="vip-detail-bullets">
+              ${detailBullets.map(item => `<div class="vip-detail-bullet"><i class="fas fa-check"></i><span>${item}</span></div>`).join('')}
+            </div>` : ''}
             <div class="vip-detail-row">
               <span class="vip-detail-row-lbl">مدة الاشتراك</span>
               <span class="vip-detail-row-val">${v.isTraining?'5 أيام':'30 يوم'}</span>
@@ -2331,12 +2464,20 @@ function renderVipPlans(levels, status) {
               <span class="vip-detail-row-val" style="color:#22c55e">${v.isTraining?fmt.usd(.50):fmt.usd(v.netProfit)}</span>
             </div>
             <div class="vip-detail-row">
-              <span class="vip-detail-row-lbl">مستوى المخاطرة</span>
-              <span class="vip-detail-row-val" style="color:${rc}">${v.risk||'—'}</span>
+              <span class="vip-detail-row-lbl">مستوى الخطة</span>
+              <span class="vip-detail-row-val" style="color:${color}">${planLevel}</span>
+            </div>
+            <div class="vip-detail-row">
+              <span class="vip-detail-row-lbl">نوع المتابعة</span>
+              <span class="vip-detail-row-val">${followType}</span>
+            </div>
+            <div class="vip-detail-row">
+              <span class="vip-detail-row-lbl">حالة الخطة</span>
+              <span class="vip-detail-row-val" style="color:#22c55e">${planStatus}</span>
             </div>
             <div class="vip-detail-row">
               <span class="vip-detail-row-lbl">التفعيل</span>
-              <span class="vip-detail-row-val" style="color:#22c55e">فوري بعد الإيداع</span>
+              <span class="vip-detail-row-val" style="color:#22c55e">${activationText}</span>
             </div>
           </div>
         </div>
@@ -2355,7 +2496,7 @@ function _toggleVipCard(level) {
   if (!det) return;
   const open = det.classList.toggle('open');
   btn?.classList.toggle('open', open);
-  if (lbl) lbl.textContent = open ? 'إخفاء التفاصيل' : 'تفاصيل إضافية';
+  if (lbl) lbl.textContent = open ? 'إخفاء التفاصيل' : 'التفاصيل';
 }
 
 /* ── Filter plans ────────────────────────────────────────── */
@@ -2730,7 +2871,7 @@ function exitPlatform() {
 }
 
 function checkWelcomeModal() {
-  // Deprecated: replaced by js/entry-modal.js, which appears on every visit without storage.
+  // Deprecated welcome modal hook removed.
 }
 </script>
 

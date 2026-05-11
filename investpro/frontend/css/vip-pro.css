@@ -200,12 +200,12 @@
 .badge-free        { background: rgba(14,165,233,.15); color: #0ea5e9; border: 1px solid rgba(14,165,233,.3); }
 
 /* ── Card Inner ──────────────────────────────────────────── */
-.vip-card-inner { padding: 16px 16px 14px; }
+.vip-card-inner { padding: 17px 16px 15px; }
 
 /* ── Header Row ──────────────────────────────────────────── */
 .vip-pro-header {
   display: flex; align-items: center; gap: 11px;
-  margin-bottom: 14px; margin-top: 4px;
+  margin-bottom: 12px; margin-top: 4px;
 }
 .vip-pro-header.has-badge { margin-top: 26px; }
 
@@ -235,6 +235,13 @@
 }
 .vip-subs-trend { margin-right: auto; font-size: .65rem; color: #22c55e; opacity: .85; }
 
+.vip-pro-description {
+  color: var(--text-secondary);
+  font-size: .72rem;
+  line-height: 1.75;
+  margin: -2px 0 13px;
+}
+
 /* ── Stats Grid 4-col ────────────────────────────────────── */
 .vip-pro-stats {
   display: grid; grid-template-columns: repeat(4,1fr); gap: 7px; margin-bottom: 14px;
@@ -246,6 +253,14 @@
 }
 .vip-pro-stat-val { font-size: .82rem; font-weight: 700; font-variant-numeric: tabular-nums; }
 .vip-pro-stat-lbl { font-size: .57rem; color: var(--text-tertiary); margin-top: 2px; }
+.vip-profit-glow {
+  text-shadow: 0 0 16px rgba(34,197,94,.28);
+  animation: vipProfitPulse 3.2s ease-in-out infinite;
+}
+@keyframes vipProfitPulse {
+  0%,100% { filter: brightness(1); }
+  50% { filter: brightness(1.18); }
+}
 
 /* ── Demand Progress Bar ─────────────────────────────────── */
 .vip-demand-bar-wrap {
@@ -272,7 +287,7 @@
 .vip-pro-cta.single { grid-template-columns: 1fr; }
 
 .vip-pro-btn-primary {
-  height: 44px; border: none; border-radius: 12px;
+  height: 44px; border: none; border-radius: 10px;
   font-size: .85rem; font-weight: 700; cursor: pointer;
   display: flex; align-items: center; justify-content: center; gap: 7px;
   color: #fff; width: 100%; position: relative; overflow: hidden;
@@ -287,7 +302,7 @@
 .vip-pro-btn-primary:disabled { opacity: .5; cursor: not-allowed; }
 
 .vip-pro-btn-secondary {
-  height: 44px; padding: 0 14px; border-radius: 12px;
+  height: 44px; padding: 0 14px; border-radius: 10px;
   background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1);
   color: var(--text-secondary); font-size: .75rem; font-weight: 600;
   cursor: pointer; transition: all .2s; white-space: nowrap; font-family: inherit;
@@ -311,10 +326,44 @@
   overflow: hidden; max-height: 0;
   transition: max-height .35s cubic-bezier(.4,0,.2,1);
 }
-.vip-card-details.open { max-height: 260px; }
+.vip-card-details.open { max-height: 620px; }
 .vip-card-details-inner {
   padding: 12px 16px 16px; border-top: 1px solid rgba(255,255,255,.05);
   display: flex; flex-direction: column; gap: 0;
+}
+.vip-detail-copy {
+  background: rgba(255,255,255,.035);
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: 10px;
+  padding: 10px 11px;
+  color: var(--text-secondary);
+  font-size: .72rem;
+  line-height: 1.7;
+  margin-bottom: 10px;
+}
+.vip-detail-copy-title {
+  color: var(--text-primary);
+  font-size: .7rem;
+  font-weight: 700;
+  margin-bottom: 3px;
+}
+.vip-detail-bullets {
+  display: grid;
+  gap: 7px;
+  margin-bottom: 10px;
+}
+.vip-detail-bullet {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  color: var(--text-secondary);
+  font-size: .7rem;
+  line-height: 1.55;
+}
+.vip-detail-bullet i {
+  color: #22c55e;
+  font-size: .62rem;
+  margin-top: .25rem;
 }
 .vip-detail-row {
   display: flex; justify-content: space-between; align-items: center;
@@ -452,4 +501,12 @@
   .vip-trust-strip { padding: 14px 32px 0; }
   .vip-filter-tabs { padding: 16px 32px 0; }
   .vip-section-head { padding: 16px 32px 10px; }
+}
+@media (max-width: 420px) {
+  .vip-card-inner { padding: 15px 13px 13px; }
+  .vip-pro-header { gap: 9px; }
+  .vip-pro-price { font-size: 1.25rem; }
+  .vip-pro-description { font-size: .68rem; line-height: 1.65; }
+  .vip-pro-cta { grid-template-columns: 1fr; }
+  .vip-pro-btn-secondary { width: 100%; }
 }

@@ -5,6 +5,10 @@ const { VIP_LEVELS, REFERRAL_RATES } = require('../config/vipConfig');
 
 const PROFIT_TZ = 'Africa/Casablanca';
 const DAY_MS = 24 * 60 * 60 * 1000;
+const TRAINING_DAILY_CENTS = 10;
+const TRAINING_DAYS = 5;
+const TRAINING_CAP_CENTS = TRAINING_DAILY_CENTS * TRAINING_DAYS;
+const ACTIVITY_BONUS_PROMO_CODE = 'new_activity_bonus';
 
 function hourlyAmount(config) {
   return +(Number(config?.dailyTotal ?? config?.dailyProfit ?? 0) / 24).toFixed(6);
@@ -12,6 +16,275 @@ function hourlyAmount(config) {
 
 function dailyAmount(config) {
   return +(Number(config?.dailyTotal ?? config?.dailyProfit ?? 0)).toFixed(6);
+}
+
+function moneyFromCents(cents) {
+  return +(cents / 100).toFixed(2);
+}
+
+function toCents(value) {
+  return Math.round((Number(value) || 0) * 100);
+}
+
+function getActivityDepositBonus(amount) {
+  const value = Number(amount) || 0;
+  if (value >= 100) return 10;
+  if (value >= 50) return 5;
+  if (value >= 30) return 3;
+  if (value >= 10) return 1;
+  return 0;
+}
+
+function isWithinActivityBonusWindow(date, now = new Date()) {
+  const createdAt = new Date(date || now);
+  const createdAtMs = createdAt.getTime();
+  return Number.isFinite(createdAtMs) && now.getTime() - createdAtMs <= DAY_MS;
+}
+
+function trainingDateKey(date = new Date()) {
+  return date.toLocaleDateString('en-CA', { timeZone: PROFIT_TZ });
+}
+
+function getTrainingActivation(user) {
+  if (!user?.vipActivatedAt) return null;
+  const activatedAt = new Date(user.vipActivatedAt);
+  return Number.isNaN(activatedAt.getTime()) ? null : activatedAt;
+}
+
+function trainingCycleStart(activatedAt, paidDays) {
+  return new Date(activatedAt.getTime() + paidDays * DAY_MS);
+}
+
+function trainingDueAt(activatedAt, paidDays) {
+  return new Date(activatedAt.getTime() + (paidDays + 1) * DAY_MS);
+}
+
+async function getTrainingRewardStats(userId) {
+  const [sumResult, count] = await Promise.all([
+    Transaction.aggregate([
+      { $match: { user: userId, type: 'training_reward', status: 'approved' } },
+      { $group: { _id: null, sum: { $sum: '$amount' } } },
+    ]),
+    Transaction.countDocuments({ user: userId, type: 'training_reward', status: 'approved' }),
+  ]);
+  const totalCents = toCents(sumResult[0]?.sum || 0);
+  return {
+    count,
+    totalCents,
+    paidDays: Math.min(
+      TRAINING_DAYS,
+      Math.max(count, Math.floor(totalCents / TRAINING_DAILY_CENTS))
+    ),
+  };
+}
+
+async function hasTrainingRewardForDate(userId, dateKey) {
+  return Boolean(await Transaction.findOne({
+    user: userId,
+    type: 'training_reward',
+    status: 'approved',
+    $or: [
+      { rewardDate: dateKey },
+      {
+        $expr: {
+          $eq: [
+            { $dateToString: { format: '%Y-%m-%d', date: '$createdAt', timezone: PROFIT_TZ } },
+            dateKey,
+          ],
+        },
+      },
+    ],
+  }).select('_id'));
+}
+
+async function completeTraining(userId) {
+  await User.updateOne(
+    { _id: userId, vipLevel: 0 },
+    { $set: { trainingCompleted: true, trainingDaysLeft: 0, vipLevel: -1 } }
+  );
+}
+
+async function ensureTrainingFrozenCycle(user, paidDays, dueAt) {
+  if (paidDays >= TRAINING_DAYS) return null;
+  const activatedAt = getTrainingActivation(user);
+  if (!activatedAt) return null;
+  const cycleStart = trainingCycleStart(activatedAt, paidDays);
+  const existingFrozen = await HourlyProfit.findOne({
+    user: user._id,
+    vipLevel: 0,
+    status: 'frozen',
+  }).sort({ eligibleAt: 1 });
+
+  if (existingFrozen) {
+    existingFrozen.userName = user.name;
+    existingFrozen.planName = 'التدريب';
+    existingFrozen.amount = moneyFromCents(TRAINING_DAILY_CENTS);
+    existingFrozen.cycleStart = cycleStart;
+    existingFrozen.eligibleAt = dueAt;
+    existingFrozen.timezone = PROFIT_TZ;
+    return existingFrozen.save();
+  }
+
+  try {
+    return await HourlyProfit.create({
+      user: user._id,
+      userName: user.name,
+      vipLevel: 0,
+      planName: 'التدريب',
+      amount: moneyFromCents(TRAINING_DAILY_CENTS),
+      cycleStart,
+      eligibleAt: dueAt,
+      status: 'frozen',
+      timezone: PROFIT_TZ,
+    });
+  } catch (err) {
+    if (err.code === 11000) {
+      return HourlyProfit.findOne({ user: user._id, cycleStart });
+    }
+    throw err;
+  }
+}
+
+async function markTrainingCycleAvailable(user, paidDays, dueAt, transactionId) {
+  const activatedAt = getTrainingActivation(user);
+  if (!activatedAt) return null;
+  const cycleStart = trainingCycleStart(activatedAt, paidDays);
+  const update = {
+    userName: user.name,
+    vipLevel: 0,
+    planName: 'التدريب',
+    amount: moneyFromCents(TRAINING_DAILY_CENTS),
+    cycleStart,
+    eligibleAt: dueAt,
+    status: 'available',
+    transaction: transactionId,
+    timezone: PROFIT_TZ,
+  };
+
+  const existing = await HourlyProfit.findOneAndUpdate(
+    { user: user._id, cycleStart },
+    { $set: update },
+    { new: true }
+  );
+  if (existing) return existing;
+
+  try {
+    return await HourlyProfit.create({ user: user._id, ...update });
+  } catch (err) {
+    if (err.code === 11000) {
+      return HourlyProfit.findOneAndUpdate(
+        { user: user._id, cycleStart },
+        { $set: update },
+        { new: true }
+      );
+    }
+    throw err;
+  }
+}
+
+async function processTrainingReward(user, now = new Date()) {
+  if (!user || user.isFrozen || user.vipLevel !== 0 || user.trainingCompleted) {
+    return { status: 'inactive', credited: 0, amount: 0 };
+  }
+
+  const activatedAt = getTrainingActivation(user);
+  if (!activatedAt) return { status: 'skipped', credited: 0, amount: 0 };
+
+  const stats = await getTrainingRewardStats(user._id);
+  if (stats.totalCents >= TRAINING_CAP_CENTS || stats.paidDays >= TRAINING_DAYS) {
+    await completeTraining(user._id);
+    return { status: 'completed', credited: 0, amount: 0 };
+  }
+
+  const dueAt = trainingDueAt(activatedAt, stats.paidDays);
+  await ensureTrainingFrozenCycle(user, stats.paidDays, dueAt);
+
+  if (now < dueAt) {
+    return { status: 'waiting', credited: 0, amount: 0 };
+  }
+
+  const rewardDate = trainingDateKey(now);
+  if (await hasTrainingRewardForDate(user._id, rewardDate)) {
+    return { status: 'skipped', credited: 0, amount: 0 };
+  }
+
+  if (stats.totalCents + TRAINING_DAILY_CENTS > TRAINING_CAP_CENTS) {
+    await completeTraining(user._id);
+    return { status: 'completed', credited: 0, amount: 0 };
+  }
+
+  const paidDaysAfter = stats.paidDays + 1;
+  const remainingDays = Math.max(0, TRAINING_DAYS - paidDaysAfter);
+  const setFields = {
+    lastRewardDate: rewardDate,
+    vipLastHourlyRewardAt: dueAt,
+    trainingDaysLeft: remainingDays,
+  };
+  if (remainingDays === 0) {
+    setFields.trainingCompleted = true;
+    setFields.vipLevel = -1;
+  }
+
+  const locked = await User.findOneAndUpdate(
+    {
+      _id: user._id,
+      vipLevel: 0,
+      isFrozen: { $ne: true },
+      trainingCompleted: { $ne: true },
+      lastRewardDate: { $ne: rewardDate },
+      $or: [
+        { vipLastHourlyRewardAt: { $exists: false } },
+        { vipLastHourlyRewardAt: { $lt: dueAt } },
+      ],
+    },
+    { $set: setFields },
+    { new: true }
+  );
+  if (!locked) return { status: 'skipped', credited: 0, amount: 0 };
+
+  let tx;
+  try {
+    tx = await Transaction.create({
+      user: user._id,
+      type: 'training_reward',
+      status: 'approved',
+      amount: moneyFromCents(TRAINING_DAILY_CENTS),
+      netAmount: moneyFromCents(TRAINING_DAILY_CENTS),
+      note: 'ربح 24 ساعة — التدريب',
+      rewardDate,
+      approvedBy: user._id,
+      approvedAt: dueAt,
+    });
+  } catch (err) {
+    if (err.code === 11000) return { status: 'skipped', credited: 0, amount: 0 };
+    throw err;
+  }
+
+  await Promise.all([
+    Wallet.findOneAndUpdate(
+      { user: user._id },
+      {
+        $setOnInsert: { user: user._id },
+        $inc: {
+          balance: moneyFromCents(TRAINING_DAILY_CENTS),
+          totalEarned: moneyFromCents(TRAINING_DAILY_CENTS),
+          availableProfit: moneyFromCents(TRAINING_DAILY_CENTS),
+        },
+      },
+      { upsert: true, setDefaultsOnInsert: true }
+    ),
+    markTrainingCycleAvailable(user, stats.paidDays, dueAt, tx._id),
+  ]);
+
+  if (remainingDays > 0) {
+    await ensureTrainingFrozenCycle(locked, paidDaysAfter, trainingDueAt(activatedAt, paidDaysAfter));
+  }
+
+  return {
+    status: 'credited',
+    credited: 1,
+    amount: moneyFromCents(TRAINING_DAILY_CENTS),
+  };
 }
 
 function planStatus(user, now = new Date()) {
@@ -86,6 +359,9 @@ async function processUserHourlyRewards(userOrId, now = new Date()) {
   const user = typeof userOrId === 'object' && userOrId._id
     ? userOrId
     : await User.findById(userOrId);
+  if (user?.vipLevel === 0) {
+    return processTrainingReward(user, now);
+  }
   const { active, config } = planStatus(user, now);
   if (!active) return { status: 'inactive', credited: 0, amount: 0 };
 
@@ -275,6 +551,58 @@ const addReferralCommissions = async (depositUserId, depositAmount) => {
   }
 };
 
+const addActivityDepositBonus = async (depositUserId, depositAmount, adminId, depositTxId, depositCreatedAt) => {
+  const bonus = getActivityDepositBonus(depositAmount);
+  if (bonus <= 0) return { credited: false, amount: 0, reason: 'below_threshold' };
+  if (!isWithinActivityBonusWindow(depositCreatedAt)) {
+    return { credited: false, amount: 0, reason: 'expired' };
+  }
+
+  const user = await User.findById(depositUserId).select('_id name isFrozen');
+  if (!user || user.isFrozen) return { credited: false, amount: 0, reason: 'inactive' };
+
+  const existing = await Transaction.findOne({
+    user: depositUserId,
+    type: 'activity_bonus',
+    promoCode: ACTIVITY_BONUS_PROMO_CODE,
+  }).select('_id amount');
+  if (existing) return { credited: false, amount: existing.amount || 0, reason: 'already_claimed' };
+
+  let bonusTx;
+  try {
+    bonusTx = await Transaction.create({
+      user: depositUserId,
+      type: 'activity_bonus',
+      status: 'approved',
+      amount: bonus,
+      netAmount: bonus,
+      promoCode: ACTIVITY_BONUS_PROMO_CODE,
+      relatedTransaction: depositTxId,
+      note: 'بونص النشاط الجديد - يضاف مرة واحدة بعد اعتماد الإيداع',
+      approvedBy: adminId,
+      approvedAt: new Date(),
+    });
+  } catch (err) {
+    if (err.code === 11000) return { credited: false, amount: 0, reason: 'already_claimed' };
+    throw err;
+  }
+
+  try {
+    const wallet = await Wallet.findOneAndUpdate(
+      { user: depositUserId },
+      {
+        $setOnInsert: { user: depositUserId },
+        $inc: { balance: bonus, totalEarned: bonus, totalBonus: bonus },
+      },
+      { new: true, upsert: true, setDefaultsOnInsert: true }
+    );
+    return { credited: true, amount: bonus, transactionId: bonusTx._id, wallet };
+  } catch (err) {
+    await Transaction.deleteOne({ _id: bonusTx._id }).catch(() => {});
+    throw err;
+  }
+};
+
 /*
  * FIX #1: Race-condition-safe reward processor.
  *
@@ -304,47 +632,12 @@ const processUserReward = async (user, todayStr) => {
 
     /* ── Training plan ──────────────────────────────────────────────────── */
     if (user.vipLevel === 0 && user.trainingDaysLeft > 0) {
-      const reward = parseFloat(process.env.TRAINING_DAILY || 0.10);
-
-      /*
-       * Atomic guard: decrement trainingDaysLeft AND set lastRewardDate
-       * only if trainingDaysLeft > 0 AND lastRewardDate is not today.
-       */
-      const updated = await User.findOneAndUpdate(
-        { 
-          _id: user._id, 
-          vipLevel: 0, 
-          trainingDaysLeft: { $gt: 0 },
-          lastRewardDate: { $ne: todayStr }
-        },
-        { 
-          $inc: { trainingDaysLeft: -1 },
-          $set: { lastRewardDate: todayStr }
-        },
-        { new: true }
-      );
-      if (!updated) return { status: 'skipped' };
-
-      if (updated.trainingDaysLeft <= 0) {
-        await User.updateOne(
-          { _id: updated._id },
-          { $set: { trainingCompleted: true, vipLevel: -1, trainingDaysLeft: 0 } }
-        );
-      }
-
-      await Wallet.findOneAndUpdate(
-        { user: user._id },
-        { $inc: { balance: reward, totalEarned: reward } }
-      );
-
-      const completedDay = (parseInt(process.env.TRAINING_DAYS || 5)) - updated.trainingDaysLeft;
-      await Transaction.create({
-        user: user._id, type: 'training_reward', status: 'approved',
-        amount: reward, netAmount: reward,
-        note: `مكافأة تدريب يومية — يوم ${completedDay}`,
-      });
-
-      return { status: 'rewarded', amount: reward, type: 'training' };
+      const trainingResult = await processTrainingReward(user, new Date());
+      return {
+        status: trainingResult.credited ? 'rewarded' : 'skipped',
+        amount: trainingResult.amount,
+        type: 'training',
+      };
     }
 
     /* ── Paid VIP plan ──────────────────────────────────────────────────── */
@@ -464,5 +757,7 @@ module.exports = {
   getHourlyProfitStatus,
   markAvailableProfitWithdrawn,
   addReferralCommissions,
+  addActivityDepositBonus,
+  getActivityDepositBonus,
   notifyAdmin,
 };

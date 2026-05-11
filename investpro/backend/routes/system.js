@@ -15,7 +15,7 @@ function buildWalletSummary(wallet, txs = []) {
 
   const totalDeposited = sum(['deposit', 'admin_credit']);
   const totalEarned = sum([
-    'daily_profit', 'daily_bonus', 'training_reward',
+    'daily_profit', 'daily_bonus', 'activity_bonus', 'training_reward',
     'referral_l1', 'referral_l2', 'referral_l3', 'signup_bonus',
   ]);
   const totalWithdrawn = sum(['withdraw']);

@@ -11,7 +11,48 @@ const app = express();
 app.set('trust proxy', 1); // Fix rate limiting when behind a proxy
 
 /* ── Security & Parsing ──────────────────────────────────────────────────── */
-app.use(helmet({ contentSecurityPolicy: false }));
+app.use(helmet({
+  contentSecurityPolicy: {
+    useDefaults: false,
+    directives: {
+      "default-src": ["'self'"],
+      "script-src": [
+        "'self'",
+        "'unsafe-inline'",
+        "https://cdnjs.cloudflare.com",
+        "https://kit.fontawesome.com",
+        "https://cdn.jsdelivr.net",
+      ],
+      "script-src-attr": ["'unsafe-inline'"],
+      "style-src": [
+        "'self'",
+        "'unsafe-inline'",
+        "https://cdnjs.cloudflare.com",
+        "https://fonts.googleapis.com",
+        "https://kit.fontawesome.com",
+      ],
+      "font-src": [
+        "'self'",
+        "https://fonts.gstatic.com",
+        "https://cdnjs.cloudflare.com",
+        "https://ka-f.fontawesome.com",
+      ],
+      "img-src": ["'self'", "data:", "https:"],
+      "connect-src": [
+        "'self'",
+        "https://investpro1.onrender.com",
+        "https://cdn.jsdelivr.net",
+        "https://ka-f.fontawesome.com",
+      ],
+      "frame-src": ["'none'"],
+      "object-src": ["'none'"],
+      "base-uri": ["'self'"],
+      "form-action": ["'self'"],
+      "frame-ancestors": ["'self'"],
+      "upgrade-insecure-requests": [],
+    },
+  },
+}));
 const allowedOrigins = [
   process.env.SITE_URL,
   process.env.FRONTEND_URL,

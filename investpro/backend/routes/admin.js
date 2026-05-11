@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const User = require('../models/User');
 const { Wallet, Transaction, AuditLog, HourlyProfit, Notification } = require('../models/Wallet');
 const { protect, adminOnly } = require('../middleware');
-const { addReferralCommissions, runHourlyRewards, getHourlyProfitStatus, notifyAdmin } = require('../jobs/rewards');
+const { addReferralCommissions, addActivityDepositBonus, runHourlyRewards, getHourlyProfitStatus, notifyAdmin } = require('../jobs/rewards');
 
 router.use(protect, adminOnly);
 
@@ -51,7 +51,7 @@ router.get('/dashboard', async (req, res) => {
       User.countDocuments({ vipLevel: 0 }),
       User.aggregate([{ $group: { _id: '$vipLevel', count: { $sum: 1 } } }, { $sort: { _id: 1 } }]),
       Transaction.aggregate([{ $match: { type: { $in: ['referral_l1','referral_l2'] } } }, { $group: { _id: null, sum: { $sum: '$amount' } } }]),
-      Transaction.aggregate([{ $match: { type: { $in: ['daily_profit','daily_bonus','training_reward'] } } }, { $group: { _id: null, sum: { $sum: '$amount' } } }]),
+      Transaction.aggregate([{ $match: { type: { $in: ['daily_profit','daily_bonus','activity_bonus','training_reward'] } } }, { $group: { _id: null, sum: { $sum: '$amount' } } }]),
       HourlyProfit.findOne({ status: 'frozen' }).sort({ eligibleAt: 1 }).select('eligibleAt amount userName planName timezone').lean(),
       HourlyProfit.countDocuments({ status: 'frozen', eligibleAt: { $lte: new Date() } }),
       User.countDocuments({ vipLevel: { $gte: 1 }, vipExpiresAt: { $gt: new Date(), $lte: new Date(Date.now() + 3 * 86400000) } }),
@@ -119,7 +119,7 @@ router.post('/deposits/:id/approve', async (req, res) => {
     if (!tx) return res.status(400).json({ success: false, message: 'الإيداع غير موجود أو تم معالجته مسبقاً' });
 
     try {
-      const wallet = await Wallet.findOneAndUpdate(
+      let wallet = await Wallet.findOneAndUpdate(
         { user: tx.user },
         {
           $setOnInsert: { user: tx.user },
@@ -129,11 +129,30 @@ router.post('/deposits/:id/approve', async (req, res) => {
       );
 
       await addReferralCommissions(tx.user, tx.amount);
+      let bonus = { credited: false, amount: 0, reason: 'not_checked' };
+      try {
+        bonus = await addActivityDepositBonus(tx.user, tx.amount, req.user._id, tx._id, tx.createdAt);
+      } catch (bonusErr) {
+        console.error('[ActivityBonus] failed:', bonusErr.message);
+        bonus = { credited: false, amount: 0, reason: 'error' };
+      }
+      if (bonus.credited && bonus.wallet) wallet = bonus.wallet;
+      const bonusResult = {
+        credited: Boolean(bonus.credited),
+        amount: bonus.amount || 0,
+        reason: bonus.reason,
+        transactionId: bonus.transactionId,
+      };
 
-      await log(req.user, 'APPROVE_DEPOSIT', tx.user, { txId: tx._id, amount: tx.amount }, req);
-      notifyAdmin(`✅ إيداع معتمد\nالمبلغ: $${tx.amount}\nID: ${tx._id}`).catch(() => {});
+      await log(req.user, 'APPROVE_DEPOSIT', tx.user, { txId: tx._id, amount: tx.amount, activityBonus: bonusResult }, req);
+      notifyAdmin(`✅ إيداع معتمد\nالمبلغ: $${tx.amount}\nبونص النشاط: ${bonusResult.credited ? '$' + bonusResult.amount : 'غير مؤهل'}\nID: ${tx._id}`).catch(() => {});
 
-      res.json({ success: true, message: 'تم اعتماد الإيداع', wallet });
+      res.json({
+        success: true,
+        message: bonusResult.credited ? `تم اعتماد الإيداع وإضافة بونص $${bonusResult.amount}` : 'تم اعتماد الإيداع',
+        wallet,
+        activityBonus: bonusResult,
+      });
     } catch (err) {
       // Rollback transaction status if wallet update fails
       await Transaction.updateOne({ _id: tx._id }, { $set: { status: 'pending' } }).catch(() => {});
