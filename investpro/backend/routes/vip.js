@@ -93,8 +93,8 @@ router.post('/activate', protect, async (req, res) => {
     const { level } = req.body;
     const lvl = parseInt(level);
 
-    if (!Number.isFinite(lvl) || lvl < 1 || lvl > 4) {
-      return res.status(400).json({ success: false, message: 'مستوى VIP غير صالح (1–4)' });
+    if (!Number.isFinite(lvl) || lvl < 1 || lvl > 5) {
+      return res.status(400).json({ success: false, message: 'مستوى VIP غير صالح (1–5)' });
     }
 
     const config = VIP_LEVELS.find(v => v.level === lvl);

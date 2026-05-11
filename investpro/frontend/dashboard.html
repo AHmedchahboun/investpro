@@ -1513,7 +1513,7 @@ window.addEventListener('DOMContentLoaded', async () => {
   if (cachedUser) {
     document.getElementById('sb-avatar').textContent = (cachedUser.name || '?')[0].toUpperCase();
     document.getElementById('sb-name').textContent   = cachedUser.name || 'مستخدم';
-    const vipNames = { '-1':'غير نشط', '0':'تدريب', '1':'برونزي', '2':'فضي', '3':'ذهبي', '4':'ماسي' };
+    const vipNames = { '-1':'غير نشط', '0':'تدريب', '1':'برونزي', '2':'فضي', '3':'ذهبي', '4':'بلاتيني', '5':'ماسي' };
     document.getElementById('sb-vip-label').textContent = vipNames[String(cachedUser.vipLevel)] || 'VIP';
   }
 
@@ -1591,7 +1591,7 @@ function applyUserToUI(user, wallet) {
   const deposited   = (w.totalDeposited || 0);
   const earned      = (w.totalEarned   || 0);
 
-  const vipNames = { '-1':'غير نشط', '0':'تدريب', '1':'برونزي', '2':'فضي', '3':'ذهبي', '4':'ماسي' };
+  const vipNames = { '-1':'غير نشط', '0':'تدريب', '1':'برونزي', '2':'فضي', '3':'ذهبي', '4':'بلاتيني', '5':'ماسي' };
   const vipName  = vipNames[String(user.vipLevel)] || `VIP ${user.vipLevel}`;
 
   // Top Bar
@@ -2113,9 +2113,9 @@ async function loadVip() {
 function renderVipStatus(s) {
   s = normalizeVipStatus(s);
   const el = document.getElementById('vip-current-status');
-  const vipIcons = { '-1':'<i class="fas fa-bed"></i>', '0':'<i class="fas fa-book-open"></i>', '1':'<i class="fas fa-medal"></i>', '2':'<i class="fas fa-medal"></i>', '3':'<i class="fas fa-medal"></i>', '4':'<i class="fas fa-gem"></i>' };
-  const vipColors = { '-1':'#64748b', '0':'#06b6d4', '1':'#d97706', '2':'#94a3b8', '3':'#f59e0b', '4':'#38bdf8' };
-  const vipNames = { '-1':'غير نشط', '0':'التدريب', '1':'البرونزي', '2':'الفضي', '3':'الذهبي', '4':'الماسي' };
+  const vipIcons = { '-1':'<i class="fas fa-bed"></i>', '0':'<i class="fas fa-book-open"></i>', '1':'<i class="fas fa-medal"></i>', '2':'<i class="fas fa-medal"></i>', '3':'<i class="fas fa-crown"></i>', '4':'<i class="fas fa-trophy"></i>', '5':'<i class="fas fa-gem"></i>' };
+  const vipColors = { '-1':'#64748b', '0':'#06b6d4', '1':'#d97706', '2':'#94a3b8', '3':'#f59e0b', '4':'#a78bfa', '5':'#38bdf8' };
+  const vipNames = { '-1':'غير نشط', '0':'التدريب', '1':'البرونزي', '2':'الفضي', '3':'الذهبي', '4':'البلاتيني', '5':'الماسي' };
   const lvl = s.currentLevel;
 
   if (lvl === -1) {
@@ -2181,8 +2181,8 @@ function openVipModal(level) {
   if (!v) return;
   _vipModalData = v;
 
-  const icons  = { 0:'<i class="fas fa-book-open"></i>', 1:'<i class="fas fa-medal"></i>', 2:'<i class="fas fa-medal"></i>', 3:'<i class="fas fa-medal"></i>', 4:'<i class="fas fa-gem"></i>' };
-  const colors = { 0:'#06b6d4', 1:'#cd7f32', 2:'#94a3b8', 3:'#f59e0b', 4:'#38bdf8' };
+  const icons  = { 0:'<i class="fas fa-book-open"></i>', 1:'<i class="fas fa-medal"></i>', 2:'<i class="fas fa-medal"></i>', 3:'<i class="fas fa-crown"></i>', 4:'<i class="fas fa-trophy"></i>', 5:'<i class="fas fa-gem"></i>' };
+  const colors = { 0:'#06b6d4', 1:'#cd7f32', 2:'#94a3b8', 3:'#f59e0b', 4:'#a78bfa', 5:'#38bdf8' };
   const color  = colors[v.level] || '#06b6d4';
 
   // Check if there's a vip-detail-modal (new design) or vip-modal (old)
@@ -2296,9 +2296,9 @@ document.getElementById('vip-detail-modal')?.addEventListener('click', function(
 
 function renderVipPlans(levels, status) {
   const el = document.getElementById('vip-plans-container');
-  const icons     = { 0:'<i class="fas fa-book-open"></i>', 1:'<i class="fas fa-medal"></i>', 2:'<i class="fas fa-medal"></i>', 3:'<i class="fas fa-crown"></i>', 4:'<i class="fas fa-gem"></i>' };
-  const colors    = { 0:'#06b6d4', 1:'#cd7f32', 2:'#94a3b8', 3:'#f59e0b', 4:'#38bdf8' };
-  const demandPct = { 0:45, 1:68, 2:82, 3:91, 4:74 };
+  const icons     = { 0:'<i class="fas fa-book-open"></i>', 1:'<i class="fas fa-medal"></i>', 2:'<i class="fas fa-medal"></i>', 3:'<i class="fas fa-crown"></i>', 4:'<i class="fas fa-trophy"></i>', 5:'<i class="fas fa-gem"></i>' };
+  const colors    = { 0:'#06b6d4', 1:'#cd7f32', 2:'#94a3b8', 3:'#f59e0b', 4:'#a78bfa', 5:'#38bdf8' };
+  const demandPct = { 0:45, 1:68, 2:82, 3:86, 4:79, 5:74 };
 
   levels.forEach(v => _vipLevelsCache.set(v.level, v));
 
