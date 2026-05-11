@@ -43,6 +43,8 @@ app.use(helmet({
         "https://investpro1.onrender.com",
         "https://cdn.jsdelivr.net",
         "https://ka-f.fontawesome.com",
+        "https://fonts.googleapis.com",
+        "https://fonts.gstatic.com",
       ],
       "frame-src": ["'none'"],
       "object-src": ["'none'"],
