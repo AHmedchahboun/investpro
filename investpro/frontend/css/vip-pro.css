@@ -510,3 +510,92 @@
   .vip-pro-cta { grid-template-columns: 1fr; }
   .vip-pro-btn-secondary { width: 100%; }
 }
+
+/* ══════════════════════════════════════════════════════════════
+   VIP Card Redesign — vpc (card-internal) classes
+   Binance/Bybit-style dark fintech aesthetic
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── Card inner padding ──────────────────────────────────── */
+.vpc-header {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 14px;
+}
+.vpc-header.has-badge { margin-top: 24px; }
+
+.vpc-icon {
+  width: 40px; height: 40px; border-radius: 11px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem;
+}
+.vpc-identity { flex: 1; min-width: 0; }
+.vpc-name     { font-size: .93rem; font-weight: 800; letter-spacing: -.2px; }
+.vpc-tier     { font-size: .6rem; color: var(--text-tertiary); margin-top: 1px; }
+
+.vpc-price-tag {
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 10px; padding: 7px 10px;
+  text-align: center; flex-shrink: 0; min-width: 66px;
+}
+.vpc-price-amt {
+  font-size: 1.18rem; font-weight: 900; line-height: 1;
+  letter-spacing: -.4px; font-variant-numeric: tabular-nums;
+}
+.vpc-price-dur { font-size: .56rem; color: var(--text-tertiary); margin-top: 3px; }
+
+/* ── KPI Hero (daily profit + monthly %) ────────────────── */
+.vpc-kpi-row {
+  display: flex; align-items: stretch;
+  background: rgba(255,255,255,.03);
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 13px; margin-bottom: 9px; overflow: hidden;
+}
+.vpc-kpi-main,
+.vpc-kpi-side {
+  flex: 1; padding: 11px 10px; text-align: center;
+}
+.vpc-kpi-sep {
+  width: 1px; background: rgba(255,255,255,.06); flex-shrink: 0;
+  margin: 8px 0;
+}
+.vpc-kpi-label {
+  font-size: .58rem; color: var(--text-tertiary);
+  letter-spacing: .2px; margin-bottom: 5px;
+}
+.vpc-kpi-value {
+  font-size: 1.5rem; font-weight: 900; line-height: 1;
+  letter-spacing: -.5px; font-variant-numeric: tabular-nums;
+  color: #22c55e;
+  text-shadow: 0 0 18px rgba(34,197,94,.25);
+  animation: vipProfitPulse 3.5s ease-in-out infinite;
+}
+.vpc-kpi-value2 {
+  font-size: 1.3rem; font-weight: 900; line-height: 1;
+  letter-spacing: -.4px; font-variant-numeric: tabular-nums;
+}
+
+/* ── Meta Stats Row (duration | net profit | demand) ────── */
+.vpc-meta-row {
+  display: grid; grid-template-columns: repeat(3,1fr);
+  gap: 6px; margin-bottom: 11px;
+}
+.vpc-meta-pill {
+  background: rgba(255,255,255,.03);
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: 9px; padding: 8px 5px; text-align: center;
+}
+.vpc-meta-val {
+  font-size: .82rem; font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.vpc-meta-lbl {
+  font-size: .54rem; color: var(--text-tertiary); margin-top: 2px;
+}
+
+/* ── Responsive overrides ────────────────────────────────── */
+@media (max-width: 360px) {
+  .vpc-kpi-value  { font-size: 1.28rem; }
+  .vpc-kpi-value2 { font-size: 1.1rem; }
+  .vpc-price-amt  { font-size: 1rem; }
+}

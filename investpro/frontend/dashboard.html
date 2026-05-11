@@ -2391,43 +2391,48 @@ function renderVipPlans(levels, status) {
         <div class="vip-card-inner">
 
           <!-- Header: icon + name + price -->
-          <div class="vip-pro-header ${badgeHtml?'has-badge':''}">
-            <div class="vip-pro-icon" style="background:${color}18;color:${color}">${icon}</div>
-            <div style="flex:1;min-width:0">
-              <div class="vip-pro-name">${v.name}</div>
-              <div class="vip-pro-tagline">${v.tier||''}</div>
+          <div class="vpc-header ${badgeHtml?'has-badge':''}">
+            <div class="vpc-icon" style="background:${color}18;color:${color}">${icon}</div>
+            <div class="vpc-identity">
+              <div class="vpc-name">${v.name}</div>
+              <div class="vpc-tier">${v.tier||''}</div>
             </div>
-            <div class="vip-pro-price-inline">
-              <div class="vip-pro-price" style="color:${color}">${v.isTraining?'مجاني':fmt.usd(v.price)}</div>
-              <div class="vip-pro-price-sub">${v.isTraining?'تجربة 5 أيام':'لمدة 30 يوم'}</div>
+            <div class="vpc-price-tag" style="border-color:${color}40">
+              <div class="vpc-price-amt" style="color:${color}">${v.isTraining?'مجاني':fmt.usd(v.price)}</div>
+              <div class="vpc-price-dur">${v.isTraining?'تجربة 5 أيام':'30 يوم'}</div>
+            </div>
+          </div>
+
+          <!-- KPI Hero: daily profit + monthly % -->
+          <div class="vpc-kpi-row">
+            <div class="vpc-kpi-main">
+              <div class="vpc-kpi-label">الربح اليومي</div>
+              <div class="vpc-kpi-value">${fmt.usd(v.dailyTotal)}</div>
+            </div>
+            <div class="vpc-kpi-sep"></div>
+            <div class="vpc-kpi-side">
+              <div class="vpc-kpi-label">العائد الشهري</div>
+              <div class="vpc-kpi-value2" style="color:${color}">${v.isTraining?'—':v.monthlyPct+'%'}</div>
+            </div>
+          </div>
+
+          <!-- Meta stats: duration | net profit | demand -->
+          <div class="vpc-meta-row">
+            <div class="vpc-meta-pill">
+              <div class="vpc-meta-val" style="color:${color}">${v.durationDays}</div>
+              <div class="vpc-meta-lbl">يوم</div>
+            </div>
+            <div class="vpc-meta-pill">
+              <div class="vpc-meta-val" style="color:#f59e0b">${v.isTraining?fmt.usd(.50):fmt.usd(v.netProfit)}</div>
+              <div class="vpc-meta-lbl">صافي الربح</div>
+            </div>
+            <div class="vpc-meta-pill">
+              <div class="vpc-meta-val" style="color:${color}">${v.isTraining?'—':demand+'%'}</div>
+              <div class="vpc-meta-lbl">نسبة الطلب</div>
             </div>
           </div>
 
           ${subsHtml}
-
-          ${v.description ? `<div class="vip-pro-description">${v.description}</div>` : ''}
-
-          <!-- Stats 4-col -->
-          <div class="vip-pro-stats">
-            <div class="vip-pro-stat">
-              <div class="vip-pro-stat-val vip-profit-glow" style="color:#22c55e">${fmt.usd(v.dailyTotal)}</div>
-              <div class="vip-pro-stat-lbl">ربح يومي</div>
-            </div>
-            <div class="vip-pro-stat">
-              <div class="vip-pro-stat-val" style="color:${color}">${v.isTraining?'—':v.monthlyPct+'%'}</div>
-              <div class="vip-pro-stat-lbl">عائد شهري</div>
-            </div>
-            <div class="vip-pro-stat">
-              <div class="vip-pro-stat-val" style="color:#f59e0b">${v.isTraining?fmt.usd(.50):fmt.usd(v.netProfit)}</div>
-              <div class="vip-pro-stat-lbl">صافي الربح</div>
-            </div>
-            <div class="vip-pro-stat">
-              <div class="vip-pro-stat-val" style="color:${color}">${v.isTraining?'—':demand+'%'}</div>
-              <div class="vip-pro-stat-lbl">نسبة الطلب</div>
-            </div>
-          </div>
-
-          ${demandHtml}
 
           <!-- CTA -->
           <div class="vip-pro-cta ${!showDetails?'single':''}">
