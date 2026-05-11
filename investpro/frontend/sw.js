@@ -1,4 +1,4 @@
-const CACHE_NAME = 'investpro-v9';
+const CACHE_NAME = 'investpro-v10';
 
 const STATIC_ASSETS = [
   '/css/style.css',
@@ -98,7 +98,6 @@ self.addEventListener('fetch', event => {
 
   if (
     url.hostname.includes('jsdelivr.net') ||
-    url.hostname.includes('cdnjs.cloudflare.com') ||
     url.hostname.includes('fonts.googleapis.com') ||
     url.hostname.includes('fonts.gstatic.com')
   ) {
